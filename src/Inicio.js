@@ -1,10 +1,6 @@
 import * as React from 'react';
-import Avatar from 'react-avatar';
 import { Link } from 'react-router-dom';
-import Form from 'react-bootstrap/Form'
-import FloatingLabel from 'react-bootstrap/FloatingLabel'
 import logo_risk from './imagenes/logo_risk.png';
-import './styles/Inicio.css';
 
 function Inicio() {
 
@@ -24,32 +20,28 @@ function Inicio() {
   };
 
   return (
-    <div className="Inicio">
+    <div style={{textAlign: "center"}} className="Inicio">
 
-      <div className="Logo_Risk">
-        <Avatar src={logo_risk}></Avatar>
+      <div>
+        <img style={{marginTop: "20px", width:"50%", height:"35%"}} className="Logo_Risk" src={logo_risk}></img>
       </div>
 
-      <Form.Floating className="Nombre">
-        <Form.Control
-          id="Nombre"
-          type="text"
+      <div style={{marginLeft: "25%", width: "50%", marginTop: "30px"}} class="form-floating mb-3">
+        <input type="text" class="form-control" id="floatingInput" placeholder="Nombre Usario"
+          value={nombre} onChange={handleNombre}></input>
+        <label for="floatingInput">Nombre usuario</label>
+      </div>
 
-        />
-        <label htmlFor="floatingInput">Nombre usuario</label>
-      </Form.Floating>
+      <div style={{marginLeft: "25%", width: "50%", marginTop: "30px"}} class="form-floating mb-3">
+        <input type="password" class="form-control" id="floatingPassword" placeholder="Contraseña"
+          value={password} onChange={handlePassword}></input>
+        <label for="floatingPassword">Password</label>
+      </div>
 
-      <Form.Floating className="Password">
-        <Form.Control
-          id="Password"
-          type="password"
+      <br></br>
 
-        />
-        <label htmlFor="floatingInput">Contraseña</label>
-      </Form.Floating>
-
-      <button type="button" classname="Button_Log_In" onClick={handleLogin}>Inicar sesión</button>
-      <Link to="/registro"><button type="button" class="Button_Register" >Regístrate</button></Link>
+      <Link to="/pantalla_inicio"> <button onClick={handleLogin} type="button" class="btn btn-outline-primary btn-lg">Inicar sesión</button></Link>
+      <Link to="/registro"><button type="button" class="btn btn-outline-info btn-lg">Regístrate</button></Link>
 
     </div>
   );

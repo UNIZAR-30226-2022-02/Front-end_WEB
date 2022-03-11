@@ -2,19 +2,19 @@ import React from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
 import Inicio from '../Inicio'
 import Registro from '../registro/Registro'
-import Pagina_Principal from '../pantallas_juego/Pagina_Principal'
-import Pantalla_Carga from '../pantallas_juego/Pantalla_Carga'
+import Pantalla_Inicio from '../pantallas_juego/Pantalla_Inicio'
+import Mapa from '../pantallas_juego/Mapa'
 
-function Path(){
+function Raiz(){
 
     return (
         <BrowserRouter>
             <Route exact path="/" component={Inicio} />
             <Route exact path="/registro" component={Registro} />
-            <Route exact path="/pagina_principal" component={Pagina_Principal} />
-            <Route exact path="/pantalla_carga" component={Pantalla_Carga} />
+            <Route exact path="/pantalla_inicio" component={Pantalla_Inicio} />
+            <Route exact path="/mapa" component={Mapa} />
         </BrowserRouter>
     )
 }
 
-export default Path
+export default Raiz
