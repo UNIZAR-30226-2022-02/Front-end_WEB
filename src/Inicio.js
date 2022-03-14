@@ -23,7 +23,7 @@ function Inicio() {
     <div style={{textAlign: "center"}} className="Inicio">
 
       <div>
-        <img style={{marginTop: "20px", width:"50%", height:"35%"}} className="Logo_Risk" src={logo_risk}></img>
+        <img style={{marginTop: "20px", width:"50%", height:"35%"}} alt="Remy Sharp" className="Logo_Risk" src={logo_risk}></img>
       </div>
 
       <div style={{marginLeft: "25%", width: "50%", marginTop: "30px"}} class="form-floating mb-3">

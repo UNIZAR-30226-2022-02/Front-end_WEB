@@ -3,7 +3,7 @@ import { BrowserRouter, Route } from 'react-router-dom'
 import Inicio from '../Inicio'
 import Registro from '../registro/Registro'
 import Pantalla_Inicio from '../pantallas_juego/Pantalla_Inicio'
-import Mapa from '../pantallas_juego/Mapa'
+import Mapa from '../pantallas_juego/mapa/Mapa'
 
 function Raiz(){
 
