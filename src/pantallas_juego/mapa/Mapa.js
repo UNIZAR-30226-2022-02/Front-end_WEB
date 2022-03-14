@@ -2,8 +2,9 @@ import * as React from 'react'
 import styled from 'styled-components';
 import Mapa_Paths from './Mapa_Paths';
 
-class Mapa {
-    verMapa() {
+class Mapa extends React.Component {
+    render() {
+        const MapContainer = styled.div`text-align: center;`;
         const svg = React.createElement(
             "svg", 
             {   height: "477",
@@ -14,7 +15,5 @@ class Mapa {
         return React.createElement(MapContainer, {}, svg);
     }
 }
-
-const MapContainer = styled.div`text-align: center;`;
 
 export default Mapa;
