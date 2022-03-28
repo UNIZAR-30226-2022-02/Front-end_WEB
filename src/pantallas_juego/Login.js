@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import logo_risk from './imagenes/logo_risk.png';
+import logo_risk from '../imagenes/logo_risk.png';
 
 class Inicio extends React.Component{
 
