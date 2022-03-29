@@ -2,12 +2,20 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Button, Container, Form, FormGroup, Input } from 'reactstrap';
 
-import imagen_fondo from '../imagenes/fondo_pantalla.jpeg';
+import fondo_pantalla from '../imagenes/fondo_pantalla.jpeg';
+import logo_risk from '../imagenes/logo_risk.png'
 
 class Inicio extends React.Component{
 
+  constructor(props) {
+    super(props);
+    this.handleLogin = this.handleLogin.bind(this);
+  }
+
   handleLogin(event) {
-    
+    event.preventDefault();
+    const email = event.target[0].value;
+    const password = event.target[1].value;
   }
 
   render() {
@@ -17,14 +25,14 @@ class Inicio extends React.Component{
           <Logo />
           <Form onSubmit={this.handleLogin}>
             <FormGroup>
-              <Input type="email" name="name" placeholder="Email"/>
+              <Input type="email" name="name" placeholder="Email" />
             </FormGroup>
             <FormGroup>
-              <Input type="password" name="password" placeholder="Password"/>
+              <Input type="password" name="password" placeholder="Password" />
             </FormGroup>
-            <ButtonLogin>Iniciar sesión</ButtonLogin>
+            <ButtonLogin className="btn btn-info btn-lg">Iniciar sesión</ButtonLogin>
           </Form>
-          <ButtonRegister href="/registro"></ButtonRegister>
+          <ButtonRegister className="btn btn-outline-info" href="/registro">Regístrarse</ButtonRegister>
         </MainContainer>
       </BackGroundImage>
     );
@@ -32,29 +40,34 @@ class Inicio extends React.Component{
 };
 
 const BackGroundImage = styled.div`
-  background-image: url(${imagen_fondo});
-  height: 100%
+  background-image: url(${fondo_pantalla});
+  height: 100%;
   width: 100%;
   background-position: center;
+  background-repeat: no-repeat;
   background-size: cover;
 `;
 
 const MainContainer = styled(Container)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   text-align: center;
-  
+  min-height: 100vh;
+  min-width: 100vh;
 `;
 
 const Logo = styled.div`
-
+  src: ${logo_risk}; 
 `;
 
 const ButtonLogin = styled(Button)`
-
+  margin-top: 10px;
 `;
 
 const ButtonRegister = styled(Button)`
-
+  margin-top: 10px;
 `;
 
 export default Inicio;
