@@ -1,3 +1,9 @@
+Instalacion de paquetes
+ $cd Front-end Web
+ $rm -rf node_modules //Eliminamos los paquetes
+ $npm install //Instalamos las dependencias del paquete
+ $npm start
+ 
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
