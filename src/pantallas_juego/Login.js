@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, Container, Form, FormGroup, Input } from 'reactstrap';
 
 import fondo_pantalla from '../imagenes/fondo_pantalla.jpeg';
-import logo_risk from '../imagenes/logo_risk.png'
+import logo_risk from '../imagenes/logo_risk.jpeg'
 
 class Inicio extends React.Component{
 
@@ -22,7 +22,7 @@ class Inicio extends React.Component{
     return (
       <BackGroundImage>
         <MainContainer>
-          <Logo />
+          <Logo src={logo_risk} />
           <Form onSubmit={this.handleLogin}>
             <FormGroup>
               <Input type="email" name="name" placeholder="Email" />
@@ -54,13 +54,9 @@ const MainContainer = styled(Container)`
   justify-content: center;
   align-items: center;
   text-align: center;
-  min-height: 100vh;
-  min-width: 100vh;
 `;
 
-const Logo = styled.div`
-  src: ${logo_risk}; 
-`;
+const Logo = styled.img``;
 
 const ButtonLogin = styled(Button)`
   margin-top: 10px;
