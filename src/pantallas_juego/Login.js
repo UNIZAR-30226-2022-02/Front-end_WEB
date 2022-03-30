@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Button, Container, Form, FormGroup, Input } from 'reactstrap';
 
 import fondo_pantalla from '../imagenes/fondo_pantalla.jpeg';
-import logo_risk from '../imagenes/logo_risk.jpeg'
 
 class Inicio extends React.Component{
 
@@ -16,47 +15,57 @@ class Inicio extends React.Component{
     event.preventDefault();
     const email = event.target[0].value;
     const password = event.target[1].value;
+    alert(email + "; " + password)
   }
 
   render() {
     return (
       <BackGroundImage>
-        <MainContainer>
-          <Logo src={logo_risk} />
+        <FormContainer>
           <Form onSubmit={this.handleLogin}>
             <FormGroup>
-              <Input type="email" name="name" placeholder="Email" />
+              <Input type="email" name="name" placeholder="Email" required/>
             </FormGroup>
             <FormGroup>
-              <Input type="password" name="password" placeholder="Password" />
+              <Input type="password" name="password" placeholder="Password" required/>
             </FormGroup>
             <ButtonLogin className="btn btn-info btn-lg">Iniciar sesión</ButtonLogin>
           </Form>
           <ButtonRegister className="btn btn-outline-info" href="/registro">Regístrarse</ButtonRegister>
-        </MainContainer>
+        </FormContainer>
       </BackGroundImage>
     );
   }
-};
+};        
+
+//         <Logo>RISK</Logo>
 
 const BackGroundImage = styled.div`
   background-image: url(${fondo_pantalla});
-  height: 100%;
-  width: 100%;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 `;
 
-const MainContainer = styled(Container)`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+const Logo = styled.h1`
+  min-height: 100vh;
+  min-widht: 100vh;
+
+  color: red;
   text-align: center;
+  front-size: 200%;
 `;
 
-const Logo = styled.img``;
+const FormContainer = styled.div`
+  min-height: 100vh;
+  min-widht: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  flex-direction: column;
+  text-align: center;
+`
 
 const ButtonLogin = styled(Button)`
   margin-top: 10px;

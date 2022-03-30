@@ -1,85 +1,77 @@
 import * as React from 'react'
+import styled from 'styled-components';
+import { Button, Container, Form, FormGroup, Input } from 'reactstrap';
 
-function Registro() {
+import fondo_pantalla from '../imagenes/fondo_pantalla.jpeg';
 
-    const [nombre, setNombre] = React.useState("");
-    const [password1, setPassword1] = React.useState("");
-    const [password2, setPassword2] = React.useState("");
-    const [email, setEmail] = React.useState("");
+class Registro extends React.Component {
 
-    const handleNombre = (newValue) => {
-        setNombre(newValue.target.value);
-    };
+    constructor(props) {
+        super(props);
+        this.handleRegister = this.handleRegister.bind(this);
+    }
 
-    const handlePassword1 = (newValue) => {
-        setPassword1(newValue.target.value);
-    };
+    handleRegister(event) {
+        event.preventDefault();
+        const email = event.target[0].value;
+        const password = event.target[1].value;
+        alert(email + "; " + password)
+    }
 
-    const handlePassword2 = (newValue) => {
-        setPassword2(newValue.target.value);
-    };
+    render() {
+        return(
+            <BackGroundImage>
+                <FormContainer>
+                    <Form onSubmit={this.handleLogin}>
+                        <FormGroup>
+                            <Input type="text" name="name" placeholder="Nombre usuario" required/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Input type="email" name="name" placeholder="Email" required/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Input type="password" name="password" placeholder="Contraseña" required/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Input type="password" name="password" placeholder="Confirmar contraseña" required/>
+                        </FormGroup>
+                        <ButtonRegister className="btn btn-info btn-lg">Registrarse</ButtonRegister>
+                    </Form>
+                </FormContainer>
+            </BackGroundImage>
+        );
+    }
+};
 
-    const handleEmail = (newValue) => {
-        setEmail(newValue.target.value);
-    };
+const BackGroundImage = styled.div`
+    background-image: url(${fondo_pantalla});
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+`;
 
-    const handleRegistro = () => {
-        if (nombre == "" || password1 == "" || password2 == "" || email == "") {
-            // Campos vacios
-            alert("Completa todos los campos del formulario")
-        }
-        else if (password1 != password2) {
-            // Contraseñas no coinciden
-            alert("Las contraseñas no coinciden")
+const Logo = styled.h1`
+    min-height: 100vh;
+    min-widht: 100vh;
 
-        } else if (! /^([\da-z_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/.test(email)) {
-            // Formato de correo incorrecto
-            alert("Formato de email no aceptado")
+    color: red;
+    text-align: center;
+    front-size: 200%;
+`;
 
-        } else if (true) {
-            // Nombre de usuario ya existe
+const FormContainer = styled.div`
+    min-height: 100vh;
+    min-widht: 100vh;
 
-        } else {
-            // Registrar nuevo usuario
-            alert("Usuario registrado correctamente. Inica sesión para jugar")
-        }
-    };
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    flex-direction: column;
+    text-align: center;
+`
 
-return(
-    <div style={{textAlign: "center"}} className="Registro">
-
-        <h3 style={{marginTop: "20px"}} className="Titulo">Nuevo Usuario</h3>
-
-        <div style={{marginLeft: "25%", width: "50%", marginTop: "30px"}} class="form-floating mb-3">
-            <input type="text" class="form-control" id="floatingInput" placeholder="Nombre Usuario"
-                value={nombre} onChange={handleNombre} required></input>
-            <label for="floatingInput">Nombre usuario</label>
-        </div>
-
-        <div style={{marginLeft: "25%", width: "50%", marginTop: "30px"}} class="form-floating mb-3">
-            <input type="password" class="form-control" id="floatingInput" placeholder="Contraseña"
-                value={password1} onChange={handlePassword1}></input>
-            <label for="floatingInput">Contraseña</label>
-        </div>
-
-        <div style={{marginLeft: "25%", width: "50%", marginTop: "30px"}} class="form-floating mb-3">
-            <input type="password" class="form-control" id="floatingInput" placeholder="Confirmar contraseña"
-                value={password2} onChange={handlePassword2}></input>
-            <label for="floatingInput">Confirmar contraseña</label>
-        </div>
-
-        <div style={{marginLeft: "25%", width: "50%", marginTop: "30px"}} class="form-floating mb-3">
-            <input type="email" class="form-control" id="floatingInput" placeholder="Correo electrónico"
-                value={email} onChange={handleEmail}></input>
-            <label for="floatingInput">Correo electrónico</label>
-        </div>
-
-        <br></br>
-
-        <button onClick={handleRegistro} type="button" class="btn btn-outline-info btn-lg">Registrarme</button>
-
-    </div>
-    );
-}
+const ButtonRegister = styled(Button)`
+    margin-top: 10px;
+`;
 
 export default Registro;
