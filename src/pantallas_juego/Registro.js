@@ -37,6 +37,8 @@ class Registro extends React.Component {
                         </FormGroup>
                         <ButtonRegister className="btn btn-info btn-lg">Registrarse</ButtonRegister>
                     </Form>
+                    <LoginTxt>¿Ya tienes cuenta?</LoginTxt>
+                    <ButtonRegister className="btn btn-outline-info btn-sm" href="/">Iniciar sesion</ButtonRegister>
                 </FormContainer>
             </BackGroundImage>
         );
@@ -68,6 +70,12 @@ const FormContainer = styled.div`
     align-items:center;
     flex-direction: column;
     text-align: center;
+`
+
+const LoginTxt = styled.h6`
+    margin-top: 30px;
+    background-color: white;
+    color: red;
 `
 
 const ButtonRegister = styled(Button)`
