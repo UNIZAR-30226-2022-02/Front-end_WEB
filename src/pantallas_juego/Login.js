@@ -1,10 +1,12 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Button, Container, Form, FormGroup, Input } from 'reactstrap';
+import { Button, Form, FormGroup, Input } from 'reactstrap';
 
-import fondo_pantalla from '../imagenes/fondo_pantalla.jpeg';
+import API from '../api/Api'
+import fondo_pantalla from '../imagenes/fondo_pantalla.png';
+import logo_risk from '../imagenes/logo_risk.png'
 
-class Inicio extends React.Component{
+class Login extends React.Component{
 
   constructor(props) {
     super(props);
@@ -15,30 +17,32 @@ class Inicio extends React.Component{
     event.preventDefault();
     const email = event.target[0].value;
     const password = event.target[1].value;
-    alert(email + "; " + password)
+
+    this.props.history.push("/inicio")
   }
 
   render() {
     return (
       <BackGroundImage>
-        <FormContainer>
-          <Form onSubmit={this.handleLogin}>
-            <FormGroup>
-              <Input type="email" name="name" placeholder="Email" required/>
-            </FormGroup>
-            <FormGroup>
-              <Input type="password" name="password" placeholder="Password" required/>
-            </FormGroup>
-            <ButtonLogin className="btn btn-info btn-lg">Iniciar sesión</ButtonLogin>
-          </Form>
-          <ButtonRegister className="btn btn-outline-info" href="/registro">Regístrarse</ButtonRegister>
-        </FormContainer>
+        <MainContainer>
+          <Logo src={logo_risk}/>
+          <FormContainer>
+            <Form onSubmit={this.handleLogin}>
+              <FormGroup>
+                <Input type="text" id="userName" placeholder="Email" required/>
+              </FormGroup>
+              <FormGroup>
+                <Input type="password" id="password" placeholder="Password" required/>
+              </FormGroup>
+              <Button className="btn btn-info btn-lg">Iniciar sesión</Button>
+            </Form> <br></br>
+            <Button className="btn btn-outline-info" href="/inicio">CAMBIAR HREF</Button>
+          </FormContainer>
+        </MainContainer>
       </BackGroundImage>
     );
   }
-};        
-
-//         <Logo>RISK</Logo>
+};
 
 const BackGroundImage = styled.div`
   background-image: url(${fondo_pantalla});
@@ -47,32 +51,24 @@ const BackGroundImage = styled.div`
   background-size: cover;
 `;
 
-const Logo = styled.h1`
-  min-height: 100vh;
-  min-widht: 100vh;
-
-  color: red;
-  text-align: center;
-  front-size: 200%;
+const Logo = styled.img`
+  margin-top: 30px;
 `;
 
-const FormContainer = styled.div`
+const MainContainer = styled.div`
   min-height: 100vh;
   min-widht: 100vh;
 
-  display: flex;
-  justify-content: center;
-  align-items:center;
-  flex-direction: column;
   text-align: center;
 `
 
-const ButtonLogin = styled(Button)`
-  margin-top: 10px;
-`;
+const FormContainer = styled.div`
+  margin-top: 10%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items:center;
+  flex-direction: column;
+`
 
-const ButtonRegister = styled(Button)`
-  margin-top: 10px;
-`;
-
-export default Inicio;
+export default Login;

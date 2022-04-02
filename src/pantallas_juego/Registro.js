@@ -2,7 +2,8 @@ import * as React from 'react'
 import styled from 'styled-components';
 import { Button, Container, Form, FormGroup, Input } from 'reactstrap';
 
-import fondo_pantalla from '../imagenes/fondo_pantalla.jpeg';
+import API from '../api/Api'
+import fondo_pantalla from '../imagenes/fondo_pantalla.png';
 
 class Registro extends React.Component {
 
@@ -13,32 +14,47 @@ class Registro extends React.Component {
 
     handleRegister(event) {
         event.preventDefault();
-        const email = event.target[0].value;
-        const password = event.target[1].value;
-        alert(email + "; " + password)
+        const userName = event.target[0].value;
+        const email = event.target[1].value;
+        const password = event.target[2].value;
+        const confirmPassword = event.target[3].value;
+
+        if (password !== confirmPassword) {
+            password.setCustomValidity("Las contraseñas no coinciden");
+        }
+
+        try {
+            API.get(`register?username=${userName}?email=${email}?passwd=${password}`)
+            .then(response => {
+                console.log(response.data)
+            });
+
+        } catch (err) {
+            console.log(err);                                                                                                                                                                                                                                                                                                                                                                                          
+        }
     }
 
     render() {
         return(
             <BackGroundImage>
                 <FormContainer>
-                    <Form onSubmit={this.handleLogin}>
+                    <Form onSubmit={this.handleRegister}>
                         <FormGroup>
-                            <Input type="text" name="name" placeholder="Nombre usuario" required/>
+                            <Input type="text" id="userName" placeholder="Nombre usuario" required/>
                         </FormGroup>
                         <FormGroup>
-                            <Input type="email" name="name" placeholder="Email" required/>
+                            <Input type="email" id="email" placeholder="Email" required/>
                         </FormGroup>
                         <FormGroup>
-                            <Input type="password" name="password" placeholder="Contraseña" required/>
+                            <Input type="password" id="password" placeholder="Contraseña" required/>
                         </FormGroup>
                         <FormGroup>
-                            <Input type="password" name="password" placeholder="Confirmar contraseña" required/>
+                            <Input type="password" id="confirmPassword" placeholder="Confirmar contraseña" required/>
                         </FormGroup>
-                        <ButtonRegister className="btn btn-info btn-lg">Registrarse</ButtonRegister>
+                        <Button className="btn btn-info btn-lg">Registrarse</Button>
                     </Form>
                     <LoginTxt>¿Ya tienes cuenta?</LoginTxt>
-                    <ButtonRegister className="btn btn-outline-info btn-sm" href="/">Iniciar sesion</ButtonRegister>
+                    <Button className="btn btn-outline-info btn-sm" href="/">Iniciar sesion</Button>
                 </FormContainer>
             </BackGroundImage>
         );
@@ -77,9 +93,5 @@ const LoginTxt = styled.h6`
     background-color: white;
     color: red;
 `
-
-const ButtonRegister = styled(Button)`
-    margin-top: 10px;
-`;
 
 export default Registro;

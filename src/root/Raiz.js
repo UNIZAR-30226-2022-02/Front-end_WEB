@@ -10,7 +10,7 @@ function Raiz() {
         <BrowserRouter>
             <Route exact path="/" component={Login} />
             <Route exact path="/registro" component={Registro} />
-            <Route exact path="/pantalla_inicio" component={Inicio} />
+            <Route exact path="/inicio" component={Inicio} />
         </BrowserRouter>
     )
 }
