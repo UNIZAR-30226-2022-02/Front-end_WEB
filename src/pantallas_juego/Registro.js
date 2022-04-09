@@ -1,9 +1,8 @@
 import * as React from 'react'
 import styled from 'styled-components';
-import { Button, Container, Form, FormGroup, Input } from 'reactstrap';
-import axios from 'axios';
+import { Button, Form, FormGroup, Input } from 'reactstrap';
+import axios from '../api/Axios';
 
-import API from '../api/Axios'
 import fondo_pantalla from '../imagenes/fondo_pantalla.png';
 
 const REGISTER_URL = '/registerUser'
@@ -18,11 +17,19 @@ class Registro extends React.Component {
     }
 
     handleRegister = async (event) => {
+        // Aclaración: Si hay un setCustomValidity(msg) cuyo msg != "", no sigue ejecutandose la función
+        // hasta que se cambie por ""
+
         event.preventDefault();
 
-        const userName = event.target[0].value;
-        const email = event.target[1].value;
-        const password = event.target[2].value;
+        const userName = document.getElementById("userName");
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const confirmPassword = document.getElementById("confirmPassword");
+        var msg = "";
+
+        password.value !== confirmPassword.value ? msg = "Las contraseñas deben coincidir" : msg = "";
+        password.setCustomValidity(msg);
 
         try {
             const response = await axios.post(REGISTER_URL, 
@@ -32,24 +39,8 @@ class Registro extends React.Component {
                     withCredentials: true
                 }
             );
+            console.log(JSON.stringify(response?.data));
         } catch (error) { }
-    }
-
-    handleChange(event) {
-        event.preventDefault();
-
-        const userName = document.getElementById("userName");
-        const email = document.getElementById("email");
-        const password = document.getElementById("password");
-        const confirmPassword = document.getElementById("confirmPassword");
-        var msg = "";
-
-        // Ya existe user o email
-
-
-        // Contraseñas distintas
-        password.value !== confirmPassword.value ? msg = "Las contraseñas no coinciden" : msg = ""
-        password.setCustomValidity(msg)
     }
 
     render() {
@@ -58,16 +49,16 @@ class Registro extends React.Component {
                 <FormContainer>
                     <Form onSubmit={this.handleRegister}>
                         <FormGroup>
-                            <Input type="text" id="userName" placeholder="Nombre usuario" onChange={this.handleChange} required />
+                            <Input type="text" id="userName" placeholder="Nombre usuario" required />
                         </FormGroup>
                         <FormGroup>
-                            <Input type="email" id="email"  placeholder="Email" onChange={this.handleChange} required/>
+                            <Input type="email" id="email" placeholder="Email" required/>
                         </FormGroup>
                         <FormGroup>
-                            <Input type="password" id="password" placeholder="Contraseña" onChange={this.handleChange} required/>
+                            <Input type="password" id="password" placeholder="Contraseña" required/>
                         </FormGroup>
                         <FormGroup>
-                            <Input type="password" id="confirmPassword" placeholder="Confirmar contraseña" onChange={this.handleChange} required/>
+                            <Input type="password" id="confirmPassword" placeholder="Confirmar contraseña" required/>
                         </FormGroup>
                         <Button className="btn btn-info btn-lg">Registrarse</Button>
                     </Form>
