@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Button, Form, FormGroup, Input } from 'reactstrap';
 
-import API from '../api/Api'
+import API from '../api/Axios'
 import fondo_pantalla from '../imagenes/fondo_pantalla.png';
 import logo_risk from '../imagenes/logo_risk.png'
 
@@ -29,10 +29,10 @@ class Login extends React.Component{
           <FormContainer>
             <Form onSubmit={this.handleLogin}>
               <FormGroup>
-                <Input type="text" id="userName" placeholder="Email" required/>
+                <Input type="text" placeholder="Nombre usuario" required/>
               </FormGroup>
               <FormGroup>
-                <Input type="password" id="password" placeholder="Password" required/>
+                <Input type="password" placeholder="Password" required/>
               </FormGroup>
               <Button className="btn btn-info btn-lg">Iniciar sesión</Button>
             </Form> <br></br>
