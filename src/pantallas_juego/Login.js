@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Button, Form, FormGroup, Input } from 'reactstrap';
 
-import API from '../api/Axios'
+import axios from '../api/Axios'
 import fondo_pantalla from '../imagenes/fondo_pantalla.png';
 import logo_risk from '../imagenes/logo_risk.png'
 
@@ -15,8 +15,9 @@ class Login extends React.Component{
 
   handleLogin(event) {
     event.preventDefault();
-    const email = event.target[0].value;
-    const password = event.target[1].value;
+
+    const email = document.getElementById("userName");
+    const password = document.getElementById("password");
 
     this.props.history.push("/inicio")
   }
@@ -29,14 +30,15 @@ class Login extends React.Component{
           <FormContainer>
             <Form onSubmit={this.handleLogin}>
               <FormGroup>
-                <Input type="text" placeholder="Nombre usuario" required/>
+                <Input type="text" id="userName" placeholder="Nombre usuario" required/>
               </FormGroup>
               <FormGroup>
-                <Input type="password" placeholder="Password" required/>
+                <Input type="password" id="password" placeholder="Contraseña" required/>
               </FormGroup>
               <Button className="btn btn-info btn-lg">Iniciar sesión</Button>
-            </Form> <br></br>
-            <Button className="btn btn-outline-info" href="/inicio">CAMBIAR HREF</Button>
+            </Form>
+            <RegisterTxt>¿No tienes cuenta?</RegisterTxt>
+            <Button className="btn btn-secondary btn-sm" href="/inicio">Registrarse</Button>
           </FormContainer>
         </MainContainer>
       </BackGroundImage>
@@ -51,10 +53,6 @@ const BackGroundImage = styled.div`
   background-size: cover;
 `;
 
-const Logo = styled.img`
-  margin-top: 30px;
-`;
-
 const MainContainer = styled.div`
   min-height: 100vh;
   min-widht: 100vh;
@@ -62,13 +60,23 @@ const MainContainer = styled.div`
   text-align: center;
 `
 
+const Logo = styled.img`
+  margin-top: 3%;
+`;
+
 const FormContainer = styled.div`
-  margin-top: 10%;
+  margin-top: 3%;
   display: flex;
   justify-content: center;
   align-content: center;
   align-items:center;
   flex-direction: column;
+`
+
+const RegisterTxt = styled.h6`
+    margin-top: 20px;
+    background-color: white;
+    color: red;
 `
 
 export default Login;
