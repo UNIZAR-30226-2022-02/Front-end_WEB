@@ -18,6 +18,7 @@ class Login extends React.Component{
 
     const email = document.getElementById("userName");
     const password = document.getElementById("password");
+    document.getElementById("errPwd").innerHTML = ""
 
     this.props.history.push("/inicio")
   }
@@ -30,6 +31,7 @@ class Login extends React.Component{
           <FormContainer>
             <Form onSubmit={this.handleLogin}>
               <FormGroup>
+              <MsgErr id="errLogin"></MsgErr>
                 <Input type="text" id="userName" placeholder="Nombre usuario" required/>
               </FormGroup>
               <FormGroup>
@@ -38,7 +40,7 @@ class Login extends React.Component{
               <Button className="btn btn-info btn-lg">Iniciar sesión</Button>
             </Form>
             <RegisterTxt>¿No tienes cuenta?</RegisterTxt>
-            <Button className="btn btn-secondary btn-sm" href="/inicio">Registrarse</Button>
+            <Button className="btn btn-secondary btn-sm" href="/registro">Registrarse</Button>
           </FormContainer>
         </MainContainer>
       </BackGroundImage>
@@ -76,6 +78,11 @@ const FormContainer = styled.div`
 const RegisterTxt = styled.h6`
     margin-top: 20px;
     background-color: white;
+    color: red;
+`
+
+const MsgErr = styled.span`
+    background-color: black;
     color: red;
 `
 

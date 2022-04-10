@@ -19,26 +19,30 @@ class Registro extends React.Component {
     handleRegister = async (event) => {
         event.preventDefault();
 
-        const userName = document.getElementById("userName");
-        const email = document.getElementById("email");
-        const password = document.getElementById("password");
-        const confirmPassword = document.getElementById("confirmPassword");
-        var msg = "";
+        const userName = event.target[0].value;
+        const email = event.target[1].value;
+        const password = event.target[2].value;
+        const confirmPassword = event.target[3].value;
 
-        password.value !== confirmPassword.value ? msg = "Las contraseñas deben coincidir" : msg = "";
-        password.setCustomValidity(msg);
+        if (password !== confirmPassword) {
+            document.getElementById("errPwd").innerHTML = "Las contraseñas no coinciden"
+        } else {
+            document.getElementById("errPwd").innerHTML = ""
 
-        try {
-            const response = await axios.post(REGISTER_URL, 
-                JSON.stringify({userName, email, password}),
-                {
-                    headers : { 'Content-Type': 'application/json' },
-                    withCredentials: true
-                }
-            );
-            // Como recibir respuesta??
-            console.log(JSON.stringify(response?.data));
-        } catch (error) { }
+            try {
+                const response = await axios.post(REGISTER_URL, 
+                    JSON.stringify({userName, email, password}),
+                    {
+                        headers : { 'Content-Type': 'application/json' },
+                        withCredentials: true
+                    }
+                );
+                // Como recibir respuesta??
+                console.log(JSON.stringify(response?.data));
+            } catch (error) { 
+                alert(error)
+            }
+        }
     }
 
     render() {
@@ -49,16 +53,19 @@ class Registro extends React.Component {
                     <FormContainer>
                         <Form onSubmit={this.handleRegister}>
                             <FormGroup>
-                                <Input type="text" id="userName" placeholder="Nombre usuario" required />
+                                <MsgErr id="errUserName"></MsgErr>
+                                <Input type="text" placeholder="Nombre usuario" required />
                             </FormGroup>
                             <FormGroup>
-                                <Input type="email" id="email" placeholder="Email" required/>
+                                <MsgErr id="errEmail"></MsgErr>
+                                <Input type="email" placeholder="Email" required/>
                             </FormGroup>
                             <FormGroup>
-                                <Input type="password" id="password" placeholder="Contraseña" required/>
+                                <MsgErr id="errPwd"></MsgErr>
+                                <Input type="password" placeholder="Contraseña" required/>
                             </FormGroup>
                             <FormGroup>
-                                <Input type="password" id="confirmPassword" placeholder="Confirmar contraseña" required/>
+                                <Input type="password" placeholder="Confirmar contraseña" required/>
                             </FormGroup>
                             <Button className="btn btn-info btn-lg">Registrarse</Button>
                         </Form>
@@ -101,6 +108,11 @@ const FormContainer = styled.div`
 const LoginTxt = styled.h6`
     margin-top: 20px;
     background-color: white;
+    color: red;
+`
+
+const MsgErr = styled.span`
+    background-color: black;
     color: red;
 `
 
