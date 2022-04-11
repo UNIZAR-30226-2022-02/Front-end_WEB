@@ -6,14 +6,16 @@ import fondo_pantalla from '../imagenes/fondo_pantalla.png';
 
 class Inicio extends React.Component {
 
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         return(
             <BackGroundImage>
                 <MainContainer>
                     <ButtonJugar className="btn btn-danger btn-lg">PARTIDA PUBLICA</ButtonJugar>
-                    <br></br>
                     <ButtonJugar className="btn btn-danger btn-lg">PARTIDA PRIVADA</ButtonJugar>
-                    <br></br> <br></br>
                     <Button>TIENDA</Button>
                 </MainContainer>
             </BackGroundImage>
@@ -37,7 +39,7 @@ const MainContainer = styled.div`
     align-items: center;
     flex-direction: column;
     text-align: center;
-`
+`;
 
 const ButtonJugar = styled.button`
     background-color: red;
@@ -45,10 +47,10 @@ const ButtonJugar = styled.button`
     border-width: 1px;
     border-style: solid;
     border-color: white;
-`
+`;
 
 const ButtonTienda = styled.button`
 
-`
+`;
 
 export default Inicio;

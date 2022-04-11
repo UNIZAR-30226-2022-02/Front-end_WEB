@@ -25,9 +25,9 @@ class Registro extends React.Component {
         const confirmPassword = event.target[3].value;
 
         if (password !== confirmPassword) {
-            document.getElementById("errPwd").innerHTML = "Las contraseñas no coinciden"
+            document.getElementById("errPwd").innerHTML = "Las contraseñas no coinciden";
         } else {
-            document.getElementById("errPwd").innerHTML = ""
+            document.getElementById("errPwd").innerHTML = "";
 
             try {
                 const response = await axios.post(REGISTER_URL, 

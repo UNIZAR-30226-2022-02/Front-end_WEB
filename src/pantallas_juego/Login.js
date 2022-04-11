@@ -16,11 +16,11 @@ class Login extends React.Component{
   handleLogin(event) {
     event.preventDefault();
 
-    const email = document.getElementById("userName");
-    const password = document.getElementById("password");
-    document.getElementById("errPwd").innerHTML = ""
+    const userName = event.target[0].value;
+    const password = event.target[1].value;
+    document.getElementById("errPwd").innerHTML = "";
 
-    this.props.history.push("/inicio")
+    this.props.history.push("/inicio");
   }
 
   render() {
@@ -32,10 +32,10 @@ class Login extends React.Component{
             <Form onSubmit={this.handleLogin}>
               <FormGroup>
               <MsgErr id="errLogin"></MsgErr>
-                <Input type="text" id="userName" placeholder="Nombre usuario" required/>
+                <Input type="text" placeholder="Nombre usuario" required/>
               </FormGroup>
               <FormGroup>
-                <Input type="password" id="password" placeholder="Contraseña" required/>
+                <Input type="password" placeholder="Contraseña" required/>
               </FormGroup>
               <Button className="btn btn-info btn-lg">Iniciar sesión</Button>
             </Form>
