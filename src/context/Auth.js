@@ -1,5 +1,4 @@
 import { createContext, useContext, useReducer } from "react";
-import jwtDecode from "jwt-decode";
 import React from 'react';
 
 const initialState = { user: null };
@@ -14,44 +13,47 @@ const AuthContext = createContext({
     logout: () => {},
 })
 
-const useAuth = () => useContext(AuthContext);
+const UseAuth = () => useContext(AuthContext);
 
-class Auth extends React.Component{
-    authReducer(state, action) {
-        switch (action.type) {
-            case LOGIN:
-                return { ...state, user: action.payload }
-            case LOGOUT:
-                return { ...state, user: null, };
-            default:
-                return state;
-        }
+function AuthReducer(state, action) {
+    switch (action.type) {
+        case LOGIN:
+            return { ...state, user: action.payload }
+        case LOGOUT:
+            return { ...state, user: null, };
+        default:
+            return state;
+        
+    }
+}
+
+function AuthProvider(props) {
+    const [state, dispatch] = useReducer(AuthReducer, initialState);
+
+    function login (userData) {
+        localStorage.setItem(token, userData.token);
+
+        dispatch({
+            type: LOGIN, payload: userData,
+        });
     }
 
-    authProvider(props) {
-        const [state, dispatch] = useReducer(authReducer, initialState);
-
-        function login (userData) {
-            localStorage.setItem(token, userData.token);
-            dispatch({
-                type: LOGIN, payload: userData,
-            });
-        }
-
-        function logout () {
+    function logout () {
+        if(localStorage.getItem(token)) {
             localStorage.removeItem(token);
-            dispatch({
-                type: LOGOUT,
-            });
         }
 
-        return (
-            <AuthContext.Provider
-                value = {{ user: state.user, login, logout }}
-                {...props}
-            />
-        );
+        dispatch({
+            type: LOGOUT,
+        });
     }
-};
 
-export { Auth, useAuth }
+    return (
+        <AuthContext.Provider
+            value = {{ user: state.user, login, logout }}
+            {...props}
+        />
+    );
+}
+
+export { AuthContext, AuthProvider, UseAuth }
