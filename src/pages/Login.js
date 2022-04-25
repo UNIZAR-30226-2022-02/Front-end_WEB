@@ -24,15 +24,11 @@ class Login extends React.Component{
 /*
     const { login } = UseAuth();
     login()
-*/
-    this.history.push('/home');
+    */
+    this.props.history.push('/home');
   }
 
   render() {
-    /*
-    const { logout } = UseAuth();
-    // Retirar token para iniciar sesion cada vez inicie app
-    logout()*/
     return (
       <BackGroundImage>
         <MainContainer>

@@ -1,27 +1,25 @@
-import * as React from 'react';
+import React, { useEffect, useState } from "react";
 import styled from 'styled-components';
 import { Button} from 'reactstrap';
 
-import fondo_pantalla from '../images/background_image.png';
+import fondo_pantalla from '../../images/background_image.png';
 
-class Home extends React.Component {
-
+class GameConfig extends React.Component {
     constructor(props) {
         super(props);
     }
 
     render() {
-        return(
+        return (
             <BackGroundImage>
                 <MainContainer>
-                    <Button className="btn btn-danger btn-lg" href="/gameConfig">PARTIDA PUBLICA</Button>
-                    <ButtonJugar className="btn btn-danger btn-lg">PARTIDA PRIVADA</ButtonJugar>
-                    <Button>TIENDA</Button>
+                    <h2>HOLA</h2>
+                    <Button className="btn btn-danger btn-lg" href="/game">COMENZAR PARTIDA</Button>
                 </MainContainer>
             </BackGroundImage>
         );
     }
-};
+}
 
 const BackGroundImage = styled.div`
     background-image: url(${fondo_pantalla});
@@ -41,16 +39,4 @@ const MainContainer = styled.div`
     text-align: center;
 `;
 
-const ButtonJugar = styled.button`
-    background-color: red;
-    color: white;
-    border-width: 1px;
-    border-style: solid;
-    border-color: white;
-`;
-
-const ButtonTienda = styled.button`
-
-`;
-
-export default Home;
+export default GameConfig;
