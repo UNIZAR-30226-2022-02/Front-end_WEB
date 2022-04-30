@@ -14,14 +14,18 @@ function Raiz() {
     return (
         <BrowserRouter>
             <AuthProvider>
-                <Header />
-                <Routes>
+            <Routes>
                     <Route path="/" element={<Login/>} />
                     <Route path="/home" element={<Home/>} />
-                    <Route path="/registro" element={<Register/>} />
+                    <Route path="/register" element={<Register/>} />
                     <Route path="/gameConfig" element={<GameConfig/>} />
                     <Route path="/game" element={<Game/>} />
                 </Routes>
+            </AuthProvider>
+            <AuthProvider>
+
+                <Header />
+
             </AuthProvider>
         </BrowserRouter>
     )
