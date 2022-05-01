@@ -1,9 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Button, Form, FormGroup, Input } from 'reactstrap';
-import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'
-import validator from 'validator'
+import { withRouter } from 'react-router';
 
 import { UseAuth } from '../context/Auth';
 import axios from '../api/Axios'
@@ -16,57 +15,45 @@ class Login extends React.Component{
     super(props);
 
     this.state = {
-      msgTitle: "",
-      msgText: "",
-      success: false,
+      userName: "",
+      password: "",
     }
 
     this.handleLogin = this.handleLogin.bind(this);
   }
 
-  mostrarAlerta () {
-    const exito = this.state.success;
+  mostrarAlerta (msgTitle, msgText, exito) {
     if (exito === true) {
         Swal.fire({
-            title: this.state.msgTitle,
-            text: this.state.msgText,
+            title: msgTitle,
+            text: msgText,
             icon: "success",
             button: "Aceptar",
         });
     } else {
         Swal.fire({
-            title: this.state.msgTitle,
-            text: this.state.msgText,
+            title: msgTitle,
+            text: msgText,
             icon: "error",
             button: "Aceptar",
         });
     }
   }
 
-  handleLogin(event) {
+  handleLogin = (event) => {
     event.preventDefault();
 
-    const userName = event.target[0].value;
-    const password = event.target[1].value;
+    const userName = this.state.userName;
+    const password = this.state.password;
 
     if (userName === "" || password === "") {
-      this.setState({
-          msgTitle: "Error al iniciar sesión",
-          msgText: "Complete todos los campos",
-          success: false,
-      })
-      this.mostrarAlerta();
+      this.mostrarAlerta("Error al iniciar sesión", "Complete todos los campos", false);
       return;
     }
 
-    this.setState({
-      msgTitle: "Usuario logueado con éxito",
-      msgText: "",
-      success: true,
-    })
-    this.mostrarAlerta();
+    this.mostrarAlerta("Usuario logueado con éxito", "", true);
 
-    this.props.history.push('/home');
+    return this.props.history.push("/home")
   }
 
   render() {
@@ -78,10 +65,10 @@ class Login extends React.Component{
             <h2>Iniciar Sesión</h2>
             <Form onSubmit={this.handleLogin}>
               <FormGroup>
-                <Input type="text" placeholder="Nombre usuario" />
+                <Input type="text" placeholder="Nombre usuario" onChange={(e) => this.setState({userName: e.target.value})}/>
               </FormGroup>
               <FormGroup>
-                <Input type="password" placeholder="Contraseña" />
+                <Input type="password" placeholder="Contraseña" onChange={(e) => this.setState({password: e.target.value})}/>
               </FormGroup>
               <Button className="btn btn-info btn-lg">Iniciar sesión</Button>
             </Form>

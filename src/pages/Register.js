@@ -4,6 +4,7 @@ import { Button, Form, FormGroup, Input } from 'reactstrap';
 import axios from '../api/Axios';
 import Swal from 'sweetalert2'
 import validator from 'validator'
+import { withRouter } from 'react-router';
 
 import fondo_pantalla from '../images/background_image.png';
 import logo_risk from '../images/logo_risk.png'
@@ -16,27 +17,27 @@ class Register extends React.Component {
         super(props);
 
         this.state = {
-            msgTitle: "",
-            msgText: "",
-            success: false,
+            userName: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
         }
 
         this.handleRegister = this.handleRegister.bind(this);
     }
 
-    mostrarAlerta () {
-        const exito = this.state.success;
+    mostrarAlerta (msgTitle, msgText, exito) {
         if (exito === true) {
             Swal.fire({
-                title: this.state.msgTitle,
-                text: this.state.msgText,
+                title: msgTitle,
+                text: msgText,
                 icon: "success",
                 button: "Aceptar",
             });
         } else {
             Swal.fire({
-                title: this.state.msgTitle,
-                text: this.state.msgText,
+                title: msgTitle,
+                text: msgText,
                 icon: "error",
                 button: "Aceptar",
             });
@@ -46,48 +47,28 @@ class Register extends React.Component {
     handleRegister = async (event) => {
         event.preventDefault();
 
-        const userName = event.target[0].value;
-        const email = event.target[1].value;
-        const password = event.target[2].value;
-        const confirmPassword = event.target[3].value;
+        const userName = this.state.userName;
+        const email = this.state.email;
+        const password = this.state.password;
+        const confirmPassword = this.state.confirmPassword;
 
         if (userName === "" || email === "" || password === "") {
-            this.setState({
-                msgTitle: "Error al registrarse",
-                msgText: "Complete todos los campos",
-                success: false,
-            })
-            this.mostrarAlerta();
+            this.mostrarAlerta("Error al registrarse", "Complete todos los campos", false);
             return;
         }
 
         if (!validator.isEmail(email)) {
-            this.setState({
-                msgTitle: "Error al registrarse",
-                msgText: "Introduzca una dirección de email válida",
-                success: false,
-            })
-            this.mostrarAlerta();
+            this.mostrarAlerta("Error al registrarse", "Introduzca una dirección de email válida", false);
             return;
         }
 
         if (password !== confirmPassword) {
-            this.setState({
-                msgTitle: "Error al registrarse",
-                msgText: "Las constraseñas no coinciden",
-                success: false,
-            })
-            this.mostrarAlerta();
+            this.mostrarAlerta("Error al registrarse", "Las constraseñas no coinciden", false);
             return;
         }
 
         try {
-            this.setState({
-                msgTitle: "Usuario registrado con éxito",
-                msgText: "",
-                success: true,
-            })
-            this.mostrarAlerta();
+            this.mostrarAlerta("Usuario registrado con éxito", "", true);
 
             const response = await axios.post(REGISTER_URL, 
                 JSON.stringify({userName, email, password}),
@@ -112,16 +93,16 @@ class Register extends React.Component {
                         <h2>Registrarse</h2>
                         <Form onSubmit={this.handleRegister}>
                             <FormGroup>
-                                <Input type="text" placeholder="Nombre usuario" />
+                                <Input type="text" placeholder="Nombre usuario" onChange={(e) => this.setState({userName: e.target.value})}/>
                             </FormGroup>
                             <FormGroup>
-                                <Input type="text" placeholder="Email" />
+                                <Input type="text" placeholder="Email" onChange={(e) => this.setState({email: e.target.value})}/>
                             </FormGroup>
                             <FormGroup>
-                                <Input type="password" placeholder="Contraseña" />
+                                <Input type="password" placeholder="Contraseña" onChange={(e) => this.setState({password: e.target.value})}/>
                             </FormGroup>
                             <FormGroup>
-                                <Input type="password" placeholder="Confirmar contraseña" />
+                                <Input type="password" placeholder="Confirmar contraseña" onChange={(e) => this.setState({confirmPassword: e.target.value})}/>
                             </FormGroup>
                             <Button className="btn btn-info btn-lg">Registrarse</Button>
                         </Form>
