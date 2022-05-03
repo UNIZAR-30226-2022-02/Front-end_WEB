@@ -9,13 +9,17 @@ import axios from '../api/Axios'
 import fondo_pantalla from '../images/background_image.png';
 import logo_risk from '../images/logo_risk.png'
 
+const REGISTER_URL = '/login'
+const https = require('https');
+
+
 class Login extends React.Component{
 
   constructor(props) {
     super(props);
 
     this.state = {
-      userName: "",
+      username: "",
       password: "",
     }
 
@@ -43,18 +47,41 @@ class Login extends React.Component{
   handleLogin = (event) => {
     event.preventDefault();
 
-    const userName = this.state.userName;
+    const username = this.state.username;
     const password = this.state.password;
 
-    if (userName === "" || password === "") {
+    if (username === "" || password === "") {
       this.mostrarAlerta("Error al iniciar sesión", "Complete todos los campos", false);
       return;
     }
 
-    this.mostrarAlerta("Usuario logueado con éxito", "", true);
+var options = {
+  hostname: 'https://serverrisk.herokuapp.com/',
+  port: 37794,
+  path: REGISTER_URL,
+  method: 'POST'
+};
 
-    return this.props.history.push("/home")
+var req = https.post(options, (res) => {
+  console.log('statusCode:', res.statusCode);
+  res.on('data', (d) => {
+    process.stdout.write(d);
+    if(d === "OK"){
+      //Pantalla menu principal
+    }
+    else{
+      this.mostrarAlerta("Error al iniciar sesión", "Usuario o contraseña incorrectos");
+    }
+      
+  });
+});
+
+
+ 
   }
+  //jesus
+  //jesus
+  
 
   render() {
     return (
@@ -65,7 +92,7 @@ class Login extends React.Component{
             <h2>Iniciar Sesión</h2>
             <Form onSubmit={this.handleLogin}>
               <FormGroup>
-                <Input type="text" placeholder="Nombre usuario" onChange={(e) => this.setState({userName: e.target.value})}/>
+                <Input type="text" placeholder="Nombre usuario" onChange={(e) => this.setState({username: e.target.value})}/>
               </FormGroup>
               <FormGroup>
                 <Input type="password" placeholder="Contraseña" onChange={(e) => this.setState({password: e.target.value})}/>
