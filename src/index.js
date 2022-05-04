@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Raiz from './root/Root'
+
+import Raiz from './root/Raiz'
+import { AuthContextProvider } from './context/Auth' 
 
 ReactDOM.render(
-    <React.StrictMode>
+    <AuthContextProvider>
         <Raiz />
-    </React.StrictMode>,
+    </AuthContextProvider>,
     document.getElementById('root')
 );

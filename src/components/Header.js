@@ -7,8 +7,8 @@ import logo_risk from '../images/logo_risk.png'
 class Header extends React.Component {
 
     render() {
-        const { isSigned } = false;
-        if (isSigned) {
+        //const { isSigned } = false;
+        if (false) {
             return(
                 <MenuBar expand="md" sticky="top" light>
                     <Inicio href = "/">

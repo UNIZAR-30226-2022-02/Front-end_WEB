@@ -2,10 +2,13 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Button, Form, FormGroup, Input } from 'reactstrap';
 import Swal from 'sweetalert2'
-import { withRouter } from 'react-router';
+import qs from 'qs';
 
-import { UseAuth } from '../context/Auth';
-import axios from '../api/Axios'
+import { useContext } from 'react';
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
+
+import AuthContext from '../context/Auth';
 import fondo_pantalla from '../images/background_image.png';
 import logo_risk from '../images/logo_risk.png'
 
@@ -15,10 +18,9 @@ class Login extends React.Component{
     super(props);
 
     this.state = {
-      userName: "",
+      username: "",
       password: "",
     }
-
     this.handleLogin = this.handleLogin.bind(this);
   }
 
@@ -28,14 +30,12 @@ class Login extends React.Component{
             title: msgTitle,
             text: msgText,
             icon: "success",
-            button: "Aceptar",
         });
     } else {
         Swal.fire({
             title: msgTitle,
             text: msgText,
             icon: "error",
-            button: "Aceptar",
         });
     }
   }
@@ -43,17 +43,31 @@ class Login extends React.Component{
   handleLogin = (event) => {
     event.preventDefault();
 
-    const userName = this.state.userName;
+    const username = this.state.username;
     const password = this.state.password;
 
-    if (userName === "" || password === "") {
+    if (username === "" || password === "") {
       this.mostrarAlerta("Error al iniciar sesión", "Complete todos los campos", false);
       return;
     }
 
-    this.mostrarAlerta("Usuario logueado con éxito", "", true);
+    /*
+    const authCtx = useContext(AuthContext);
+    const { isLoggedIn, onLogout } = useContext(AuthContext);
+    authCtx.onLogin(username, password);
+    */
 
-    return this.props.history.push("/home")
+    /*
+    const data = { 'username': username, 'password': password };
+    const options = {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      data: qs.stringify(data),
+      url: 'https://serverrisk.herokuapp.com/login',
+      port: 37794,
+    };
+    axios(options);
+*/
   }
 
   render() {
@@ -65,7 +79,7 @@ class Login extends React.Component{
             <h2>Iniciar Sesión</h2>
             <Form onSubmit={this.handleLogin}>
               <FormGroup>
-                <Input type="text" placeholder="Nombre usuario" onChange={(e) => this.setState({userName: e.target.value})}/>
+                <Input type="text" placeholder="Nombre usuario" onChange={(e) => this.setState({username: e.target.value})}/>
               </FormGroup>
               <FormGroup>
                 <Input type="password" placeholder="Contraseña" onChange={(e) => this.setState({password: e.target.value})}/>

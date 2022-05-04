@@ -1,59 +1,36 @@
+import * as React from 'react';
+import { useState } from 'react';
 import { createContext, useContext, useReducer } from "react";
-import React from 'react';
 
-const initialState = { user: null };
-const token = "jwtToken";
-const LOGIN = "LOGIN";
-const LOGOUT = "LOGOUT";
-
-// Estado inicial
-const AuthContext = createContext({
-    user: null,
-    login: userData => {},
-    logout: () => {},
+const AuthContext = React.createContext({
+    isLoggedIn: false,
+    onLogout: () => {},
+    onLogin: (userName, password) => {},
 })
 
-const UseAuth = () => useContext(AuthContext);
+export const AuthContextProvider = (props) => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-function AuthReducer(state, action) {
-    switch (action.type) {
-        case LOGIN:
-            return { ...state, user: action.payload }
-        case LOGOUT:
-            return { ...state, user: null, };
-        default:
-            return state;
-        
-    }
-}
-
-function AuthProvider(props) {
-    const [state, dispatch] = useReducer(AuthReducer, initialState);
-
-    function login (userData) {
-        localStorage.setItem(token, userData.token);
-
-        dispatch({
-            type: LOGIN, payload: userData,
-        });
+    const logoutHandler = () => {
+        localStorage.removeItem('isLoggedIn');
+        setIsLoggedIn(false);
     }
 
-    function logout () {
-        if(localStorage.getItem(token)) {
-            localStorage.removeItem(token);
-        }
-
-        dispatch({
-            type: LOGOUT,
-        });
+    const loginHandler = () => {
+        localStorage.setItem('isLoggedIn', '1');
+        setIsLoggedIn(true);
     }
 
-    return (
+    return(
         <AuthContext.Provider
-            value = {{ user: state.user, login, logout }}
-            {...props}
-        />
-    );
+            value={{
+                isLoggedIn: isLoggedIn,
+                onLogout: logoutHandler,
+                onLogin: loginHandler,
+        }}>
+            {props.children}
+        </AuthContext.Provider>
+    )
 }
 
-export { AuthContext, AuthProvider, UseAuth }
+export default AuthContext;
