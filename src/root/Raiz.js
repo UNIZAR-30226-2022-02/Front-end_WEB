@@ -1,8 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
-import { AuthProvider } from '../context/Auth'
-
 import Header from '../components/Header'
 import Login from '../pages/Login'
 import Home from '../pages/Home'
@@ -13,7 +11,7 @@ import Game from '../pages/game/Game'
 function Raiz() {
     return (
         <BrowserRouter>
-            <AuthProvider>
+            <Header />
             <Routes>
                     <Route path="/" element={<Login/>} />
                     <Route path="/home" element={<Home/>} />
@@ -21,12 +19,6 @@ function Raiz() {
                     <Route path="/gameConfig" element={<GameConfig/>} />
                     <Route path="/game" element={<Game/>} />
                 </Routes>
-            </AuthProvider>
-            <AuthProvider>
-
-                <Header />
-
-            </AuthProvider>
         </BrowserRouter>
     )
 }
