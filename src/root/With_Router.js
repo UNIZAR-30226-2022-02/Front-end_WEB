@@ -5,9 +5,9 @@ export const withRouter = (Component) => {
         const navigate = useNavigate();
         
         return (
-        <Component
-            navigate={navigate}
-            {...props}
+            <Component
+                navigate={navigate}
+                {...props}
             />
         );
     };

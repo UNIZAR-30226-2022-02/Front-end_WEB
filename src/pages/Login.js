@@ -1,22 +1,21 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { Button, Form, FormGroup, Input } from 'reactstrap';
 import Swal from 'sweetalert2'
-import qs from 'qs';
 
-import { useContext } from 'react';
+import { withRouter } from '../root/With_Router'
+import UserContext from '../context/User_Context'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
 
-import AuthContext from '../context/Auth';
 import fondo_pantalla from '../images/background_image.png';
 import logo_risk from '../images/logo_risk.png'
 
 class Login extends React.Component{
 
+    static contextType = UserContext;
+
   constructor(props) {
     super(props);
-
     this.state = {
       username: "",
       password: "",
@@ -51,11 +50,9 @@ class Login extends React.Component{
       return;
     }
 
-    /*
-    const authCtx = useContext(AuthContext);
-    const { isLoggedIn, onLogout } = useContext(AuthContext);
-    authCtx.onLogin(username, password);
-    */
+    this.context.username = username;
+    alert("Usuario logueado: " + username);
+    this.props.navigate('/home')
 
     /*
     const data = { 'username': username, 'password': password };
@@ -130,4 +127,4 @@ const RegisterTxt = styled.h6`
   color: red;
 `
 
-export default Login;
+export default withRouter(Login);
