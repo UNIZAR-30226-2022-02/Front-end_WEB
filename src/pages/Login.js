@@ -4,7 +4,7 @@ import { Button, Form, FormGroup, Input } from 'reactstrap';
 import Swal from 'sweetalert2'
 
 import { withRouter } from '../root/With_Router'
-import UserContext from '../context/User_Context'
+import UserContext from '../context/UserProvider'
 import axios from 'axios'
 
 import fondo_pantalla from '../images/background_image.png';
@@ -12,7 +12,7 @@ import logo_risk from '../images/logo_risk.png'
 
 class Login extends React.Component{
 
-    static contextType = UserContext;
+  static contextType = UserContext;
 
   constructor(props) {
     super(props);
@@ -50,8 +50,9 @@ class Login extends React.Component{
       return;
     }
 
-    this.context.username = username;
-    alert("Usuario logueado: " + username);
+    const { userLogged, passwordLogged, token, login, logout } = this.context;
+    alert(userLogged)
+
     this.props.navigate('/home')
 
     /*

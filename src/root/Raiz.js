@@ -1,7 +1,5 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-
-import { UserProvider } from '../context/User_Context'
 
 import Header from '../components/Header'
 import Login from '../pages/Login'
@@ -10,10 +8,14 @@ import Register from '../pages/Register'
 import GameConfig from '../pages/game/GameConfig'
 import Game from '../pages/game/Game'
 
-function Raiz() {
-    const user = { username: null, password: null, token: null }
-    return (
-        <UserProvider value={user}>
+class Raiz extends React.Component {
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
             <BrowserRouter>
                 <Header />
                 <Routes>
@@ -24,8 +26,8 @@ function Raiz() {
                         <Route path="/game" element={<Game/>} />
                     </Routes>
             </BrowserRouter>
-        </UserProvider>
-    )
+        )
+    }
 }
 
 export default Raiz;
