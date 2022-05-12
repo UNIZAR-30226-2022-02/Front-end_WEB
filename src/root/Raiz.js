@@ -8,26 +8,18 @@ import Register from '../pages/Register'
 import GameConfig from '../pages/game/GameConfig'
 import Game from '../pages/game/Game'
 
-class Raiz extends React.Component {
+export default function Raiz() {
 
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <BrowserRouter>
-                <Header />
-                <Routes>
-                        <Route path="/" element={<Login/>} />
-                        <Route path="/home" element={<Home/>} />
-                        <Route path="/register" element={<Register/>} />
-                        <Route path="/gameConfig" element={<GameConfig/>} />
-                        <Route path="/game" element={<Game/>} />
-                    </Routes>
-            </BrowserRouter>
-        )
-    }
+    return (
+        <BrowserRouter>
+            <Header />
+            <Routes>
+                    <Route path="/" element={<Login/>} />
+                    <Route path="/home" element={<Home/>} />
+                    <Route path="/register" element={<Register/>} />
+                    <Route path="/gameConfig" element={<GameConfig/>} />
+                    <Route path="/game" element={<Game/>} />
+                </Routes>
+        </BrowserRouter>
+    )
 }
-
-export default Raiz;

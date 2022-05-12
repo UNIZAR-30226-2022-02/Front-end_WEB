@@ -10,87 +10,63 @@ import axios from 'axios'
 import fondo_pantalla from '../images/background_image.png';
 import logo_risk from '../images/logo_risk.png'
 
-class Login extends React.Component{
+const LOGIN_URL = '/login'
 
-  static contextType = UserContext;
+export default function Login() {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: "",
-      password: "",
-    }
-    this.handleLogin = this.handleLogin.bind(this);
-  }
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-  mostrarAlerta (msgTitle, msgText, exito) {
-    if (exito === true) {
-        Swal.fire({
-            title: msgTitle,
-            text: msgText,
-            icon: "success",
-        });
-    } else {
-        Swal.fire({
-            title: msgTitle,
-            text: msgText,
-            icon: "error",
-        });
-    }
-  }
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
-  handleLogin = (event) => {
-    event.preventDefault();
-
-    const username = this.state.username;
-    const password = this.state.password;
+  const handleLogin = async() => {
 
     if (username === "" || password === "") {
-      this.mostrarAlerta("Error al iniciar sesión", "Complete todos los campos", false);
+      alert("Error al iniciar sesión", "Complete todos los campos", false);
       return;
     }
 
-    const { userLogged, passwordLogged, token, login, logout } = this.context;
-    alert(userLogged)
+    const data = qs.stringify({
+      username: username,
+      password: password,
+    })
 
-    this.props.navigate('/home')
+    axios({
+      method: 'post',
+      url: SERVER_URL + LOGIN_URL,
+      data: data,
+    }).then(res => {
+      console.log(res.data)
 
-    /*
-    const data = { 'username': username, 'password': password };
-    const options = {
-      method: 'POST',
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      data: qs.stringify(data),
-      url: 'https://serverrisk.herokuapp.com/login',
-      port: 37794,
-    };
-    axios(options);
-*/
-  }
 
-  render() {
-    return (
-      <BackGroundImage>
-        <MainContainer>
-          <Logo src={logo_risk}/>
-          <FormContainer>
-            <h2>Iniciar Sesión</h2>
-            <Form onSubmit={this.handleLogin}>
-              <FormGroup>
-                <Input type="text" placeholder="Nombre usuario" onChange={(e) => this.setState({username: e.target.value})}/>
-              </FormGroup>
-              <FormGroup>
-                <Input type="password" placeholder="Contraseña" onChange={(e) => this.setState({password: e.target.value})}/>
-              </FormGroup>
-              <Button className="btn btn-info btn-lg">Iniciar sesión</Button>
-            </Form>
-            <RegisterTxt>¿No tienes cuenta?</RegisterTxt>
-            <Button className="btn btn-secondary btn-sm" href="/register">Registrarse</Button>
-          </FormContainer>
-        </MainContainer>
-      </BackGroundImage>
-    );
-  }
+
+    }).catch(error => {
+      console.log(error)
+      alert("El usuario no ha podido ser logueado")
+    });
+
+  return (
+    <BackGroundImage>
+      <MainContainer>
+        <Logo src={logo_risk}/>
+        <FormContainer>
+          <h2>Iniciar Sesión</h2>
+          <Form onSubmit={this.handleLogin}>
+            <FormGroup>
+              <Input type="text" placeholder="Nombre usuario" onChange={(e) => this.setState({username: e.target.value})}/>
+            </FormGroup>
+            <FormGroup>
+              <Input type="password" placeholder="Contraseña" onChange={(e) => this.setState({password: e.target.value})}/>
+            </FormGroup>
+            <Button className="btn btn-info btn-lg">Iniciar sesión</Button>
+          </Form>
+          <RegisterTxt>¿No tienes cuenta?</RegisterTxt>
+          <Button className="btn btn-secondary btn-sm" href="/register">Registrarse</Button>
+        </FormContainer>
+      </MainContainer>
+    </BackGroundImage>
+  );
 };
 
 const BackGroundImage = styled.div`

@@ -1,55 +1,71 @@
-import React from 'react'
+// global context such that each component can behave according to it
+import { createContext, useContext, useReducer } from "react";
+import jwtDecode from "jwt-decode";
+import React from 'react';
 
-const UserContext = React.createContext();
+const LOGIN = "LOGIN"
+const LOGOUT = "LOGOUT"
 
-class UserProvider extends React.Component {
+const initialState = { 
+    userLogged: null,
+    token: null 
+};
 
-    state = {
-        userLogged: "HOLA",
-        passwordLogged: "",
-        token: "",
+const AuthContext = createContext({
+    userLogged: null,
+    token: null,
+    login: (username, token) => {},
+    logout: () => {},
+});
+
+function AuthReducer(state, action) {
+    switch (action.type) {
+        case LOGIN:
+            return {
+                ...state,
+                userLogged: action.username,
+                token: action.token,
+            };
+        case LOGOUT:
+            return {
+                ...state,
+                userLogged: null,
+                token: action.token,
+            };
+        default:
+            return state;
     }
+}
 
-    login = (username, password, token) => {
-        this.setState ({
-            userLogged: username,
-            passwordLogged: password,
+function AuthProvider(props) {
+    const [state, dispatch] = useReducer(AuthReducer, initialState);
+
+    function login(username, token) {
+        dispatch({
+            type: LOGIN,
+            username: username,
             token: token,
         });
     }
 
-    logout = () => {
-        this.setState ({
-            userLogged: "",
-            passwordLogged: "",
-            token: "",
-        })
+    function logout() {
+        dispatch({
+            type: LOGOUT,
+        });
     }
 
-    render() {
-        const { children } = this.props;
-        const { userLogged } = this.state.userLogged;
-        const { passwordLogged } = this.state.passwordLogged;
-        const { token } = this.state.token;
-        const { login } = this.login;
-        const { logout } = this.logout;
-
-        return(
-            <UserContext.Provider
-                value={{
-                    userLogged,
-                    passwordLogged,
-                    token,
-                    login,
-                    logout,
-                }}
-            >
-                { children }
-            </UserContext.Provider>
-        )
-    }
+    return (
+        <AuthContext.Provider
+        value={{ 
+            userLogged: state.userLogged,
+            token: state.token,
+            login, 
+            logout 
+        }}
+        {...props}
+        />
+    );
 }
 
-export default UserContext;
-
-export { UserProvider };
+const useAuth = () => useContext(AuthContext);
+export { AuthContext, AuthProvider, useAuth };

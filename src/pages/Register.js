@@ -17,7 +17,7 @@ class Register extends React.Component {
         super(props);
 
         this.state = {
-            userName: "",
+            username: "",
             email: "",
             password: "",
             confirmPassword: "",
@@ -47,12 +47,12 @@ class Register extends React.Component {
     handleRegister = async (event) => {
         event.preventDefault();
 
-        const userName = this.state.userName;
+        const username = this.state.username;
         const email = this.state.email;
         const password = this.state.password;
         const confirmPassword = this.state.confirmPassword;
 
-        if (userName === "" || email === "" || password === "") {
+        if (username === "" || email === "" || password === "") {
             this.mostrarAlerta("Error al registrarse", "Complete todos los campos", false);
             return;
         }
@@ -67,11 +67,10 @@ class Register extends React.Component {
             return;
         }
 
-        try {
-            this.mostrarAlerta("Usuario registrado con éxito", "", true);
+        this.mostrarAlerta("Usuario registrado con éxito", "", true);
 
             const response = await axios.post(REGISTER_URL, 
-                JSON.stringify({userName, email, password}),
+                JSON.stringify({username, email, password}),
                 {
                     headers : { 'Content-Type': 'application/json' },
                     withCredentials: true
@@ -79,9 +78,6 @@ class Register extends React.Component {
             );
             // Como recibir respuesta??
             console.log(JSON.stringify(response?.data));
-        } catch (error) { 
-
-        }
     }
 
     render() {
@@ -93,7 +89,7 @@ class Register extends React.Component {
                         <h2>Registrarse</h2>
                         <Form onSubmit={this.handleRegister}>
                             <FormGroup>
-                                <Input type="text" placeholder="Nombre usuario" onChange={(e) => this.setState({userName: e.target.value})}/>
+                                <Input type="text" placeholder="Nombre usuario" onChange={(e) => this.setState({username: e.target.value})}/>
                             </FormGroup>
                             <FormGroup>
                                 <Input type="text" placeholder="Email" onChange={(e) => this.setState({email: e.target.value})}/>
