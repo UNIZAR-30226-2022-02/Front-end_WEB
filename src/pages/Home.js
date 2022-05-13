@@ -4,23 +4,18 @@ import { Button} from 'reactstrap';
 
 import fondo_pantalla from '../images/background_image.png';
 
-class Home extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return(
-            <BackGroundImage>
-                <MainContainer>
-                    <Button className="btn btn-danger btn-lg" href="/gameConfig">PARTIDA PUBLICA</Button>
-                    <ButtonJugar className="btn btn-danger btn-lg">PARTIDA PRIVADA</ButtonJugar>
-                    <Button>TIENDA</Button>
-                </MainContainer>
-            </BackGroundImage>
-        );
-    }
+export default function Home() {
+    return(
+        <BackGroundImage>
+            <MainContainer>
+                <HomeContainer>
+                    <h2>Menu principal</h2>
+                    <StyledButton className="btn btn-danger btn-lg" href="/gameConfig">Nueva partida</StyledButton>
+                    <StyledButton className="btn btn-danger btn-lg">Cargar partida</StyledButton>
+                </HomeContainer>
+            </MainContainer>
+        </BackGroundImage>
+    );
 };
 
 const BackGroundImage = styled.div`
@@ -35,22 +30,19 @@ const MainContainer = styled.div`
     min-widht: 100vh;
 
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
     text-align: center;
 `;
 
-const ButtonJugar = styled.button`
-    background-color: red;
-    color: white;
-    border-width: 1px;
-    border-style: solid;
-    border-color: white;
+const HomeContainer = styled.div`
+    margin-top: 15%;
+    background-color: white;
+    width: 20%;
+    padding: 25px;
+    border-radius: 25px;
 `;
 
-const ButtonTienda = styled.button`
-
+const StyledButton = styled(Button)`
+    margin-top: 5%;
 `;
-
-export default Home;

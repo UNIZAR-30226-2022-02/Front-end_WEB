@@ -1,6 +1,5 @@
 // global context such that each component can behave according to it
 import { createContext, useContext, useReducer } from "react";
-import jwtDecode from "jwt-decode";
 import React from 'react';
 
 const LOGIN = "LOGIN"

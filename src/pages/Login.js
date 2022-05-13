@@ -1,16 +1,17 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Button, Form, FormGroup, Input } from 'reactstrap';
+import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+import qs from 'qs'
 import Swal from 'sweetalert2'
 
-import { withRouter } from '../root/With_Router'
-import UserContext from '../context/UserProvider'
-import axios from 'axios'
+import { useAuth } from '../context/UserProvider'
+import { SERVER_URL } from '../api/URLS'
+import { LOGIN_URL } from '../api/URLS'
 
 import fondo_pantalla from '../images/background_image.png';
 import logo_risk from '../images/logo_risk.png'
-
-const LOGIN_URL = '/login'
 
 export default function Login() {
 
@@ -20,50 +21,52 @@ export default function Login() {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  const handleLogin = async() => {
+  const handleLogin = async(e) => {
+    e.preventDefault()
 
     if (username === "" || password === "") {
       alert("Error al iniciar sesión", "Complete todos los campos", false);
       return;
     }
 
-    const data = qs.stringify({
-      username: username,
-      password: password,
-    })
-
-    axios({
+    const res = await axios({
       method: 'post',
       url: SERVER_URL + LOGIN_URL,
-      data: data,
-    }).then(res => {
-      console.log(res.data)
+      data: qs.stringify({ 
+        username: username,
+        password: password,
+      })
+    })
 
-
-
-    }).catch(error => {
-      console.log(error)
-      alert("El usuario no ha podido ser logueado")
-    });
+    if (res.data === "OK") {
+      login(username, "token_invalido")
+      navigate('/home')
+      alert("Welcome " + username)
+    } else if (res.data === "Usuario o contraseña incorrecta") {
+      alert("Usuario o contraseña incorrectos")
+    } else {
+      alert("Error login")
+    }
+  }
 
   return (
     <BackGroundImage>
       <MainContainer>
         <Logo src={logo_risk}/>
-        <FormContainer>
+        <LoginContainer>
           <h2>Iniciar Sesión</h2>
-          <Form onSubmit={this.handleLogin}>
+          <Form onSubmit={handleLogin}>
             <FormGroup>
-              <Input type="text" placeholder="Nombre usuario" onChange={(e) => this.setState({username: e.target.value})}/>
+              <Input type="text" placeholder="Nombre usuario" onChange={(e) => setUsername(e.target.value)}/>
             </FormGroup>
             <FormGroup>
-              <Input type="password" placeholder="Contraseña" onChange={(e) => this.setState({password: e.target.value})}/>
+              <Input type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)}/>
             </FormGroup>
             <Button className="btn btn-info btn-lg">Iniciar sesión</Button>
           </Form>
           <RegisterTxt>¿No tienes cuenta?</RegisterTxt>
           <Button className="btn btn-secondary btn-sm" href="/register">Registrarse</Button>
-        </FormContainer>
+        </LoginContainer>
       </MainContainer>
     </BackGroundImage>
   );
@@ -86,7 +89,7 @@ const MainContainer = styled.div`
   text-align: center;
 `;
 
-const FormContainer = styled.div`
+const LoginContainer = styled.div`
   margin-top: 3%;
   background-color: white;
   width: 20%;
@@ -100,8 +103,5 @@ const Logo = styled.img`
 
 const RegisterTxt = styled.h6`
   margin-top: 20px;
-  background-color: white;
   color: red;
-`
-
-export default withRouter(Login);
+`;

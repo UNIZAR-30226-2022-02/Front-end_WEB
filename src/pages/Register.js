@@ -1,114 +1,95 @@
 import * as React from 'react'
 import styled from 'styled-components';
 import { Button, Form, FormGroup, Input } from 'reactstrap';
-import axios from '../api/Axios';
+import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2'
 import validator from 'validator'
-import { withRouter } from 'react-router';
+import axios from 'axios';
+import qs from 'qs'
+
+import { useAuth } from '../context/UserProvider'
+import { SERVER_URL } from '../api/URLS'
+import { REGISTER_URL } from '../api/URLS'
 
 import fondo_pantalla from '../images/background_image.png';
 import logo_risk from '../images/logo_risk.png'
 
-const REGISTER_URL = '/registerUser'
+export default function Register() {
 
-class Register extends React.Component {
+    const navigate = useNavigate();
+    const { login } = useAuth();
 
-    constructor(props) {
-        super(props);
+    const [username, setUsername] = React.useState("");
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
+    const [confirmPassword, setConfirmPassword] = React.useState("");
 
-        this.state = {
-            username: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-        }
-
-        this.handleRegister = this.handleRegister.bind(this);
-    }
-
-    mostrarAlerta (msgTitle, msgText, exito) {
-        if (exito === true) {
-            Swal.fire({
-                title: msgTitle,
-                text: msgText,
-                icon: "success",
-                button: "Aceptar",
-            });
-        } else {
-            Swal.fire({
-                title: msgTitle,
-                text: msgText,
-                icon: "error",
-                button: "Aceptar",
-            });
-        }
-    }
-
-    handleRegister = async (event) => {
-        event.preventDefault();
-
-        const username = this.state.username;
-        const email = this.state.email;
-        const password = this.state.password;
-        const confirmPassword = this.state.confirmPassword;
+    const handleRegister = async (e) => {
+        e.preventDefault()
 
         if (username === "" || email === "" || password === "") {
-            this.mostrarAlerta("Error al registrarse", "Complete todos los campos", false);
+            alert("Error al registrarse", "Complete todos los campos", false);
             return;
         }
 
         if (!validator.isEmail(email)) {
-            this.mostrarAlerta("Error al registrarse", "Introduzca una dirección de email válida", false);
+            alert("Error al registrarse", "Introduzca una dirección de email válida", false);
             return;
         }
 
         if (password !== confirmPassword) {
-            this.mostrarAlerta("Error al registrarse", "Las constraseñas no coinciden", false);
+            alert("Error al registrarse", "Las constraseñas no coinciden", false);
             return;
         }
 
-        this.mostrarAlerta("Usuario registrado con éxito", "", true);
+        const res = await axios({
+            method: 'post',
+            url: SERVER_URL + REGISTER_URL,
+            data: qs.stringify({
+                username: username,
+                email: email,
+                password: password,
+            })
+        })
 
-            const response = await axios.post(REGISTER_URL, 
-                JSON.stringify({username, email, password}),
-                {
-                    headers : { 'Content-Type': 'application/json' },
-                    withCredentials: true
-                }
-            );
-            // Como recibir respuesta??
-            console.log(JSON.stringify(response?.data));
+        if (res.data === "Usuario registrado.") {
+            login(username, "token_invalido")
+            navigate('/home')
+            alert("Welcome " + username)
+        } else if (res.data === "Ya existe este usuario.") {
+            alert("El nombre de usuario ya esta en uso")
+        } else {
+            alert("Error registro")
+        }
     }
 
-    render() {
-        return(
-            <BackGroundImage>
-                <MainContainer>
-                    <Logo src={logo_risk}/>
-                    <FormContainer>
-                        <h2>Registrarse</h2>
-                        <Form onSubmit={this.handleRegister}>
-                            <FormGroup>
-                                <Input type="text" placeholder="Nombre usuario" onChange={(e) => this.setState({username: e.target.value})}/>
-                            </FormGroup>
-                            <FormGroup>
-                                <Input type="text" placeholder="Email" onChange={(e) => this.setState({email: e.target.value})}/>
-                            </FormGroup>
-                            <FormGroup>
-                                <Input type="password" placeholder="Contraseña" onChange={(e) => this.setState({password: e.target.value})}/>
-                            </FormGroup>
-                            <FormGroup>
-                                <Input type="password" placeholder="Confirmar contraseña" onChange={(e) => this.setState({confirmPassword: e.target.value})}/>
-                            </FormGroup>
-                            <Button className="btn btn-info btn-lg">Registrarse</Button>
-                        </Form>
-                        <LoginTxt>¿Ya tienes cuenta?</LoginTxt>
-                        <Button className="btn btn-secondary btn-sm" href="/">Iniciar sesion</Button>
-                    </FormContainer>
-                </MainContainer>
-            </BackGroundImage>
-        );
-    }
+    return(
+        <BackGroundImage>
+            <MainContainer>
+                <Logo src={logo_risk}/>
+                <FormContainer>
+                    <h2>Registrarse</h2>
+                    <Form onSubmit={handleRegister}>
+                        <FormGroup>
+                            <Input type="text" placeholder="Nombre usuario" onChange={(e) => setUsername(e.target.value)}/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Input type="text" placeholder="Email" onChange={(e) => setEmail(e.target.value)}/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Input type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)}/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Input type="password" placeholder="Confirmar contraseña" onChange={(e) => setConfirmPassword(e.target.value)}/>
+                        </FormGroup>
+                        <Button className="btn btn-info btn-lg">Registrarse</Button>
+                    </Form>
+                    <LoginTxt>¿Ya tienes cuenta?</LoginTxt>
+                    <Button className="btn btn-secondary btn-sm" href="/">Iniciar sesion</Button>
+                </FormContainer>
+            </MainContainer>
+        </BackGroundImage>
+    );
 };
 
 const BackGroundImage = styled.div`
@@ -145,5 +126,3 @@ const LoginTxt = styled.h6`
     background-color: white;
     color: red;
 `;
-
-export default Register;
