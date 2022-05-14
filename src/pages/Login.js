@@ -22,10 +22,12 @@ export default function Login() {
   const [password, setPassword] = React.useState("");
 
   const handleLogin = async(e) => {
+    e.target.disabled = true
     e.preventDefault()
 
     if (username === "" || password === "") {
       alert("Error al iniciar sesión", "Complete todos los campos", false);
+      e.target.disabled = false
       return;
     }
 
@@ -44,8 +46,10 @@ export default function Login() {
       alert("Welcome " + username)
     } else if (res.data === "Usuario o contraseña incorrecta") {
       alert("Usuario o contraseña incorrectos")
+      e.target.disabled = false
     } else {
       alert("Error login")
+      e.target.disabled = false
     }
   }
 
@@ -55,15 +59,13 @@ export default function Login() {
         <Logo src={logo_risk}/>
         <LoginContainer>
           <h2>Iniciar Sesión</h2>
-          <Form onSubmit={handleLogin}>
-            <FormGroup>
-              <Input type="text" placeholder="Nombre usuario" onChange={(e) => setUsername(e.target.value)}/>
-            </FormGroup>
-            <FormGroup>
-              <Input type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)}/>
-            </FormGroup>
-            <Button className="btn btn-info btn-lg">Iniciar sesión</Button>
-          </Form>
+          <FormGroup>
+            <Input type="text" placeholder="Nombre usuario" onChange={(e) => setUsername(e.target.value)}/>
+          </FormGroup>
+          <FormGroup>
+            <Input type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)}/>
+          </FormGroup>
+          <Button className="btn btn-info btn-lg" onClick={handleLogin}>Iniciar sesión</Button>
           <RegisterTxt>¿No tienes cuenta?</RegisterTxt>
           <Button className="btn btn-secondary btn-sm" href="/register">Registrarse</Button>
         </LoginContainer>

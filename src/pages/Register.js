@@ -25,20 +25,24 @@ export default function Register() {
     const [confirmPassword, setConfirmPassword] = React.useState("");
 
     const handleRegister = async (e) => {
+        e.target.disabled = true
         e.preventDefault()
 
         if (username === "" || email === "" || password === "") {
             alert("Error al registrarse", "Complete todos los campos", false);
+            e.target.disabled = false
             return;
         }
 
         if (!validator.isEmail(email)) {
             alert("Error al registrarse", "Introduzca una dirección de email válida", false);
+            e.target.disabled = false
             return;
         }
 
         if (password !== confirmPassword) {
             alert("Error al registrarse", "Las constraseñas no coinciden", false);
+            e.target.disabled = false
             return;
         }
 
@@ -58,8 +62,10 @@ export default function Register() {
             alert("Welcome " + username)
         } else if (res.data === "Ya existe este usuario.") {
             alert("El nombre de usuario ya esta en uso")
+            e.target.disabled = false
         } else {
             alert("Error registro")
+            e.target.disabled = false
         }
     }
 

@@ -1,16 +1,21 @@
 import React from 'react'
+import styled from 'styled-components';
+
+import Map from './Constantes_Contries_Cntinents.../Map'
+
+export default function Game() {
+
+    var map = new Map([]).getSVG();
+
+    return(
+        <GameContainer>
+            {map}
+        </GameContainer>
 
 
-class Game extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return(
-            <h1>Game</h1>
-        );
-    }
+    );
 }
 
-export default Game;
+const GameContainer = styled.div`
+
+`

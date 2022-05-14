@@ -1,21 +1,30 @@
 import React, { useEffect, useState } from "react";
 import styled from 'styled-components';
-import { Button, Form, FormGroup, Input } from 'reactstrap';
+import { useNavigate } from "react-router-dom";
+import { Button, Input } from 'reactstrap';
+import { Circles } from 'react-loader-spinner'
 
 import fondo_pantalla from '../../images/background_image.png';
 
 export default function GameConfig() {
+    const navigate = useNavigate();
 
     const [numPlayers, setNumPlayers] = React.useState(2)
-    const buscandoPartida = false
-    const partidaEncontrada = false
+    const [buscandoPartida, setBuscandoPartida] = React.useState(false)
+    const [partidaEncontrada, setPartidaEncontrada] = React.useState(false)
 
     const handleBuscarPartida = async (e) => {
-        buscandoPartida = true
-        e.target.innerHTML = "Buscando partida..."
+        e.target.disabled = true
+        setBuscandoPartida(true)
+        e.target.innerHTML = 'Buscando partida...'
+
+        setTimeout(() => {
+            alert('Partida encontrada. Redirigiendo a sala...')
+            navigate('/game')
+        }, 2000);
     }
 
-    return(
+    return (
         <BackGroundImage>
             <MainContainer>
                 {partidaEncontrada ? (
@@ -26,14 +35,14 @@ export default function GameConfig() {
                     <HomeContainer>
                         <h2>Nueva partida</h2>
                         <h6 style={{ marginTop:"5%" }}>Número de jugadores</h6>
-                        <Input type="select">
+                        <Input type="select" onChange={(e) => setNumPlayers(e.target.value)}>
                             <option value={2}>2</option>
                             <option value={3}>3</option>
                             <option value={4}>4 </option>
                             <option value={5}>5</option>
                         </Input>
                         <StyledButton className="btn btn-danger btn-lg" onClick={handleBuscarPartida}>Buscar partida</StyledButton>
-                        {buscandoPartida ? (null) : (null)}
+                        {buscandoPartida ? (<Circles ariaLabel="loading-indicator" />) : (null)}
                     </HomeContainer>
                 )}
             </MainContainer>
