@@ -9,7 +9,9 @@ export default function Game() {
 
     return(
         <GameContainer>
-            {map}
+            <MapContainer>
+                {map}
+            </MapContainer>
         </GameContainer>
 
 
@@ -17,5 +19,19 @@ export default function Game() {
 }
 
 const GameContainer = styled.div`
+    padding-top: 125px;
+    display: flex;
+    flex-direction: row;
+    background-color: #88b6da;
+    height: 130vh;
+`
 
+const MapContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    span {
+        padding-top: 5px;
+        font-size: xxx-large;
+    }
 `

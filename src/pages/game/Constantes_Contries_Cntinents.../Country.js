@@ -4,7 +4,7 @@ import invert from "invert-color";
 export default class Country{
 
     // id: nombre del pais (unico)
-    // path: fronteras del svg (forma del pais)
+    // d: // ! PARA QUE SIRVE ESTOOOOOO
     // coord: donde esta situado pais en la pantalla
     // countryState: partidas asincronas, estado del pais
     // colour e initialColour: a la hora de seleccionar pais, cambiar de color. Necesitamos guardar
@@ -13,9 +13,9 @@ export default class Country{
     // numTroops: tropas del pais
     // belongToPlayer: jugador al que pertenece pais
 
-    constructor(id, path, coord, colour, countryState = null) {
+    constructor(id, d, coord, colour, countryState = null) {
         this.id = id
-        this.path = path
+        this.d = d
         this.coord = coord
 
         // Si hay que cargar un juego, ya existiran valores para los paises (cargar estado)
@@ -24,18 +24,6 @@ export default class Country{
             this.isSelected = false
             this.numTroops = 0
             this.belongToPlayer = ""
-    }
-
-    getId() {
-        return this.id
-    }
-
-    getNumTroops() {
-        return this.id
-    }
-
-    setNumTroops() {
-
     }
 
     getSVG() {
@@ -53,7 +41,7 @@ export default class Country{
             children: this.numTroops,
         });
 
-        const path = React.createElement("path", {
+        const d = React.createElement("path", {
             id: this.id,
             d: this.d,
             stroke: invert(this.colour, true),
@@ -63,7 +51,7 @@ export default class Country{
                 fill: this.isSelected ? "#d9b51c" : this.colour,
             },
         });
-        const g = React.createElement("g", null, path, text);
+        const g = React.createElement("g", null, d, text);
 
         return g;
     }

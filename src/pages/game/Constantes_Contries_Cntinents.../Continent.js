@@ -13,7 +13,7 @@ export default class Continent {
     }
 
     getCountryStateFromContinentState (country, continentState)  {
-        
+        return null
     }
 
     getSVG() {
@@ -23,7 +23,6 @@ export default class Continent {
             ...this.countries.map((country) => country.getSVG())
         );
     }
-
 
     getContinent(continentName, continentState = null) {
         switch (continentName) {
