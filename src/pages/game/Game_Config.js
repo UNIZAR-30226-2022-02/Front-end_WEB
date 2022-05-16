@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { Button, Input } from 'reactstrap';
 import { Circles } from 'react-loader-spinner'
 
+import { AlertLoading } from '../Alert'
+
 import fondo_pantalla from '../../images/background_image.png';
 
 export default function GameConfig() {
@@ -18,8 +20,8 @@ export default function GameConfig() {
         setBuscandoPartida(true)
         e.target.innerHTML = 'Buscando partida...'
 
+        AlertLoading('Partida encontrada. Redirigiendo a sala...', 2000)
         setTimeout(() => {
-            alert('Partida encontrada. Redirigiendo a sala...')
             navigate('/game')
         }, 2000);
     }
@@ -42,7 +44,7 @@ export default function GameConfig() {
                             <option value={5}>5</option>
                         </Input>
                         <StyledButton className="btn btn-danger btn-lg" onClick={handleBuscarPartida}>Buscar partida</StyledButton>
-                        {buscandoPartida ? (<Circles ariaLabel="loading-indicator" />) : (null)}
+                        {/*buscandoPartida ? (<Circles ariaLabel="loading-indicator" />) : (null)*/}
                     </HomeContainer>
                 )}
             </MainContainer>

@@ -2,12 +2,12 @@ import * as React from 'react'
 import styled from 'styled-components';
 import { Button, Form, FormGroup, Input } from 'reactstrap';
 import { useNavigate } from "react-router-dom";
-import Swal from 'sweetalert2'
 import validator from 'validator'
 import axios from 'axios';
 import qs from 'qs'
 
 import { useAuth } from '../context/UserProvider'
+import { AlertInfo } from './Alert'
 import { SERVER_URL } from '../api/URLS'
 import { REGISTER_URL } from '../api/URLS'
 
@@ -26,22 +26,21 @@ export default function Register() {
 
     const handleRegister = async (e) => {
         e.target.disabled = true
-        e.preventDefault()
 
         if (username === "" || email === "" || password === "") {
-            alert("Error al registrarse", "Complete todos los campos", false);
+            AlertInfo("Error al registrarse", "Complete todos los campos", true);
             e.target.disabled = false
             return;
         }
 
         if (!validator.isEmail(email)) {
-            alert("Error al registrarse", "Introduzca una dirección de email válida", false);
+            AlertInfo("Error al registrarse", "Introduzca una dirección de email válida", true);
             e.target.disabled = false
             return;
         }
 
         if (password !== confirmPassword) {
-            alert("Error al registrarse", "Las constraseñas no coinciden", false);
+            AlertInfo("Error al registrarse", "Las constraseñas no coinciden", true);
             e.target.disabled = false
             return;
         }
@@ -59,12 +58,11 @@ export default function Register() {
         if (res.data === "Usuario registrado.") {
             login(username, "token_invalido")
             navigate('/home')
-            alert("Welcome " + username)
         } else if (res.data === "Ya existe este usuario.") {
-            alert("El nombre de usuario ya esta en uso")
+            AlertInfo("Error al registrarse", "El nombre de usuario ya esta en uso", true)
             e.target.disabled = false
         } else {
-            alert("Error registro")
+            AlertInfo("Servidores en mantenimiento", "Disculpe las molestias", true)
             e.target.disabled = false
         }
     }

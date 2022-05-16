@@ -4,9 +4,9 @@ import { Button, Form, FormGroup, Input } from 'reactstrap';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import qs from 'qs'
-import Swal from 'sweetalert2'
 
 import { useAuth } from '../context/UserProvider'
+import { AlertInfo } from './Alert'
 import { SERVER_URL } from '../api/URLS'
 import { LOGIN_URL } from '../api/URLS'
 
@@ -23,10 +23,9 @@ export default function Login() {
 
   const handleLogin = async(e) => {
     e.target.disabled = true
-    e.preventDefault()
 
     if (username === "" || password === "") {
-      alert("Error al iniciar sesión", "Complete todos los campos", false);
+      AlertInfo("Error al iniciar sesion", "Complete todos los campos", true);
       e.target.disabled = false
       return;
     }
@@ -43,12 +42,11 @@ export default function Login() {
     if (res.data === "OK") {
       login(username, "token_invalido")
       navigate('/home')
-      alert("Welcome " + username)
     } else if (res.data === "Usuario o contraseña incorrecta") {
-      alert("Usuario o contraseña incorrectos")
+      AlertInfo("Error al iniciar sesion", "Usuario o contraseña incorrectos", true)
       e.target.disabled = false
     } else {
-      alert("Error login")
+      AlertInfo("Servidores en mantenimiento", "Disculpe las molestias", true)
       e.target.disabled = false
     }
   }
