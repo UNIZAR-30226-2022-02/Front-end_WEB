@@ -1,11 +1,16 @@
 import React from 'react'
 import styled from 'styled-components';
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Map from './Constantes_Contries_Cntinents.../Map'
 
 export default function Game() {
 
+    const location = useLocation()
     var map = new Map([]).getSVG();
+
+    const [players, setPlayers] = React.useState(location.state.initPlayers)
+    alert(players)
 
     return(
         <GameContainer>
@@ -13,8 +18,6 @@ export default function Game() {
                 {map}
             </MapContainer>
         </GameContainer>
-
-
     );
 }
 
@@ -22,7 +25,7 @@ const GameContainer = styled.div`
     padding-top: 125px;
     display: flex;
     flex-direction: row;
-    background-color: #88b6da;
+    background-color #88b6da;
     height: 130vh;
 `
 
