@@ -1,33 +1,43 @@
 import * as React from 'react'
 import styled from 'styled-components';
-import { Link, useLocation } from "react-router-dom";
-import { Menu, Search, Grid, Segment } from 'semantic-ui-react'
+import { useNavigate } from "react-router-dom";
+import { Container, Navbar, NavLink } from 'react-bootstrap' 
 
-import { useAuth } from '../context/UserProvider'
+import { getUsername, logout } from '../context/UserProvider'
 
 import logo_risk from '../images/logo_risk.png'
 
 export default function Header() {
 
-    const { userLogged, logout } = useAuth();
-    const Head = userLogged ? (
-        <Menu pointing secondary size="massive" color="teal">
+  const navigate = useNavigate();
+  const username = getUsername();
 
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+  }
 
-      <Menu.Menu position="right">
-        <Menu.Item
-          name="Iniciar Sesión"
-          as={Link}
-          to="/"
-        />
-        <Menu.Item
-          name="Registrarme"
-          as={Link}
-          to="/register"
-        />
-      </Menu.Menu>
-    </Menu>
-    ) : (null)
-
-    return Head;
+  console.log("Header: " + username)
+  return username ? (
+      <StyledNavbar>
+        <Container>
+          <StyledNavbarBrand href='/home'><Logo src={logo_risk}/></StyledNavbarBrand>
+          <StyledNavbarBrand href='/home'>Inicio</StyledNavbarBrand>
+          <StyledNavbarBrand href="/tienda">Tienda</StyledNavbarBrand>
+          <StyledNavbarBrand href="#" onClick={handleLogout}>Cerrar sesión {'\t'}(logued as {username})</StyledNavbarBrand>
+        </Container>
+      </StyledNavbar>
+  ) : (null)
 }
+
+const StyledNavbar = styled(Navbar)`
+  background-color: blue;
+`
+
+const StyledNavbarBrand = styled(Navbar.Brand)`
+
+`
+
+const Logo = styled.img`
+  height: 5vh;
+`

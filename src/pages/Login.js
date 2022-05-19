@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, Form, FormGroup, Input } from 'reactstrap';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import qs from 'qs'
 
-import { useAuth } from '../context/UserProvider'
-import { AlertInfo } from './Alert'
+import { login } from '../context/UserProvider'
+import { AlertInfo } from '../util/MyAlerts'
 import { SERVER_URL } from '../api/URLS'
 import { LOGIN_URL } from '../api/URLS'
 
@@ -16,16 +16,15 @@ import logo_risk from '../images/logo_risk.png'
 export default function Login() {
 
   const navigate = useNavigate();
-  const { login } = useAuth();
 
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
 
   const handleLogin = async(e) => {
     e.target.disabled = true
 
-    if (username === "" || password === "") {
-      AlertInfo("Error al iniciar sesion", "Complete todos los campos", true);
+    if (username === '' || password === '') {
+      AlertInfo('Error al iniciar sesion', 'Complete todos los campos', true);
       e.target.disabled = false
       return;
     }
@@ -39,14 +38,15 @@ export default function Login() {
       })
     })
 
-    if (res.data === "OK") {
-      login(username, "token_invalido")
+    if (res.data === 'OK') {
+      login(username, 'token_valido')
+      console.log("Login: " + username + "token_invalido")
       navigate('/home')
-    } else if (res.data === "Usuario o contraseña incorrecta") {
-      AlertInfo("Error al iniciar sesion", "Usuario o contraseña incorrectos", true)
+    } else if (res.data === 'Usuario o contraseña incorrecta') {
+      AlertInfo('Error al iniciar sesion', 'Usuario o contraseña incorrectos', true)
       e.target.disabled = false
     } else {
-      AlertInfo("Servidores en mantenimiento", "Disculpe las molestias", true)
+      AlertInfo('Servidores en mantenimiento', 'Disculpe las molestias', true)
       e.target.disabled = false
     }
   }
@@ -58,14 +58,14 @@ export default function Login() {
         <LoginContainer>
           <h2>Iniciar Sesión</h2>
           <FormGroup>
-            <Input type="text" placeholder="Nombre usuario" onChange={(e) => setUsername(e.target.value)}/>
+            <Input type='text' placeholder='Nombre usuario' onChange={(e) => setUsername(e.target.value)}/>
           </FormGroup>
           <FormGroup>
-            <Input type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)}/>
+            <Input type='password' placeholder='Contraseña' onChange={(e) => setPassword(e.target.value)}/>
           </FormGroup>
-          <Button className="btn btn-info btn-lg" onClick={handleLogin}>Iniciar sesión</Button>
+          <Button className='btn btn-info btn-lg' onClick={handleLogin}>Iniciar sesión</Button>
           <RegisterTxt>¿No tienes cuenta?</RegisterTxt>
-          <Button className="btn btn-secondary btn-sm" href="/register">Registrarse</Button>
+          <Button className='btn btn-secondary btn-sm' href='/register'>Registrarse</Button>
         </LoginContainer>
       </MainContainer>
     </BackGroundImage>

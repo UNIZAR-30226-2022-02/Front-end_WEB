@@ -10,13 +10,18 @@ export default function Game() {
     var map = new Map([]).getSVG();
 
     const [players, setPlayers] = React.useState(location.state.initPlayers)
-    alert(players)
 
     return(
         <GameContainer>
+            <CardsContainer>
+
+            </CardsContainer>
             <MapContainer>
                 {map}
             </MapContainer>
+            <PlayersContainer>
+                {players}
+            </PlayersContainer>
         </GameContainer>
     );
 }
@@ -26,15 +31,20 @@ const GameContainer = styled.div`
     display: flex;
     flex-direction: row;
     background-color #88b6da;
-    height: 130vh;
+    height: 100vh;
+`
+
+const CardsContainer = styled.div`
+
 `
 
 const MapContainer = styled.div`
+
+`
+
+const PlayersContainer = styled.div`
     display: flex;
-    flex-direction: column;
-    text-align: center;
-    span {
-        padding-top: 5px;
-        font-size: xxx-large;
-    }
+    flex-direction: row;
+    justify-content: center;
+    padding-bottom: 18px;
 `

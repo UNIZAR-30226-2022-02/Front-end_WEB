@@ -26,8 +26,8 @@ const BackGroundImage = styled.div`
 `;
 
 const MainContainer = styled.div`
-    min-height: 100vh;
-    min-widht: 100vh;
+    height: 90vh;
+    widht: 100vh;
 
     display: flex;
     flex-direction: column;

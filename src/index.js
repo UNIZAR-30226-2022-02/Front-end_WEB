@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Raiz from './root/Raiz'
+import Root from './root/Root'
 
 ReactDOM.render(
-    <Raiz />,
+    <Root />,
     document.getElementById('root')
 );

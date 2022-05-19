@@ -6,8 +6,8 @@ import validator from 'validator'
 import axios from 'axios';
 import qs from 'qs'
 
-import { useAuth } from '../context/UserProvider'
-import { AlertInfo } from './Alert'
+import { login } from '../context/UserProvider'
+import { AlertInfo } from '../util/MyAlerts'
 import { SERVER_URL } from '../api/URLS'
 import { REGISTER_URL } from '../api/URLS'
 
@@ -17,7 +17,6 @@ import logo_risk from '../images/logo_risk.png'
 export default function Register() {
 
     const navigate = useNavigate();
-    const { login } = useAuth();
 
     const [username, setUsername] = React.useState("");
     const [email, setEmail] = React.useState("");
