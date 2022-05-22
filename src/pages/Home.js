@@ -4,18 +4,25 @@ import { Button} from 'reactstrap';
 
 import fondo_pantalla from '../images/background_image.png';
 
-export default function Home() {
-    return(
-        <BackGroundImage>
-            <MainContainer>
-                <HomeContainer>
-                    <h2>Menu principal</h2>
-                    <StyledButton className="btn btn-danger btn-lg" href="/gameConfig">Nueva partida</StyledButton>
-                    <StyledButton className="btn btn-danger btn-lg">Cargar partida</StyledButton>
-                </HomeContainer>
-            </MainContainer>
-        </BackGroundImage>
-    );
+export default class Home extends React.Component {
+
+    constructor(props) {
+        super(props)
+    }
+
+    render() {
+        return(
+            <BackGroundImage>
+                <MainContainer>
+                    <HomeContainer>
+                        <h2>Menu principal</h2>
+                        <StyledButton className="btn btn-danger btn-lg" href="/gameConfig">Nueva partida</StyledButton>
+                        <StyledButton className="btn btn-danger btn-lg">Cargar partida</StyledButton>
+                    </HomeContainer>
+                </MainContainer>
+            </BackGroundImage>
+        );
+    }
 };
 
 const BackGroundImage = styled.div`
@@ -23,12 +30,11 @@ const BackGroundImage = styled.div`
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    height: 100vh;
+    widht: 100vh;
 `;
 
 const MainContainer = styled.div`
-    height: 90vh;
-    widht: 100vh;
-
     display: flex;
     flex-direction: column;
     align-items: center;

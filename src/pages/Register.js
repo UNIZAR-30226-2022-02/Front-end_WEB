@@ -1,7 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components';
 import { Button, Form, FormGroup, Input } from 'reactstrap';
-import { useNavigate } from "react-router-dom";
 import validator from 'validator'
 import axios from 'axios';
 import qs from 'qs'
@@ -14,17 +13,25 @@ import { REGISTER_URL } from '../api/URLS'
 import fondo_pantalla from '../images/background_image.png';
 import logo_risk from '../images/logo_risk.png'
 
-export default function Register() {
+export default class Register extends React.Component {
 
-    const navigate = useNavigate();
+    constructor(props) {
+        super(props)
 
-    const [username, setUsername] = React.useState("");
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
-    const [confirmPassword, setConfirmPassword] = React.useState("");
+        this.state = {
+            username: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+        }
 
-    const handleRegister = async (e) => {
+        this.handleRegister = this.handleRegister.bind(this)
+    }
+
+    handleRegister = async (e) => {
         e.target.disabled = true
+
+        const { username, email, password, confirmPassword } = this.state
 
         if (username === "" || email === "" || password === "") {
             AlertInfo("Error al registrarse", "Complete todos los campos", true);
@@ -55,8 +62,8 @@ export default function Register() {
         })
 
         if (res.data === "Usuario registrado.") {
-            login(username, "token_invalido")
-            navigate('/home')
+            login(this.username, "token_invalido")
+            this.props.history.push('/home')
         } else if (res.data === "Ya existe este usuario.") {
             AlertInfo("Error al registrarse", "El nombre de usuario ya esta en uso", true)
             e.target.disabled = false
@@ -66,33 +73,33 @@ export default function Register() {
         }
     }
 
-    return(
-        <BackGroundImage>
-            <MainContainer>
-                <Logo src={logo_risk}/>
-                <FormContainer>
-                    <h2>Registrarse</h2>
-                    <Form onSubmit={handleRegister}>
+    render () {
+        return(
+            <BackGroundImage>
+                <MainContainer>
+                    <Logo src={logo_risk}/>
+                    <FormContainer>
+                        <h2>Registrarse</h2>
                         <FormGroup>
-                            <Input type="text" placeholder="Nombre usuario" onChange={(e) => setUsername(e.target.value)}/>
+                            <Input type="text" placeholder="Nombre usuario" onChange={(e) => this.setState({ username: e.target.value })}/>
                         </FormGroup>
                         <FormGroup>
-                            <Input type="text" placeholder="Email" onChange={(e) => setEmail(e.target.value)}/>
+                            <Input type="text" placeholder="Email" onChange={(e) => this.setState({ email: e.target.value })}/>
                         </FormGroup>
                         <FormGroup>
-                            <Input type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)}/>
+                            <Input type="password" placeholder="Contraseña" onChange={(e) => this.setState({ password: e.target.value })}/>
                         </FormGroup>
                         <FormGroup>
-                            <Input type="password" placeholder="Confirmar contraseña" onChange={(e) => setConfirmPassword(e.target.value)}/>
+                            <Input type="password" placeholder="Confirmar contraseña" onChange={(e) => this.setState({ confirmPassword: e.target.value })}/>
                         </FormGroup>
-                        <Button className="btn btn-info btn-lg">Registrarse</Button>
-                    </Form>
-                    <LoginTxt>¿Ya tienes cuenta?</LoginTxt>
-                    <Button className="btn btn-secondary btn-sm" href="/">Iniciar sesion</Button>
-                </FormContainer>
-            </MainContainer>
-        </BackGroundImage>
-    );
+                        <Button className="btn btn-info btn-lg" onClick={this.handleRegister}>Registrarse</Button>
+                        <LoginTxt>¿Ya tienes cuenta?</LoginTxt>
+                        <Button className="btn btn-secondary btn-sm" href="/">Iniciar sesion</Button>
+                    </FormContainer>
+                </MainContainer>
+            </BackGroundImage>
+        );
+    }
 };
 
 const BackGroundImage = styled.div`
@@ -100,12 +107,11 @@ const BackGroundImage = styled.div`
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    height: 100vh;
+    widht: 100vh;
 `;
 
 const MainContainer = styled.div`
-    min-height: 100vh;
-    min-widht: 100vh;
-
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -1,6 +1,9 @@
-export default function Tienda() {
+import React from 'react'
+export default class Tienda extends React.Component {
 
-    return(
-        <h1>En mantenimiento...</h1>
-    )
+    render() {
+        return(
+            <h1>En mantenimiento...</h1>
+        )
+    }
 }

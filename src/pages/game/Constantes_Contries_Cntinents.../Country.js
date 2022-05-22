@@ -17,7 +17,6 @@ export default class Country{
         this.id = id
         this.d = d
         this.coord = coord
-
         // Si hay que cargar un juego, ya existiran valores para los paises (cargar estado)
             this.colour = colour
             this.initialColour = colour
@@ -25,7 +24,44 @@ export default class Country{
             this.numTroops = 0
             this.belongToPlayer = ""
     }
+    getId() {
+        return this.id;
+    }
+    getnumTroops() {
+        return this.numTroops;
+    }
+    setnumTroops(numTroops) {
+        this.numTroops = numTroops;
+    }
 
+    getOccupyingPlayerId() {
+        return this.occupybelongToPlayeringPlayerId;
+    }
+    setOccupyingPlayer(player) {
+        this.occupybelongToPlayeringPlayerId = player.id;
+        this.setColor(player.color);
+    }
+    getColor() {
+        return this.color;
+    }
+    setColor(color) {
+        this.color = color;
+    }
+    verifyTroops() {
+        if (this.numberOfTroops < 0) {
+            this.numberOfTroops = 0;
+        }
+    }
+    setDefaultColor() {
+        this.setColor(this.defaultColor);
+    }
+
+    incrementDecerementTroops(numOfTroops) {
+        this.numberOfTroops += numOfTroops;
+        if (numOfTroops < 0) {
+            this.numberOfTroops = 0;
+        }
+    }
     getSVG() {
         const text = React.createElement("text", {
             x: this.coord[0],
@@ -55,4 +91,6 @@ export default class Country{
 
         return g;
     }
+    
+
 }
