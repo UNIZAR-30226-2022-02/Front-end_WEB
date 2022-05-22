@@ -4,26 +4,31 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import Map from './Constantes_Contries_Cntinents.../Map'
 
-export default function Game() {
+export default class Game extends React.Component {
 
+    constructor(props) {
+
+    }
+/*
     const location = useLocation()
     var map = new Map([]).getSVG();
 
     const [players, setPlayers] = React.useState(location.state.initPlayers)
+*/
+    render() {
+        return(
+            <GameContainer>
+                <CardsContainer>
 
-    return(
-        <GameContainer>
-            <CardsContainer>
-
-            </CardsContainer>
-            <MapContainer>
-                {map}
-            </MapContainer>
-            <PlayersContainer>
-                {players}
-            </PlayersContainer>
-        </GameContainer>
-    );
+                </CardsContainer>
+                <MapContainer>
+                    
+                </MapContainer>
+                <PlayersContainer>
+                </PlayersContainer>
+            </GameContainer>
+        );
+    }
 }
 
 const GameContainer = styled.div`
