@@ -147,6 +147,8 @@ const BackGroundImage = styled.div`
 `;
 
 const MainContainer = styled.div`
+    min-height: 100vh;
+    min-widht: 100vh;
     display: flex;
     height: 100vh;
     widht: 100vh;
@@ -163,5 +165,4 @@ const HomeContainer = styled.div`
     width: 20%;
     padding: 25px;
     border-radius: 25px;
-`;
-
+`

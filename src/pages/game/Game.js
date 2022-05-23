@@ -138,7 +138,11 @@ export default class Game extends React.Component {
         const { countryIdFrom } = this.state;
 
     }
-
+/*
+    const location = useLocation()
+    var map = new Map([]).getSVG();
+    const [players, setPlayers] = React.useState(location.state.initPlayers)
+*/
     render() {
         const { countryIdFrom } = this.state
         return(

@@ -33,7 +33,6 @@ const StyledNavbar = styled(Navbar)`
 `
 
 const StyledNavbarBrand = styled(Navbar.Brand)`
-
 `
 
 const Logo = styled.img`
