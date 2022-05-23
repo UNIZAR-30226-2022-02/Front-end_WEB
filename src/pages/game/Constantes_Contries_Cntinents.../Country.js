@@ -27,6 +27,12 @@ export default class Country{
     getId() {
         return this.id;
     }
+    getBelongToPlayer() {
+        return this.belongToPlayer
+    }
+    setBelongToPlayer(newBelongToPlayer) {
+        this.belongToPlayer = newBelongToPlayer
+    }
     getnumTroops() {
         return this.numTroops;
     }

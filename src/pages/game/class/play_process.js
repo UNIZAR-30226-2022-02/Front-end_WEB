@@ -5,15 +5,13 @@ class Partida {
     faseInicial
     nVecesCartasUsadas
     turnoActual
-    
     // Jugadores eliminados, gestion partida
     nJugadoresEliminados
     jugadoresEliminados
-
     procesarJugada(j){
         switch(j){
-            case j.GetType() == new JugadaFinTurno().GetType():
-                crearPartida((JugadaCrearPartida) j);
+            case j.GetType() == new JugadaCrearPartida().GetType():
+                new JugadaCrearPartida().crearPartida();
                 break;
             case j.GetType() == new JugadaFinTurno().GetType():
                 finTurno((JugadaFinTurno) j);

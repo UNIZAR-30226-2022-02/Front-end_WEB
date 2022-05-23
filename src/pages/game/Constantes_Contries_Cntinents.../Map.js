@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import Continent from './Continent'
 import Map_Paths from './Map_Paths';
+import { NEIGHBOURS } from './Constants'
 
 // Si hay que cargar un juego, ya existiran valores para el mapa (cargar estado)
 export default class Map {
@@ -18,85 +19,16 @@ export default class Map {
             new Continent("EUROPE")
         ]
     }
-    //Devuelve la pareja de ataque y defensa
-    getAttakingAndDefendingCountry(selectedCountryId, countryToAttackId) {
-        let attackingCountry = null;
-        let defendingCountry = null;
-        for (let i = 0; i < this.countries.length; i++) {
-            if (this.countries[i].getId() === selectedCountryId) {
-                attackingCountry = this.countries[i];
-            }
-            if (this.countries[i].getId() === countryToAttackId) {
-                defendingCountry = this.countries[i];
-            }
-        }
-        return [attackingCountry, defendingCountry];
-    }
-    // Set attacking and defending player
-    getAttackingAndDefendingPlayer(attackingCountry, defendingCountry) {
-        
-        let attackingPlayer, defendingPlayer = null;
-        for (let i = 0; i < this.players.length; i++) {
-            if (attackingCountry.getOccupyingPlayerId() === this.players[i].getId()) {
-                attackingPlayer = this.players[i];
-            }
-            if (defendingCountry.getOccupyingPlayerId() === this.players[i].getId()) {
-                defendingPlayer = this.players[i];
-            }
-        }
-        return [attackingPlayer, defendingPlayer];
-    }
-    //Nos aseguramos que el mapa esta completo
-    allCountriesHaveOneTroop() {
-        let isGood;
-        for (let i = 0; i < this.countries.length; i++) {
-            if (this.countries[i].getNumberOfTroops() >= 1) {
-                isGood = true;
-            } else {
-                isGood = false;
-                break;
-            }
-        }
-        //Habria que cambiar el estado de la partida a modo de jugar
-        return isGood;
-    }
-    doPlayersHaveTroops() {
-        let playerHasTroops = true;
-        for (let i = 0; i < this.players.length; i++) {
-            if (this.players[i].nTropasSinColocar() === 0) {
-                playerHasTroops = false;
-            } else {
-                playerHasTroops = true;
-            }
-        }
-        return playerHasTroops;
-    }
 
-    //valida que se pueda realizar el ataque
-    isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith, alert) {
-        // 3 tropas de ataque max
-        if (numOfTroopsToAttackWith > 3) {
-            alert.error("No se puede atacar con mas de 3 tropas");
-            return false;
-        }
-        if (attackingCountry.getNumberOfTroops() < 2) {
-            alert.error("Un pais con menos de 2 tropas no puede atacar");
-            return false;
-        }
-        if (numOfTroopsToAttackWith >= attackingCountry.getNumberOfTroops()) {
-            alert.error("Estas atacando sin dejar una tropa al menos en el pais");
-            return false;
-        }
-        if (numOfTroopsToDefendWith !=2) {
-            alert.error("Solo se puede defender con 2 tropas exactamente");
-            return false;
-        }
-        if (numOfTroopsToDefendWith > defendingCountry.getNumberOfTroops()) {
-            alert.error("Necesitas mas tropas para defender");
-            return false;
-        }
-        return true;
+    areNeighbours(countryFrom, countryTo) {
+        const neighboursOfCountryFrom = NEIGHBOURS[countryFrom.getId()].countries;
+        const countryIdTo = countryTo.getId();
+        return neighboursOfCountryFrom.findIndex(neighbour => neighbour === countryIdTo) !== -1;
     }
+ 
+  
+
+   
     attackTerritory(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith, numOfTroopsToDefendWith, alert) {
         //Hay que ver si consideramos que se defiende siempre con dos o se puede defender con 1
         //Parte para obtener nombre del pais a traves de un id
@@ -177,26 +109,7 @@ export default class Map {
         return neighboursOfAttackingCountry.findIndex(neighbour => neighbour === defendingCountryId) !== -1;
     }*/
 
-    moverTropas(departingCountryId, destinationCountryId, numOfTroops, alert) {
-        const [departingCountry, destinationCountry] = this.getAttakingAndDefendingCountry(departingCountryId, destinationCountryId);
-        if (numOfTroops <= 0) {
-            alert.error("Tienes que mover al menos 1 tropa");
-            return false;
-        }
-
-        if (departingCountry.getOccupyingPlayerId() !== destinationCountry.getOccupyingPlayerId()) {
-            alert.error("No puedes mover tropas a un territorio que no te pertenece");
-            return false;
-        }
-
-        if (departingCountry.getNumberOfTroops() <= numOfTroops) {
-            alert.error("No tienes tropas suficientes para mover");
-            return false;
-        }
-        departingCountry.setNumberOfTroops(departingCountry.getNumberOfTroops() - parseInt(numOfTroops));
-        destinationCountry.setNumberOfTroops(destinationCountry.getNumberOfTroops() + parseInt(numOfTroops));
-        return true;
-    }
+  
 
     getSVG() {
         const svg = React.createElement("svg", {

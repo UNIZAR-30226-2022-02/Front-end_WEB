@@ -64,32 +64,31 @@ class Jugador
         this.nCartas--;
     }
     
-//para la parte de visualizacion habra que retocar esto
     getSVG() {
         const PlayerName = React.createElement(Name, {
-            children: this.name,
-        });
+            children: this.username,
+        })
         const PlayerTroops = React.createElement(Reserved, {
-            children: `Reserve: ${this.remainingTroops}`,
-        });
+            children: `Troops: ${this.troopsToDeploy}`,
+        })
         const ColorText = React.createElement(Reserved, {
-            children: "Color:",
-        });
+            children: 'Color:',
+        })
         const ColorIndicator = React.createElement(ColorBox, {
-            style: { backgroundColor: this.color },
-        });
+            style: { backgroundColor: this.colour },
+        })
         const ColorContainerElement = React.createElement(
             ColorContainer,
             null,
             ColorText,
             ColorIndicator
-        );
+        )
 
         return React.createElement(
             CardBorder,
             {
                 style: {
-                    backgroundColor: `${this.isPlayerTurn ? "#d9b51c" : "white"
+                    backgroundColor: `${this.isPlayerTurn ? '#d9b51c' : 'white'
                         }`,
                 },
                 key: this.id,
@@ -97,49 +96,42 @@ class Jugador
             PlayerName,
             PlayerTroops,
             ColorContainerElement
-        );
+        )
     }
 }
-const ColorContainer = styled.div`
-    display: flex;
-    width: fit-content;
-`;
-const ColorLabel = styled.h6``;
-const ColorBox = styled.div`
-    height: 10px;
-    width: 10px;
-    margin-top: 5px;
-    margin-left: 23px;
-`;
-const CardBorder = styled.div`
-    width: fit-content;
-    height: fit-content;
-    padding: 10px;
-    border-radius: 15px;
-    background-color: white;
-    justify-content: center;
-    margin-right: 20px;
-    margin-left: 20px;
-`;
-const nombre = styled.h5`
-    font-size: 140%;
-    text-align: center;
-    margin: 0 0 10% 0;
-    @media (${BREAKPOINTS.sm}) {
-        font-size: 100%;
-        margin: 0 0 2px 0;
-        text-align: center;
-    }
-`;
-const tropas = styled.h6`
-    font-size: 100%;
-    text-align: center;
-    color: #606060;
-    @media (${BREAKPOINTS.sm}) {
-        font-size: 80%;
-        text-align: center;
-    }
-`;
-export default Jugador;
 
- 
+const ColorContainer = styled.div`
+    display: flex
+    width: fit-content
+`
+
+const ColorLabel = styled.h6``
+
+const ColorBox = styled.div`
+    height: 10px
+    width: 10px
+    margin-top: 5px
+    margin-left: 23px
+`
+
+const CardBorder = styled.div`
+    width: fit-content
+    height: fit-content
+    padding: 10px
+    border-radius: 15px
+    justify-content: center
+    margin-right: 20px
+    margin-left: 20px
+`
+
+const Name = styled.h5`
+    font-size: 140%
+    text-align: center
+    margin: 0 0 10% 0
+`
+
+const Reserved = styled.h6`
+    font-size: 100%
+    text-align: center
+    color: #606060
+`
