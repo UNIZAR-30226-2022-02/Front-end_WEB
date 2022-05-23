@@ -45,6 +45,8 @@
     "rsuite": "^5.1.0",
     "save-dev": "0.0.1-security",
     "semantic-ui-react": "^2.1.2",
+    "socket.io": "^1.4.5",
+    "socket.io-client": "^1.4.5",
     "styled-components": "^5.3.5",
     "sweetalert-react": "^0.4.11",
     "sweetalert2": "^11.4.10",

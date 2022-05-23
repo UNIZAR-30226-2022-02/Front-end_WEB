@@ -12,6 +12,11 @@ import { LOGIN_URL } from '../api/URLS'
 import fondo_pantalla from '../images/background_image.png';
 import logo_risk from '../images/logo_risk.png'
 
+//import React, { useState, useEffect } from "react";
+import socketIOClient from "socket.io-client";
+const ENDPOINT = "https://serverrisk.herokuapp.com";
+
+
 export default class Login extends React.Component {
 
   constructor (props) {
@@ -27,6 +32,13 @@ export default class Login extends React.Component {
   handleLogin = async(e) => {
     e.preventDefault()
     e.target.disabled = true
+
+    const socket = socketIOClient(ENDPOINT);
+    socket.on("FromAPI", data => {
+       // setResponse(data);
+      });
+      //recibir mensajes socket.on y enviar socket.emit
+      //socket.to(nombre_rooom).emit(mensaje)
 
     const { username, password } = this.state
 

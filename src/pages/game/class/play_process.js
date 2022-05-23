@@ -1,3 +1,5 @@
+import React from "react";
+import 
 class Partida {
     jugadores
     territorios
