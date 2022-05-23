@@ -4,7 +4,7 @@ import invert from "invert-color";
 export default class Country{
 
     // id: nombre del pais (unico)
-    // d: // ! PARA QUE SIRVE ESTOOOOOO
+    // d: contorno del pais
     // coord: donde esta situado pais en la pantalla
     // countryState: partidas asincronas, estado del pais
     // colour e initialColour: a la hora de seleccionar pais, cambiar de color. Necesitamos guardar
@@ -18,12 +18,57 @@ export default class Country{
         this.d = d
         this.coord = coord
 
-        // Si hay que cargar un juego, ya existiran valores para los paises (cargar estado)
-            this.colour = colour
-            this.initialColour = colour
-            this.isSelected = false
-            this.numTroops = 0
-            this.belongToPlayer = ""
+        this.colour = colour
+        this.initialColour = colour
+
+        this.numTroops = 0
+        this.belongToPlayer = ''
+
+        this.isSelected = false
+    }
+
+    getId() {
+        return this.id
+    }
+
+    setId(newId) {
+        this.id = newId
+    }
+
+    getColour() {
+        return this.colour
+    }
+
+    setColour(newColour) {
+        this.colour = newColour
+    }
+
+    setInitialColour() {
+        this.setColour(this.initialColour)
+    }
+
+    getNumTroops() {
+        return this.numTroops
+    }
+
+    setNumTroops(newNumTroops) {
+        this.numTroops = newNumTroops
+    }
+
+    getBelongToPlayer() {
+        return this.belongToPlayer
+    }
+
+    setBelongToPlayer(newBelongToPlayer) {
+        this.belongToPlayer = newBelongToPlayer
+    }
+
+    getIsSelected() {
+        return this.isSelected
+    }
+
+    setIsSelected(newIsSelected) {
+        this.isSelected = newIsSelected
     }
 
     getSVG() {

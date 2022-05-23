@@ -4,12 +4,42 @@ import Country from "./Country";
 export default class Continent {
 
     constructor(continentName, continentState = null) {
-        this.continentName = continentName;
-        continentState ? null (
-            this.countries = this.getContinent(continentName)
-        ) : (
-            this.countries = this.getContinent(continentName, continentState)
-        )
+        this.continentName = continentName
+        this.belongToPlayer = ''
+        this.countries = this.getContinent(continentName)
+    }
+
+    getContries() {
+        return this.countries
+    }
+
+    getCountryById(countryId) {
+        var returnCountry = this.countries.filter((country) => country.getId() === countryId)
+        return returnCountry
+    }
+
+    getContinentName() {
+        return this.continentName
+    }
+
+    isPlayerOwner(playerId) {
+        for (var i = 0; i < this.countries.length; i++) {
+            if (this.countries[i].getBelongToPlayer !== playerId) {
+                this.belongToPlayer = ''
+                return false
+            }
+        }
+        this.belongToPlayer = playerId
+    }
+
+    deployTroopsToCountry(countryId, player, numberOfTroops, allCountriesHaveOneTroop, initialPhase) {
+        for (var i = 0; i < this.countries.length; i++) {
+            if (this.countries[i].getId() === countryId) {
+                const belongToPlayer = this.countries[i].getBelongToPlayer()
+                const playerHasTroops = player.getTroopsToDeploy() > 0
+
+            }
+        }
     }
 
     getCountryStateFromContinentState (country, continentState)  {
