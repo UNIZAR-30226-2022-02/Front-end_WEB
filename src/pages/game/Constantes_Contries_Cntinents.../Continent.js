@@ -9,7 +9,7 @@ export default class Continent {
         this.countries = this.getContinent(continentName)
     }
 
-    getContries() {
+    getCountries() {
         return this.countries
     }
 

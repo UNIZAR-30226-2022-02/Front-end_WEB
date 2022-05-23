@@ -1,4 +1,3 @@
-
 export const NEIGHBOURS = {
     afghanistan: {
         countries: ["ukraine", "ural", "middle_east", "china", "india"],

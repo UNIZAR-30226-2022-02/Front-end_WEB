@@ -74,15 +74,16 @@ export default class Player {
     }
 
     roolDice(numTroops) {
+        let dice = []
         if (numTroops >= 3) {
-            let dice = new Array(3);
+            dice = new Array(3);
         } else {
-            let dice = new Array(parseInt(numTroops))
+            dice = new Array(parseInt(numTroops))
         }
         for (var i = 0; i < dice.length; i++) {
             dice[i] = Math.floor(Math.random() * 7);
         }
-        return diceRolls.sort((a, b) => b - a);
+        return dice.sort((a, b) => b - a);
     }
 
     getSVG() {

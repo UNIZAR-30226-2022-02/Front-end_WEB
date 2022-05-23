@@ -3,9 +3,13 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import { Circles } from 'react-loader-spinner'
+import axios from 'axios';
+import qs from 'qs'
 
 import { AlertInfo } from '../../util/MyAlerts'
 import { AlertLoading } from '../../util/MyAlerts'
+import { SERVER_URL, NEW_GAME_URL } from '../../api/URLS'
+import { getUsername } from '../../context/UserProvider'
 
 import fondo_pantalla from '../../images/background_image.png';
 
@@ -16,8 +20,9 @@ export default class GameConfig extends React.Component {
 
         this.state = {
             numPlayers: 2,
-            gameType: '',
-            searching: false,
+            publica: null,
+            sinc: null,
+            code: '',
             gameFound: false,
             initPlayers: [],
         }
@@ -26,8 +31,8 @@ export default class GameConfig extends React.Component {
     }
 
     handleBuscarPartida = async (e) => {
-        const { gameType, initPlayers } = this.state
-        if (gameType === '') {
+
+        if (this.state.publica === null || this.state.sinc === null) {
             AlertInfo('Error iniciar partida', 'Seleccione el tipo de partida', true)
             return
         }
@@ -36,12 +41,53 @@ export default class GameConfig extends React.Component {
         this.setState({ buscandoPartida: true })
         e.target.innerHTML = 'Buscando partida...'
 
-        AlertLoading('Partida encontrada. Redirigiendo a sala...', 2000)
-        setTimeout(() => {
-            initPlayers.push('Javi0')
-            initPlayers.push('Javi')
-            this.props.history.push('/game', { state: { initPlayers: initPlayers }})
-        }, 2000);
+        console.log(SERVER_URL + NEW_GAME_URL,)
+        const { publica, numPlayers, sinc } = this.state
+        const res = await axios({
+            method: 'post',
+            url: SERVER_URL + NEW_GAME_URL,
+            data: qs.stringify({ 
+                publica: publica,
+                nombre: getUsername(),
+                numJugadores: numPlayers,
+                tipo: sinc
+            })
+        })
+
+        // ! BORRAR ESTO
+        var players = this.state.initPlayers;
+        players.push()
+        players.push()
+        for (var i = 0; i < players.length; i++) {
+            players[i].name = 'Javi' + i.toString()
+            players[i].colour = '#FF0000'
+        }
+        console.log(players)
+        this.setState({ initPlayers: players })
+
+        AlertLoading('Partida encontrada. Redirigiendo a sala...', 1000)
+        this.props.history.push('/game', { players: this.state.initPlayers })
+    }
+
+    handleUnirPartida = async (e) => {
+        if (this.state.code === '') {
+            AlertInfo('Error unirse partida', 'Introduzca codigo valido', true)
+            return
+        }
+
+        e.target.disabled = true
+        e.target.innerHTML = 'Uniendose a partida...'
+/*
+        const res = await axios({
+            method: 'post',
+            url: SERVER_URL + NEW_GAME_URL,
+            data: qs.stringify({ 
+                publica: publica,
+                nombre: getUsername(),
+                numJugadores: numPlayers,
+                tipo: sinc
+            })
+        })*/
     }
 
     render() {
@@ -51,7 +97,7 @@ export default class GameConfig extends React.Component {
                 <MainContainer>
                     {gameFound ? (
                         <HomeContainer>
-                            
+                            <Circles ariaLabel='loading-indicator' />
                         </HomeContainer>
                     ) : (
                         <HomeContainer>
@@ -66,13 +112,25 @@ export default class GameConfig extends React.Component {
                                 </Input>
                             </FormGroup>
                             <FormGroup check>
-                                <Label><Input type='radio' name='gameType' onClick={(e) => this.setState({ gameType: 'sinc' })}/>Sincrona</Label>
+                                <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sinc: true })}/>Sincrona</Label>
                             </FormGroup>
                             <FormGroup check>
-                                <Label><Input type='radio' name='gameType' onClick={(e) => this.setState({ gameType: 'asinc' })}/>Asincrona</Label>
+                                <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sinc: false })}/>Asincrona</Label>
+                            </FormGroup>
+                            <hr></hr>
+                            <FormGroup check>
+                                <Label><Input type='radio' name='public' onClick={(e) => this.setState({ publica: true })}/>Publica</Label>
+                            </FormGroup>
+                            <FormGroup check>
+                                <Label><Input type='radio' name='public' onClick={(e) => this.setState({ publica: false })}/>Privada</Label>
                             </FormGroup>
                             <Button className='btn btn-danger btn-lg' onClick={this.handleBuscarPartida}>Buscar partida</Button>
-                            {/*buscandoPartida ? (<Circles ariaLabel='loading-indicator' />) : (null)*/}
+                            <hr></hr>
+                            <FormGroup>
+                                <Input type='text' placeholder='Tengo un codigo' onChange={(e) => this.setState({ code: e.target.value })}/>
+                            </FormGroup>
+                            <Button className='btn btn-secondary btn-sm' onClick={this.handleUnirsePartida}>Unirme a partida</Button>
+
                         </HomeContainer>
                     )}
                 </MainContainer>
@@ -89,10 +147,11 @@ const BackGroundImage = styled.div`
 `;
 
 const MainContainer = styled.div`
-    min-height: 100vh;
-    min-widht: 100vh;
-
     display: flex;
+    height: 100vh;
+    widht: 100vh;
+
+    justify-content: center;
     flex-direction: column;
     align-items: center;
     text-align: center;
@@ -105,3 +164,4 @@ const HomeContainer = styled.div`
     padding: 25px;
     border-radius: 25px;
 `;
+

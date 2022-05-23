@@ -81,8 +81,8 @@ export default class Map {
     }
 
     playersHaveTroops() {
-        for (var i = 0; i < players.length; i++) {
-            if (players[i].getNumTroops() > 0) {
+        for (var i = 0; i < this.players.length; i++) {
+            if (this.players[i].getNumTroops() > 0) {
                 return true
             }
         }
@@ -135,8 +135,8 @@ export default class Map {
         }
 
         const [attackingPlayer, defendingPlayer] = this.getPlayersAttackDefend(countryFrom, countryTo)
-        attackerDice = attackingPlayer.rollDice(numTroopsAttack)
-        defenderDice = defendingPlayer.rollDice(numTroopsDefend)
+        var attackerDice = attackingPlayer.rollDice(numTroopsAttack)
+        var defenderDice = defendingPlayer.rollDice(numTroopsDefend)
 
         let attackerTroopsLost = 0;
         let defenderTroopsLost = 0;
@@ -149,8 +149,8 @@ export default class Map {
             }
         }
 
-        finalTroopsCountryFrom = countryFrom.getNumTroops() - attackerTroopsLost
-        finalTroopsCountryTo = countryTo.getNumTroops() - defenderTroopsLost
+        var finalTroopsCountryFrom = countryFrom.getNumTroops() - attackerTroopsLost
+        var finalTroopsCountryTo = countryTo.getNumTroops() - defenderTroopsLost
 
         if (finalTroopsCountryFrom < 0) {
             countryFrom.setNumTroops(0)
@@ -185,7 +185,7 @@ export default class Map {
 
     moveTroops(countryIdFrom, countryIdTo, numTroopsMove) {
         const [countryFrom, countryTo] = this.getAttakingAndDefendingCountry(countryIdFrom, countryIdTo);
-        if (numOfTroops === 0) {
+        if (numTroopsMove === 0) {
             alert('No se han seleccionado tropas para mover')
             return false
         } else if ((countryFrom.getNumTroops() - numTroopsMove) < 1) {
@@ -206,7 +206,7 @@ export default class Map {
             this.countries[i].setIsSelected(false)
         }
         for (var i = 0; i < this.players.length; i++) {
-            if (this.players[i].getNumTroops() !== 0) {
+            if (this.players[i].getTroopsToDeploy() !== 0) {
                 return false
             }
         }
