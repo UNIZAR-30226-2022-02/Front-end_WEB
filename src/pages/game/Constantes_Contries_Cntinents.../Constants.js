@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> e3a9dad7057dad0524880ceb7909da101c6ce4b5
 export const NEIGHBOURS = {
     afghanistan: {
         countries: ["ukraine", "ural", "middle_east", "china", "india"],
@@ -176,4 +180,8 @@ export const NEIGHBOURS = {
         ],
     },
     yakursk: { countries: ["irkutsk", "siberia", "kamchatka"] },
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> e3a9dad7057dad0524880ceb7909da101c6ce4b5

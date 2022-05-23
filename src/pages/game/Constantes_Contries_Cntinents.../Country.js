@@ -4,7 +4,7 @@ import invert from "invert-color";
 export default class Country{
 
     // id: nombre del pais (unico)
-    // d: // ! PARA QUE SIRVE ESTOOOOOO
+    // d: contorno del pais
     // coord: donde esta situado pais en la pantalla
     // countryState: partidas asincronas, estado del pais
     // colour e initialColour: a la hora de seleccionar pais, cambiar de color. Necesitamos guardar
