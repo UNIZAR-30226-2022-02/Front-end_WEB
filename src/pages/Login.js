@@ -35,7 +35,7 @@ export default class Login extends React.Component {
       e.target.disabled = false
       return;
     }
-    /*
+
     const res = await axios({
       method: 'post',
       url: SERVER_URL + LOGIN_URL,
@@ -44,12 +44,7 @@ export default class Login extends React.Component {
         password: password,
       })
     })
-    */
-    const res = null
-    // ! BORRAR ESTO
-    login(username, 'token_valido')
-    this.props.history.push('/home')
-/*
+
     if (res.data === 'OK') {
       login(username, 'token_valido')
       this.props.history.push('/home')
@@ -60,7 +55,6 @@ export default class Login extends React.Component {
       AlertInfo('Servidores en mantenimiento', 'Disculpe las molestias', true)
       e.target.disabled = false
     }
-*/
   }
 
   render() {

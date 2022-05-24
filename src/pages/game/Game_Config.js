@@ -40,7 +40,7 @@ export default class GameConfig extends React.Component {
         e.target.disabled = true
         this.setState({ buscandoPartida: true })
         e.target.innerHTML = 'Buscando partida...'
-
+/*
         console.log(SERVER_URL + NEW_GAME_URL,)
         const { publica, numPlayers, sinc } = this.state
         const res = await axios({
@@ -53,16 +53,24 @@ export default class GameConfig extends React.Component {
                 tipo: sinc
             })
         })
-
+*/
         // ! BORRAR ESTO
         var players = this.state.initPlayers;
-        players.push()
-        players.push()
-        for (var i = 0; i < players.length; i++) {
-            players[i].name = 'Javi' + i.toString()
-            players[i].colour = '#FF0000'
-        }
-        console.log(players)
+        players.push({
+            name: 'Javi0',
+            id: 0,
+            color: '#ff0000',
+            turnNumber: 0,
+            reservePersonel: 25
+        })
+        players.push({
+            name: 'Javi1',
+            id: 1,
+            color: '#000000',
+            turnNumber: 1,
+            reservePersonel: 25
+        })
+
         this.setState({ initPlayers: players })
 
         AlertLoading('Partida encontrada. Redirigiendo a sala...', 1000)
@@ -75,9 +83,11 @@ export default class GameConfig extends React.Component {
             return
         }
 
+        const { publica, numPlayers, sinc } = this.state
+
         e.target.disabled = true
         e.target.innerHTML = 'Uniendose a partida...'
-/*
+
         const res = await axios({
             method: 'post',
             url: SERVER_URL + NEW_GAME_URL,
@@ -87,7 +97,7 @@ export default class GameConfig extends React.Component {
                 numJugadores: numPlayers,
                 tipo: sinc
             })
-        })*/
+        })
     }
 
     render() {

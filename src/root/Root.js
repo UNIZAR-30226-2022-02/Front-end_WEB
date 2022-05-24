@@ -12,20 +12,25 @@ import GameConfig from '../pages/game/Game_Config'
 import Game from '../pages/game/Game'
 import Tienda from '../pages/Tienda'
 
-export default function Root() {
+export default class Root extends React.Component{
 
-    return (
-        <BrowserRouter>
-            <Container>
-                <Routes>
-                        <Route path="/" element={<AuthRoute> <Login/> </AuthRoute>} />
-                        <Route path="/register" element={<AuthRoute> <Register/> </AuthRoute>} />
-                        <Route path="/home" element={<AuthRoute> <Header/> <Home/> </AuthRoute>} />
-                        <Route path="/gameConfig" element={<AuthRoute> <Header/> <GameConfig/> </AuthRoute>} />
-                        <Route path="/game" element={<AuthRoute> <Game/> </AuthRoute>} />
-                        <Route path="/tienda" element={<AuthRoute> <Header/> <Tienda/> </AuthRoute>} />
-                </Routes>
-            </Container>
-        </BrowserRouter>
-    )
+    constructor(props) {
+        super(props)
+    }
+
+    render() {
+        return (
+            <BrowserRouter>
+                <Header />
+                <div>
+                        <Route path="/" exact component={Login} />
+                        <Route path="/register" exact component={Register} />
+                        <Route path="/home" exact component={Home} />
+                        <Route path="/gameConfig" exact component={GameConfig} />
+                        <Route path="/game" exact component={Game} />
+                        <Route path="/tienda" exact component={Tienda} />
+                </div>
+            </BrowserRouter>
+        )
+    }
 }
