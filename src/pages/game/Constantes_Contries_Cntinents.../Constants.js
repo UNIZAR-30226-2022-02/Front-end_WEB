@@ -177,3 +177,41 @@ export const NEIGHBOURS = {
     },
     yakursk: { countries: ["irkutsk", "siberia", "kamchatka"] },
 }
+
+export const ARMIES_PER_CONTINENT = {
+    asia: 7,
+    europe: 5,
+    north_america: 5,
+    africa: 3,
+    south_america: 2,
+    australia: 2,
+};
+
+export const TROOP_TYPES = {
+    Infantry: { name: "INFANTRY", troopSize: 1 },
+    Cavalry: { name: "CAVALRY", troopSize: 5 },
+    Artillery: { name: "ARTILLERY", troopSize: 10 },
+};
+
+function getCards() {
+    var cards = []
+    var numInfantry = 14
+    var numCavalry = 14
+    var numArtillery = 14
+
+    for (var i = 0; i < numInfantry; i++) {
+        cards.push({ troop: TROOP_TYPES.Infantry.name })
+    }
+
+    for (var i = 0; i < numCavalry; i++) {
+        cards.push({ troop: TROOP_TYPES.Cavalry.name })
+    }
+
+    for (var i = 0; i < numArtillery; i++) {
+        cards.push({ troop: TROOP_TYPES.Artillery.name })
+    }
+
+    return cards
+}
+
+export const CARDS = getCards()
