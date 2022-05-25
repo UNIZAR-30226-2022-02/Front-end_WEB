@@ -13,7 +13,6 @@ class PlayerTurnDecider {
     }
 
     endTurnForPlayer(shouldValidatePlayerTroops) {
-        console.log("whyy", shouldValidatePlayerTroops)
         if (shouldValidatePlayerTroops && this.players[this.indexOfPlayerWithTurn].getRemainingTroops() !== 0) {
             return false;
         }

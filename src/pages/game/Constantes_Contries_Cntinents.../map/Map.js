@@ -207,7 +207,7 @@ class Map {
         if (attackingCountry.getOccupyingPlayerId() === defendingCountry.getOccupyingPlayerId()) {
             return this.maneuverTroops(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith);
         }
-        
+
         if (!this.isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith)) {
             return false;
         }
@@ -242,6 +242,7 @@ class Map {
                 numOfBattlesDefenderLost++;
             }
         }
+
         attackingCountry.setNumberOfTroops(attackingCountry.getNumberOfTroops() - numOfBattlesAttackerLost);
         defendingCountry.setNumberOfTroops(defendingCountry.getNumberOfTroops() - numOfBattlesDefenderLost);
 
@@ -258,8 +259,7 @@ class Map {
                 attackerDiceRolls,
                 defenderDiceRolls
             }
-        }
-        if (defendingCountry.getNumberOfTroops() === 0) {
+        } else if (defendingCountry.getNumberOfTroops() === 0) {
             defendingCountry.setOccupyingPlayer(attackingPlayer);
             defendingCountry.setNumberOfTroops(numOfTroopsToAttackWith - numOfBattlesAttackerLost);
             attackingCountry.setNumberOfTroops(attackingCountry.getNumberOfTroops() - (numOfTroopsToAttackWith));
@@ -269,8 +269,12 @@ class Map {
                 attackerDiceRolls,
                 defenderDiceRolls
             }
+        } else {
+            return {
+                attackerDiceRolls,
+                defenderDiceRolls
+            }
         }
-        return true;
     }
 
     areAttackingAndDefendingCountryNeighbours(attackingCountry, defendingCountry) {

@@ -3,10 +3,9 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input } from "react
 import styled from "styled-components";
 import Map from "./Constantes_Contries_Cntinents.../map/Map";
 import Player from "./Constantes_Contries_Cntinents.../Player";
-import PlayerTurnDecider from "./Constantes_Contries_Cntinents.../PlayerTurnDecider";
+import PlayerTurnDecider from "./Constantes_Contries_Cntinents.../Player_TurnDecider";
 import TroopsGiver from "./Constantes_Contries_Cntinents.../Troops_Giver";
-import { InitialDeployment, TurnsDeployment } from "./Constantes_Contries_Cntinents.../DeploymentStrategy";
-import DeploymentContext from "./Constantes_Contries_Cntinents.../DeploymentContext";
+import Deployer from "./Constantes_Contries_Cntinents.../Deployer";
 
 export default class Game extends Component {
 
@@ -40,7 +39,7 @@ export default class Game extends Component {
         this.initializePlayers();
         this.map = new Map(this.allPlayers);
         this.allPlayers[0].setIsPlayerTurn(true);
-        this.deploymentStrategy = new DeploymentContext(new InitialDeployment());
+        this.deployer = new Deployer(true);
         this.countryIds = []
         var countries = this.map.getCountries()
         for (var i = 0; i < countries.length; i++) {
@@ -70,11 +69,13 @@ export default class Game extends Component {
         const result = this.map.attackTerritory(countryToAttackOrManeuverTo, selectedCountryId, numOfAttackerTroops, numOfDefenderTroops);
         if (typeof result === "object") {
             if (result.won && result.message === "TERRITORY_OCCUPIED") {
-                alert(this.playerTurnDecider.getCurrentPlayerInfo().getName() + " won.");
                 this.setState({ attackerDiceRolls: result.attackerDiceRolls, defenderDiceRolls: result.defenderDiceRolls });
-            } else {
+                alert(this.playerTurnDecider.getCurrentPlayerInfo().getName() + " won.");
+            } else if (!result.won && result.message === "ATTACK_LOST") {
                 this.setState({ attackerDiceRolls: result.attackerDiceRolls, defenderDiceRolls: result.defenderDiceRolls });
                 alert(this.playerTurnDecider.getCurrentPlayerInfo().getName() + " lost.");
+            } else {
+                this.setState({ attackerDiceRolls: result.attackerDiceRolls, defenderDiceRolls: result.defenderDiceRolls });
             }
         }
     }
@@ -83,15 +84,15 @@ export default class Game extends Component {
     deployInitialTroops = () => {
         const { selectedCountryId } = this.state;
 
-        if (this.deploymentStrategy.deployTroops(this.map, this.playerTurnDecider, selectedCountryId, this.troopsGiver, (newState) => this.setState(newState))) {
+        if (this.deployer.deployTroops(this.map, this.playerTurnDecider, selectedCountryId, this.troopsGiver, (newState) => this.setState(newState))) {
             this.forceUpdate();
-            this.deploymentStrategy.setStrategy(new TurnsDeployment());
+            this.deployer.setStrategy(false);
         }
     };
 
     deployTurnTroops = () => {
         const { selectedCountryId } = this.state;
-        this.deploymentStrategy.deployTroops(this.map, this.playerTurnDecider, selectedCountryId, this.troopsGiver, (newState) => this.setState(newState));
+        this.deployer.deployTroops(this.map, this.playerTurnDecider, selectedCountryId, this.troopsGiver, (newState) => this.setState(newState));
     };
 
     initializePlayers = () => {

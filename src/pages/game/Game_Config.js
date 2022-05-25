@@ -59,7 +59,7 @@ export default class GameConfig extends React.Component {
         players.push({
             name: 'Javi0',
             id: 0,
-            color: '#ff0000',
+            color: '#0000ff',
             turnNumber: 0,
             reservePersonel: 25
         })
@@ -77,7 +77,7 @@ export default class GameConfig extends React.Component {
         this.props.history.push('/game', { players: this.state.initPlayers })
     }
 
-    handleUnirPartida = async (e) => {
+    handleUnirsePartida = async (e) => {
         if (this.state.code === '') {
             AlertInfo('Error unirse partida', 'Introduzca codigo valido', true)
             return
