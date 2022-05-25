@@ -1,10 +1,8 @@
+
 class PlayerTurnDecider {
-    constructor(players, isGameSaved) {
+    constructor(players) {
         this.players = players;
         this.indexOfPlayerWithTurn = 0;
-        if (isGameSaved) {
-            this.indexOfPlayerWithTurn = this.players.findIndex(player => player.isPlayerTurn == true);
-        }
     }
 
     getPlayerWithTurn() {
@@ -26,9 +24,9 @@ class PlayerTurnDecider {
         this.endTurnForPlayer();
         return this.getPlayerWithTurn();
     }
-
     getCurrentPlayerInfo() {
         return this.players[this.indexOfPlayerWithTurn];
     }
 }
+
 export default PlayerTurnDecider;

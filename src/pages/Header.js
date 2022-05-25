@@ -14,7 +14,6 @@ export default class Header extends React.Component {
 
   render() {
     const username = getUsername()
-    console.log(username)
     return username ? (
         <StyledNavbar>
           <Container>

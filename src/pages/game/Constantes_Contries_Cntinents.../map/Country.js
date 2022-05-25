@@ -87,15 +87,15 @@ class Country {
         const text = React.createElement("text", {
             x: this.textCoordinates[0],
             y: this.textCoordinates[1],
-            fontFamily: "Verdana",
-            fontSize: "15",
+            fontFamily: "Arial",
+            fontSize: "12",
             fill: "white",
             style: {
                 pointerEvents: "none",
-                fill: invert(this.color, true),
+                fill: "black",
                 userSelect: "none"
             },
-            children: this.numberOfTroops,
+            children: this.id,
         });
         const path = React.createElement("path", {
             id: this.id,

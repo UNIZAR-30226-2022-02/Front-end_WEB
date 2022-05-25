@@ -23,8 +23,6 @@ export default class GameConfig extends React.Component {
             publica: null,
             sinc: null,
             code: '',
-            gameFound: false,
-            initPlayers: [],
         }
 
         this.handleBuscarPartida = this.handleBuscarPartida.bind(this)
@@ -40,8 +38,7 @@ export default class GameConfig extends React.Component {
         e.target.disabled = true
         this.setState({ buscandoPartida: true })
         e.target.innerHTML = 'Buscando partida...'
-/*
-        console.log(SERVER_URL + NEW_GAME_URL,)
+
         const { publica, numPlayers, sinc } = this.state
         const res = await axios({
             method: 'post',
@@ -53,28 +50,8 @@ export default class GameConfig extends React.Component {
                 tipo: sinc
             })
         })
-*/
-        // ! BORRAR ESTO
-        var players = this.state.initPlayers;
-        players.push({
-            name: 'Javi0',
-            id: 0,
-            color: '#0000ff',
-            turnNumber: 0,
-            reservePersonel: 25
-        })
-        players.push({
-            name: 'Javi1',
-            id: 1,
-            color: '#000000',
-            turnNumber: 1,
-            reservePersonel: 25
-        })
 
-        this.setState({ initPlayers: players })
-
-        AlertLoading('Partida encontrada. Redirigiendo a sala...', 1000)
-        this.props.history.push('/game', { players: this.state.initPlayers })
+        this.props.history.push('/game')
     }
 
     handleUnirsePartida = async (e) => {
@@ -101,48 +78,41 @@ export default class GameConfig extends React.Component {
     }
 
     render() {
-        const { gameFound } = this.state
         return (
             <BackGroundImage>
                 <MainContainer>
-                    {gameFound ? (
-                        <HomeContainer>
-                            <Circles ariaLabel='loading-indicator' />
-                        </HomeContainer>
-                    ) : (
-                        <HomeContainer>
-                            <h2>Nueva partida</h2>
-                            <h6 style={{ marginTop:'12%' }}>Número de jugadores</h6>
-                            <FormGroup>
-                                <Input type='select' onChange={(e) => this.setState({ numPlayers: e.target.value })}>
-                                    <option value={2}>2</option>
-                                    <option value={3}>3</option>
-                                    <option value={4}>4 </option>
-                                    <option value={5}>5</option>
-                                </Input>
-                            </FormGroup>
-                            <FormGroup check>
-                                <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sinc: true })}/>Sincrona</Label>
-                            </FormGroup>
-                            <FormGroup check>
-                                <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sinc: false })}/>Asincrona</Label>
-                            </FormGroup>
-                            <hr></hr>
-                            <FormGroup check>
-                                <Label><Input type='radio' name='public' onClick={(e) => this.setState({ publica: true })}/>Publica</Label>
-                            </FormGroup>
-                            <FormGroup check>
-                                <Label><Input type='radio' name='public' onClick={(e) => this.setState({ publica: false })}/>Privada</Label>
-                            </FormGroup>
-                            <Button className='btn btn-danger btn-lg' onClick={this.handleBuscarPartida}>Buscar partida</Button>
-                            <hr></hr>
-                            <FormGroup>
-                                <Input type='text' placeholder='Tengo un codigo' onChange={(e) => this.setState({ code: e.target.value })}/>
-                            </FormGroup>
-                            <Button className='btn btn-secondary btn-sm' onClick={this.handleUnirsePartida}>Unirme a partida</Button>
+                    <HomeContainer>
+                        <h2>Nueva partida</h2>
+                        <h6 style={{ marginTop:'12%' }}>Número de jugadores</h6>
+                        <FormGroup>
+                            <Input type='select' onChange={(e) => this.setState({ numPlayers: e.target.value })}>
+                                <option value={2}>2</option>
+                                <option value={3}>3</option>
+                                <option value={4}>4 </option>
+                                <option value={5}>5</option>
+                            </Input>
+                        </FormGroup>
+                        <FormGroup check>
+                            <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sinc: true })}/>Sincrona</Label>
+                        </FormGroup>
+                        <FormGroup check>
+                            <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sinc: false })}/>Asincrona</Label>
+                        </FormGroup>
+                        <hr></hr>
+                        <FormGroup check>
+                            <Label><Input type='radio' name='public' onClick={(e) => this.setState({ publica: true })}/>Publica</Label>
+                        </FormGroup>
+                        <FormGroup check>
+                            <Label><Input type='radio' name='public' onClick={(e) => this.setState({ publica: false })}/>Privada</Label>
+                        </FormGroup>
+                        <Button className='btn btn-danger btn-lg' onClick={this.handleBuscarPartida}>Buscar partida</Button>
+                        <hr></hr>
+                        <FormGroup>
+                            <Input type='text' placeholder='Tengo un codigo' onChange={(e) => this.setState({ code: e.target.value })}/>
+                        </FormGroup>
+                        <Button className='btn btn-secondary btn-sm' onClick={this.handleUnirsePartida}>Unirme a partida</Button>
 
-                        </HomeContainer>
-                    )}
+                    </HomeContainer>
                 </MainContainer>
             </BackGroundImage>
         )
