@@ -56,43 +56,7 @@ export default class Game extends Component {
         this.recibirJugada = this.recibirJugada.bind(this)
 
         this.socket = socketIOClient(ENDPOINT)
-        var jugada = new Jugada()
-        this.socket.emit("nueva_jugada", jugada);
         this.socket.on("nueva_jugada", this.recibirJugada)
-    }
-
-    crearPartida(jugada) {
-        AlertLoading('Partida encontrada. Empezando partida...', 1000)
-
-        var newPlayers = []
-        for (var i = 0; i < jugada.listaJugadores.length; i++){
-            var newPlayer = new Player(jugada.listaJugadores[i], 10, '#FF0000', false, i)
-            newPlayers.push(newPlayer)
-        }
-        newPlayers[0].setIsPlayerTurn(true)
-
-        this.setState({ players: newPlayers, partidaSincrona: jugada.partidaSincrona, 
-                        myId: jugada.userId })
-
-        this.deployer = new Deployer(true);
-
-        // Mapa
-        this.map = new Map(this.state.players);
-        this.countryIds = []
-        var countries = this.map.getCountries()
-        for (var i = 0; i < countries.length; i++) {
-            this.countryIds.push(countries[i].getId())
-        }
-
-        // Turn decider y Troops Giver
-        this.playerTurnDecider = new PlayerTurnDecider(this.state.players);
-        this.troopsGiver = new TroopsGiver(
-            this.map.getCountries(),
-            this.map.getContinents()
-        );
-
-        // Una vez cargados los datos, iniamos la partida (pantalla de visualizacion)
-        this.setState({ idPartida: jugada.idPartida })
     }
 
     componentDidMount() {
@@ -126,7 +90,7 @@ export default class Game extends Component {
     deployInitialTroops = () => {
         const { myId, idPartida, selectedCountryId } = this.state;
 
-        if (this.deployer.deployTroops(this.map, this.playerTurnDecider, selectedCountryId, this.troopsGiver, (newState) => this.setState(newState))) {
+        if (this.deployer.deployTroops(this.map, this.playerTurnDecider, selectedCountryId, 1, this.troopsGiver, (newState) => this.setState(newState))) {
             this.forceUpdate();
             this.deployer.setStrategy(false);
         }
@@ -138,7 +102,7 @@ export default class Game extends Component {
 
     deployTurnTroops = () => {
         const { selectedCountryId } = this.state;
-        this.deployer.deployTroops(this.map, this.playerTurnDecider, selectedCountryId, this.troopsGiver, (newState) => this.setState(newState));
+        this.deployer.deployTroops(this.map, this.playerTurnDecider, selectedCountryId, 1, this.troopsGiver, (newState) => this.setState(newState));
     };
 
     // Only called when turns phase is started
@@ -293,7 +257,7 @@ export default class Game extends Component {
         return null;
     }
 
-    // Validator Methods
+    // Validator Methodspartida
     validateInput = (e, inputType) => {
         const val = e.target.value;
         if (isNaN(val)) {
@@ -338,6 +302,57 @@ export default class Game extends Component {
         );
     }
 
+    /* ******* */
+    /* JUGADAS */
+    /* ******* */
+
+    crearPartida(jugada) {
+        AlertLoading('Partida encontrada. Empezando partida...', 1000)
+
+        var newPlayers = []
+        for (var i = 0; i < jugada.listaJugadores.length; i++){
+            var newPlayer = new Player(jugada.listaJugadores[i], 10, '#FF0000', false, i)
+            newPlayers.push(newPlayer)
+        }
+        newPlayers[0].setIsPlayerTurn(true)
+
+        this.setState({ players: newPlayers, partidaSincrona: jugada.partidaSincrona, 
+                        myId: jugada.userId })
+
+        this.deployer = new Deployer(true);
+
+        // Mapa
+        this.map = new Map(this.state.players);
+        this.countryIds = []
+        var countries = this.map.getCountries()
+        for (var i = 0; i < countries.length; i++) {
+            this.countryIds.push(countries[i].getId())
+        }
+
+        // Turn decider y Troops Giver
+        this.playerTurnDecider = new PlayerTurnDecider(this.state.players);
+        this.troopsGiver = new TroopsGiver(
+            this.map.getCountries(),
+            this.map.getContinents()
+        );
+
+        // Una vez cargados los datos, iniamos la partida (pantalla de visualizacion)
+        this.setState({ idPartida: jugada.idPartida })
+    }
+
+    ponerTropas(jugada) {
+        var country = jugada.country
+        var numTropas = jugada.numTropas
+
+        // this.deployTroops(this.map, this.playerTurnDecider, country, numTropas, this.troopsGiver, )
+    }
+
+    moverTropas(jugada) {
+        var countryOrigin = jugada.countryOrigin
+        var countryDest = jugada.countryDest
+        var numTropas = jugada.numTropas
+    }
+
     enviarjugada(jugada) {
         this.socket.emit("nueva_jugada", jugada);
         console.log('Jugada enviada: ', jugada)
@@ -347,21 +362,21 @@ export default class Game extends Component {
     recibirJugada(jugada) {
         //Solo proceso las jugadas del resto de jugadores
         //las mias las ejecuto en local
-        // if(jugada.userId != this.myId){
-            switch(jugada.type){
+        if(jugada.userId != this.myId) {
+            switch(jugada.type) {
                 case 'crearPartida':
                     console.log('Jugada recibida: ', jugada)
                     this.crearPartida(jugada)
                 break
     
-                case 'finTurno':
-                    console.log('Jugada recibida: ' + jugada)
-                    this.finTurno(jugada)
-                break
-    
                 case 'ponerTropas':
                     console.log('Jugada recibida: ' + jugada)
                     this.ponerTropas(jugada)
+                break
+        
+                case 'finTurno':
+                    console.log('Jugada recibida: ' + jugada)
+                    this.finTurno(jugada)
                 break
     
                 case 'moverTropas':
@@ -398,8 +413,7 @@ export default class Game extends Component {
     
                 break
             }
-        // }
-
+        }
     }
 }
 

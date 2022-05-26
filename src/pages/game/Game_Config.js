@@ -8,7 +8,7 @@ import qs from 'qs'
 
 import { AlertInfo } from '../../util/MyAlerts'
 import { AlertLoading } from '../../util/MyAlerts'
-import { SERVER_URL, NEW_GAME_URL } from '../../api/URLS'
+import { SERVER_URL, NEW_GAME_URL, JOIN_GAME_URL } from '../../api/URLS'
 import { getUsername } from '../../context/UserProvider'
 
 import fondo_pantalla from '../../images/background_image.png';
@@ -45,8 +45,8 @@ export default class GameConfig extends React.Component {
             url: SERVER_URL + NEW_GAME_URL,
             data: qs.stringify({ 
                 publica: publica,
-                nombre: getUsername(),
-                numJugadores: numPlayers,
+                username: getUsername(),
+                maxJugadores: numPlayers,
                 tipo: sinc
             })
         })
@@ -55,26 +55,27 @@ export default class GameConfig extends React.Component {
     }
 
     handleUnirsePartida = async (e) => {
+        /*
         if (this.state.code === '') {
             AlertInfo('Error unirse partida', 'Introduzca codigo valido', true)
             return
         }
-
-        const { publica, numPlayers, sinc } = this.state
+        */
+        const { publica, sinc } = this.state
 
         e.target.disabled = true
         e.target.innerHTML = 'Uniendose a partida...'
 
         const res = await axios({
             method: 'post',
-            url: SERVER_URL + NEW_GAME_URL,
-            data: qs.stringify({ 
+            url: SERVER_URL + JOIN_GAME_URL,
+            data: qs.stringify({
                 publica: publica,
-                nombre: getUsername(),
-                numJugadores: numPlayers,
-                tipo: sinc
+                username: getUsername(),
             })
         })
+
+        this.props.history.push('/game')
     }
 
     render() {
@@ -93,24 +94,24 @@ export default class GameConfig extends React.Component {
                             </Input>
                         </FormGroup>
                         <FormGroup check>
-                            <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sinc: true })}/>Sincrona</Label>
+                            <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sinc: 'Sincrona' })}/>Sincrona</Label>
                         </FormGroup>
                         <FormGroup check>
-                            <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sinc: false })}/>Asincrona</Label>
+                            <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sinc: 'Asincrona' })}/>Asincrona</Label>
                         </FormGroup>
                         <hr></hr>
                         <FormGroup check>
-                            <Label><Input type='radio' name='public' onClick={(e) => this.setState({ publica: true })}/>Publica</Label>
+                            <Label><Input type='radio' name='public' onClick={(e) => this.setState({ publica: 'Publica' })}/>Publica</Label>
                         </FormGroup>
                         <FormGroup check>
-                            <Label><Input type='radio' name='public' onClick={(e) => this.setState({ publica: false })}/>Privada</Label>
+                            <Label><Input type='radio' name='public' onClick={(e) => this.setState({ publica: 'Privada' })}/>Privada</Label>
                         </FormGroup>
-                        <Button className='btn btn-danger btn-lg' onClick={this.handleBuscarPartida}>Buscar partida</Button>
+                        <Button className='btn btn-danger btn-lg' onClick={this.handleBuscarPartida}>Crear partida</Button>
                         <hr></hr>
                         <FormGroup>
                             <Input type='text' placeholder='Tengo un codigo' onChange={(e) => this.setState({ code: e.target.value })}/>
                         </FormGroup>
-                        <Button className='btn btn-secondary btn-sm' onClick={this.handleUnirsePartida}>Unirme a partida</Button>
+                        <Button className='btn btn-secondary btn-sm' onClick={this.handleUnirsePartida}>Buscar partida</Button>
 
                     </HomeContainer>
                 </MainContainer>
