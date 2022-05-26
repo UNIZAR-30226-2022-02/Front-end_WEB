@@ -1,5 +1,4 @@
-
-class PlayerTurnDecider {
+export default class PlayerTurnDecider {
     constructor(players) {
         this.players = players;
         this.indexOfPlayerWithTurn = 0;
@@ -24,9 +23,8 @@ class PlayerTurnDecider {
         this.endTurnForPlayer();
         return this.getPlayerWithTurn();
     }
+
     getCurrentPlayerInfo() {
         return this.players[this.indexOfPlayerWithTurn];
     }
 }
-
-export default PlayerTurnDecider;

@@ -75,11 +75,12 @@ class JugadaDefensaSincrona extends Jugada
 
 class JugadaAtaqueAsincrono extends Jugada
 {    
-    constructor (userId = '', gameId = '', countryOrigin = '', countryDest = '', dadosAtaque= []) {
+    constructor (userId = '', gameId = '', countryOrigin = '', countryDest = '', dadosAtaque= [], dadosDefensa = []) {
         super('ataque_asincrono', userId, gameId)
         this.countryOrigin = countryOrigin
         this.countryDest = countryDest
         this.dadosAtaque = dadosAtaque
+        this.dadosDefensa = dadosDefensa
     }
 }
 
@@ -101,12 +102,10 @@ class JugadaFinPartida extends Jugada
 }
 
 class FinTurno extends Jugada
-{/*
-    FinTurno(player){
-        turnoActual=turnoActual/length(jugadores);
-        player.haConquistado=false;
+{
+    constructor (userId = '', gameId = '') {
+        super('fin_turno', userId, gameId)
     }
-    //gestionar si acaba el que va antes porque me toca*/
 }
 
 export { Jugada, JugadaCrearPartida, JugadaFinTurno, JugadaPonerTropas, 

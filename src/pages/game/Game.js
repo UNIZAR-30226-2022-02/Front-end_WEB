@@ -3,13 +3,13 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input } from "react
 import styled from "styled-components";
 import Map from "./Constantes_Contries_Cntinents.../map/Map";
 import Player from "./Constantes_Contries_Cntinents.../Player";
-import PlayerTurnDecider from "./Constantes_Contries_Cntinents.../Player_TurnDecider";
+import TurnDecider from "./Constantes_Contries_Cntinents.../Turn_Decider";
 import TroopsGiver from "./Constantes_Contries_Cntinents.../Troops_Giver";
 import Deployer from "./Constantes_Contries_Cntinents.../Deployer";
 import { Jugada, JugadaCrearPartida, JugadaFinTurno, JugadaPonerTropas, 
     JugadaMoverTropas, JugadaUtilizarCartas, JugadaAtaqueSincrono, 
     JugadaDefensaSincrona, JugadaAtaqueAsincrono, JugadaPedirCarta, 
-    JugadaFinPartida, FinTurno } from './class/Play_class'
+    JugadaFinPartida, FinTurno } from './jugadas/Jugadas'
 
 import socketIOClient from "socket.io-client"; // Version 1.4.5
 
@@ -55,7 +55,6 @@ export default class Game extends Component {
 
         this.recibirJugada = this.recibirJugada.bind(this)
 
-        this.socket = socketIOClient(ENDPOINT)
         this.socket.on("nueva_jugada", this.recibirJugada)
     }
 
@@ -76,10 +75,10 @@ export default class Game extends Component {
         if (typeof result === "object") {
             if (result.won && result.message === "TERRITORY_OCCUPIED") {
                 this.setState({ attackerDiceRolls: result.attackerDiceRolls, defenderDiceRolls: result.defenderDiceRolls });
-                alert(this.playerTurnDecider.getCurrentPlayerInfo().getName() + " won.");
+                alert(this.turnDecider.getCurrentPlayerInfo().getName() + " won.");
             } else if (!result.won && result.message === "ATTACK_LOST") {
                 this.setState({ attackerDiceRolls: result.attackerDiceRolls, defenderDiceRolls: result.defenderDiceRolls });
-                alert(this.playerTurnDecider.getCurrentPlayerInfo().getName() + " lost.");
+                alert(this.turnDecider.getCurrentPlayerInfo().getName() + " lost.");
             } else {
                 this.setState({ attackerDiceRolls: result.attackerDiceRolls, defenderDiceRolls: result.defenderDiceRolls });
             }
@@ -90,7 +89,7 @@ export default class Game extends Component {
     deployInitialTroops = () => {
         const { myId, idPartida, selectedCountryId } = this.state;
 
-        if (this.deployer.deployTroops(this.map, this.playerTurnDecider, selectedCountryId, 1, this.troopsGiver, (newState) => this.setState(newState))) {
+        if (this.deployer.deployTroops(this.map, this.turnDecider, selectedCountryId, 1, this.troopsGiver, (newState) => this.setState(newState))) {
             this.forceUpdate();
             this.deployer.setStrategy(false);
         }
@@ -102,13 +101,13 @@ export default class Game extends Component {
 
     deployTurnTroops = () => {
         const { selectedCountryId } = this.state;
-        this.deployer.deployTroops(this.map, this.playerTurnDecider, selectedCountryId, 1, this.troopsGiver, (newState) => this.setState(newState));
+        this.deployer.deployTroops(this.map, this.turnDecider, selectedCountryId, 1, this.troopsGiver, (newState) => this.setState(newState));
     };
 
     // Only called when turns phase is started
     endTurnForPlayer = () => {
-        if (this.playerTurnDecider.endTurnForPlayer(true)) {
-            this.troopsGiver.giveTroopsToPlayer(this.playerTurnDecider.getPlayerWithTurn());
+        if (this.turnDecider.endTurnForPlayer(true)) {
+            this.troopsGiver.giveTroopsToPlayer(this.turnDecider.getPlayerWithTurn());
             this.setState({
                 attackOrSkipTurnPhase: false,
                 turnsPhase: true,
@@ -172,7 +171,7 @@ export default class Game extends Component {
                 const result = this.map.validateInitialMove(
                     this.state.selectedCountryId,
                     this.state.countryToAttackOrManeuverTo,
-                    this.playerTurnDecider.getCurrentPlayerInfo(),
+                    this.turnDecider.getCurrentPlayerInfo(),
                 );
                 this.setState({
                     attackState: result === "ATTACK",
@@ -188,7 +187,7 @@ export default class Game extends Component {
     endTurnButtonRenderer = () => {
         const { initialSetupPhase } = this.state;
 
-        const remainingPlayerTroops = this.playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops();
+        const remainingPlayerTroops = this.turnDecider.getCurrentPlayerInfo().getRemainingTroops();
 
         if (!initialSetupPhase && remainingPlayerTroops === 0) {
             return <EndButton onClick={() => {
@@ -196,7 +195,7 @@ export default class Game extends Component {
                 this.setState({ selectedCountryId: "" });
                 this.map.resetCountryState();
                  //envio el fin de turno al resto
-                new JugadaFinTurno(this.playerTurnDecider, this.idPartida);
+                new JugadaFinTurno(this.turnDecider, this.idPartida);
                 JugadaFinTurno.enviarjugada(JugadaFinTurno);
             }}>End Turn</EndButton>;
         }
@@ -225,16 +224,15 @@ export default class Game extends Component {
     }
 
     attackButtonRenderer = () => {
-        const { initialSetupPhase, selectedCountryId, countryToAttackOrManeuverTo, attackerDiceRolls } = this.state;
+        const { idPartida, initialSetupPhase, selectedCountryId, countryToAttackOrManeuverTo, attackerDiceRolls } = this.state;
 
-        const remainingPlayerTroops = this.playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops();
+        const remainingPlayerTroops = this.turnDecider.getCurrentPlayerInfo().getRemainingTroops();
         if (!initialSetupPhase && remainingPlayerTroops === 0) {
-            JugadaAtaqueSincrono.enviarjugada(JugadaAtaqueSincrono);
             return <ActionButton onClick={() => {
                 this.attackTerritory()
-                var jugada = new JugadaAtaqueSincrono(this.playerTurnDecider, this.idPartida,selectedCountryId,
+                var jugada = new JugadaAtaqueAsincrono(this.turnDecider.getPlayerWithTurn(), idPartida, selectedCountryId,
                     countryToAttackOrManeuverTo, attackerDiceRolls);
-                jugada.enviarjugada(jugada)
+                this.enviarjugada(jugada)
             }}>Attack</ActionButton>
         }
         return null;
@@ -330,7 +328,7 @@ export default class Game extends Component {
         }
 
         // Turn decider y Troops Giver
-        this.playerTurnDecider = new PlayerTurnDecider(this.state.players);
+        this.turnDecider = new TurnDecider(this.state.players);
         this.troopsGiver = new TroopsGiver(
             this.map.getCountries(),
             this.map.getContinents()
@@ -344,13 +342,28 @@ export default class Game extends Component {
         var country = jugada.country
         var numTropas = jugada.numTropas
 
-        // this.deployTroops(this.map, this.playerTurnDecider, country, numTropas, this.troopsGiver, )
+        this.deployer.deployTroops(this.map, this.turnDecider, country, numTropas, this.troopsGiver, (newState) => this.setState(newState));
     }
 
     moverTropas(jugada) {
         var countryOrigin = jugada.countryOrigin
         var countryDest = jugada.countryDest
         var numTropas = jugada.numTropas
+
+        this.maneuverTroops(countryOrigin, countryDest, numTropas);
+    }
+
+    ataqueAsincrono(jugada) {
+        countryOrigin = jugada.countryOrigin
+        countryDest = jugada.countryDest
+        dadosAtaque = jugada.dadosAtaque
+        dadosDefensa = jugada.dadosDefensa
+
+        
+    }
+
+    finTurno() {
+        this.endTurnForPlayer()
     }
 
     enviarjugada(jugada) {
@@ -360,57 +373,58 @@ export default class Game extends Component {
 
     // Hay que modificar para tratar una jugada
     recibirJugada(jugada) {
-        //Solo proceso las jugadas del resto de jugadores
-        //las mias las ejecuto en local
+        // Solo proceso las jugadas del resto de jugadores
+        // las mias las ejecuto en local
         if(jugada.userId != this.myId) {
             switch(jugada.type) {
                 case 'crearPartida':
                     console.log('Jugada recibida: ', jugada)
                     this.crearPartida(jugada)
                 break
-    
+
                 case 'ponerTropas':
                     console.log('Jugada recibida: ' + jugada)
                     this.ponerTropas(jugada)
                 break
-        
+
                 case 'finTurno':
                     console.log('Jugada recibida: ' + jugada)
-                    this.finTurno(jugada)
+                    this.finTurno()
                 break
-    
+
                 case 'moverTropas':
                     console.log('Jugada recibida: ' + jugada)
                     this.moverTropas(jugada)
                 break
-    
+
                 case 'utilizarCartas':
                     console.log('Jugada recibida: ' + jugada)
-    
+
                 break
                 case 'ataqueSincrono':
                     console.log('Jugada recibida: ' + jugada)
-    
+
                 break
                 case 'defensaSincrona':
                     console.log('Jugada recibida: ' + jugada)
-    
+
                 break
-                case 'ataqueSincrono':
+                case 'ataqueAsincrono':
                     console.log('Jugada recibida: ' + jugada)
-    
+                    this.ataqueAsincrono(jugada)
+
                 break
                 case 'pedirCarta':
                     console.log('Jugada recibida: ' + jugada)
-    
+
                 break
                 case 'finPartida':
                     console.log('Jugada recibida: ' + jugada)
-    
-                break
+
+                    break
                 default:
                     console.log('Jugada recibida: ' + jugada)
-    
+
                 break
             }
         }

@@ -10,8 +10,11 @@ import { AlertInfo } from '../../util/MyAlerts'
 import { AlertLoading } from '../../util/MyAlerts'
 import { SERVER_URL, NEW_GAME_URL, JOIN_GAME_URL } from '../../api/URLS'
 import { getUsername } from '../../context/UserProvider'
+import socketIOClient from "socket.io-client"; // Version 1.4.5
 
 import fondo_pantalla from '../../images/background_image.png';
+
+const ENDPOINT = "http://serverrisk.herokuapp.com"
 
 export default class GameConfig extends React.Component {
 
@@ -65,6 +68,9 @@ export default class GameConfig extends React.Component {
 
         e.target.disabled = true
         e.target.innerHTML = 'Uniendose a partida...'
+
+        this.socket = socketIOClient(ENDPOINT)
+        this.socket.emit("registro", 'javi')
 
         const res = await axios({
             method: 'post',
