@@ -66,14 +66,14 @@ export default class Game extends Component {
 
         var newPlayers = []
         for (var i = 0; i < jugada.listaJugadores.length; i++){
-            var newPlayer = new Player(jugada.listaJugadores[i], 10, '#FF0000', false, i + 1)
+            var newPlayer = new Player(jugada.listaJugadores[i], 10, '#FF0000', false, i)
             newPlayers.push(newPlayer)
         }
-
         newPlayers[0].setIsPlayerTurn(true)
 
         this.setState({ players: newPlayers, partidaSincrona: jugada.partidaSincrona, 
                         myId: jugada.userId })
+
         console.log(this.state)
 
         this.deployer = new Deployer(true);
@@ -87,7 +87,7 @@ export default class Game extends Component {
         }
 
         // Turn decider y Troops Giver
-        this.playerTurnDecider = new PlayerTurnDecider(this.players);
+        this.playerTurnDecider = new PlayerTurnDecider(this.state.players);
         this.troopsGiver = new TroopsGiver(
             this.map.getCountries(),
             this.map.getContinents()
@@ -267,6 +267,8 @@ export default class Game extends Component {
     attackButtonRenderer = () => {
         const { initialSetupPhase, selectedCountryId, countryToAttackOrManeuverTo, attackerDiceRolls } = this.state;
 
+        console.log('Turn decider: ', this.playerTurnDecider)
+
         const remainingPlayerTroops = this.playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops();
         if (!initialSetupPhase && remainingPlayerTroops === 0) {
             JugadaAtaqueSincrono.enviarjugada(JugadaAtaqueSincrono);
@@ -314,7 +316,9 @@ export default class Game extends Component {
                 {idPartida === '' ? ( <h2>Id es ''</h2> ) 
                 : (
                 <MapContainer>
-                    <InnerContainer>{players.map((player) => player.getView())}</InnerContainer>
+                    <InnerContainer>
+                        {players.map((player) => player.getView())}
+                    </InnerContainer>
                     {this.map.getView()}
                     {this.attackInputFieldsRenderer()}
                     {this.attackButtonRenderer()}
@@ -349,7 +353,7 @@ export default class Game extends Component {
         console.log(jugada.type)
         switch(jugada.type){
             case 'crearPartida':
-                console.log('Jugada: ', jugada)
+                console.log('Jugada recibida: ', jugada)
                 this.crearPartida(jugada)
             break
 

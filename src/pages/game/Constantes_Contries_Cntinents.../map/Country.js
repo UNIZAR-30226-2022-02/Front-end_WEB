@@ -95,7 +95,7 @@ class Country {
                 fill: "black",
                 userSelect: "none"
             },
-            children: this.id,
+            children: this.numberOfTroops,
         });
         const path = React.createElement("path", {
             id: this.id,
