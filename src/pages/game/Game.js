@@ -57,8 +57,8 @@ export default class Game extends Component {
 
         this.socket = socketIOClient(ENDPOINT)
         var jugada = new Jugada()
-        this.socket.emit("registro", jugada);
-        this.socket.on("clientes", this.recibirJugada)
+        this.socket.emit("nueva_jugada", jugada);
+        this.socket.on("nueva_jugada", this.recibirJugada)
     }
 
     crearPartida(jugada) {
@@ -74,12 +74,10 @@ export default class Game extends Component {
         this.setState({ players: newPlayers, partidaSincrona: jugada.partidaSincrona, 
                         myId: jugada.userId })
 
-        console.log(this.state)
-
         this.deployer = new Deployer(true);
 
         // Mapa
-        this.map = new Map(this.players);
+        this.map = new Map(this.state.players);
         this.countryIds = []
         var countries = this.map.getCountries()
         for (var i = 0; i < countries.length; i++) {
@@ -126,15 +124,16 @@ export default class Game extends Component {
 
     // Troop Deployment Methods
     deployInitialTroops = () => {
-        const { selectedCountryId } = this.state;
+        const { myId, idPartida, selectedCountryId } = this.state;
 
         if (this.deployer.deployTroops(this.map, this.playerTurnDecider, selectedCountryId, this.troopsGiver, (newState) => this.setState(newState))) {
             this.forceUpdate();
             this.deployer.setStrategy(false);
         }
-        //envio la jugada al resto
-        new JugadaPonerTropas(this.playerTurnDecider, this.idPartida, selectedCountryId, this.troopsGiver);
-        JugadaPonerTropas.enviarjugada(JugadaPonerTropas);
+
+        // envio la jugada al resto
+        var newJugada = new JugadaPonerTropas(myId, idPartida, '', selectedCountryId, 1);
+        this.enviarjugada(newJugada);
     };
 
     deployTurnTroops = () => {
@@ -178,9 +177,6 @@ export default class Game extends Component {
 
     onDoubleClickListener = (e) => {
         const { initialSetupPhase, turnsPhase, attackOrSkipTurnPhase } = this.state;
-
-        console.log('Country origen: ' + this.state.selectedCountryId)
-        console.log('Country destino: ' + this.state.countryToAttackOrManeuverTo)
 
         clearTimeout(this.timer);
         this.prevent = true;
@@ -267,8 +263,6 @@ export default class Game extends Component {
     attackButtonRenderer = () => {
         const { initialSetupPhase, selectedCountryId, countryToAttackOrManeuverTo, attackerDiceRolls } = this.state;
 
-        console.log('Turn decider: ', this.playerTurnDecider)
-
         const remainingPlayerTroops = this.playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops();
         if (!initialSetupPhase && remainingPlayerTroops === 0) {
             JugadaAtaqueSincrono.enviarjugada(JugadaAtaqueSincrono);
@@ -346,61 +340,66 @@ export default class Game extends Component {
 
     enviarjugada(jugada) {
         this.socket.emit("nueva_jugada", jugada);
+        console.log('Jugada enviada: ', jugada)
     }
 
     // Hay que modificar para tratar una jugada
-    recibirJugada(jugada){
-        console.log(jugada.type)
-        switch(jugada.type){
-            case 'crearPartida':
-                console.log('Jugada recibida: ', jugada)
-                this.crearPartida(jugada)
-            break
+    recibirJugada(jugada) {
+        //Solo proceso las jugadas del resto de jugadores
+        //las mias las ejecuto en local
+        // if(jugada.userId != this.myId){
+            switch(jugada.type){
+                case 'crearPartida':
+                    console.log('Jugada recibida: ', jugada)
+                    this.crearPartida(jugada)
+                break
+    
+                case 'finTurno':
+                    console.log('Jugada recibida: ' + jugada)
+                    this.finTurno(jugada)
+                break
+    
+                case 'ponerTropas':
+                    console.log('Jugada recibida: ' + jugada)
+                    this.ponerTropas(jugada)
+                break
+    
+                case 'moverTropas':
+                    console.log('Jugada recibida: ' + jugada)
+                    this.moverTropas(jugada)
+                break
+    
+                case 'utilizarCartas':
+                    console.log('Jugada recibida: ' + jugada)
+    
+                break
+                case 'ataqueSincrono':
+                    console.log('Jugada recibida: ' + jugada)
+    
+                break
+                case 'defensaSincrona':
+                    console.log('Jugada recibida: ' + jugada)
+    
+                break
+                case 'ataqueSincrono':
+                    console.log('Jugada recibida: ' + jugada)
+    
+                break
+                case 'pedirCarta':
+                    console.log('Jugada recibida: ' + jugada)
+    
+                break
+                case 'finPartida':
+                    console.log('Jugada recibida: ' + jugada)
+    
+                break
+                default:
+                    console.log('Jugada recibida: ' + jugada)
+    
+                break
+            }
+        // }
 
-            case 'finTurno':
-                console.log('Jugada: ' + jugada)
-                this.finTurno(jugada)
-            break
-
-            case 'ponerTropas':
-                console.log('Jugada: ' + jugada)
-                this.ponerTropas(jugada)
-            break
-
-            case 'moverTropas':
-                console.log('Jugada: ' + jugada)
-                this.moverTropas(jugada)
-            break
-
-            case 'utilizarCartas':
-                console.log('Jugada: ' + jugada)
-
-            break
-            case 'ataqueSincrono':
-                console.log('Jugada: ' + jugada)
-
-            break
-            case 'defensaSincrona':
-                console.log('Jugada: ' + jugada)
-
-            break
-            case 'ataqueSincrono':
-                console.log('Jugada: ' + jugada)
-
-            break
-            case 'pedirCarta':
-                console.log('Jugada: ' + jugada)
-
-            break
-            case 'finPartida':
-                console.log('Jugada: ' + jugada)
-
-            break
-            default:
-                console.log('Jugada: ' + jugada)
-
-            break
-        }
     }
 }
 

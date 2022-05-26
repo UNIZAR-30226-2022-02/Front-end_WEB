@@ -8,10 +8,9 @@ export default class Deployer {
     }
 
     deployTroops(map, playerTurnDecider, selectedCountryId, troopsGiver, callback) {
-        
+
         if (this.isInitialDeployment === true) {
             if (map.deployTroop(selectedCountryId, playerTurnDecider.getPlayerWithTurn(), 1, true)) {
-                
                 playerTurnDecider.endTurnForPlayer(false);
                 if (!map.doPlayersHaveTroops()) {
                     const currentPlayer = playerTurnDecider.getPlayerWithTurn();

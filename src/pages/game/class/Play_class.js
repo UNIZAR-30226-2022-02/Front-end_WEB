@@ -18,7 +18,7 @@ class Jugada
 //Estas cargando hasta que te llega una jugada
 class JugadaCrearPartida extends Jugada
 {
-    constructor(userId = '', gameId = '',tipoJugada='JugadaCrearPartida', players = [], partidaSincrona = false) {
+    constructor(userId = '', gameId = '',tipoJugada='crearPartida', players = [], partidaSincrona = false) {
         super(userId, gameId)
         this.players = players
         this.partidaSincrona = partidaSincrona
@@ -26,7 +26,7 @@ class JugadaCrearPartida extends Jugada
 }
 
 class JugadaFinTurno extends Jugada
-{ 
+{
     constructor (userId = '', gameId = '',tipoJugada='JugadaFinTurno') {
         super(userId, gameId)
     }
@@ -34,7 +34,7 @@ class JugadaFinTurno extends Jugada
 
 class JugadaPonerTropas extends Jugada
 {
-    constructor(userId = '', gameId = '',tipoJugada='JugadaPonerTropas', country = '', numTropas = 0) {
+    constructor(userId = '', gameId = '',tipoJugada='ponerTropas', country = '', numTropas = 0) {
         super(userId, gameId)
         this.country = country
         this.numTropas = numTropas
