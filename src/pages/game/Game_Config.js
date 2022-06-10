@@ -23,61 +23,54 @@ export default class GameConfig extends React.Component {
 
         this.state = {
             numPlayers: 2,
-            publica: null,
-            sinc: null,
+            sincronizacion: null,
+            privacidad: null,
             code: '',
         }
 
-        this.handleBuscarPartida = this.handleBuscarPartida.bind(this)
+        this.handleCrearPartida = this.handleCrearPartida.bind(this)
+        this.handleUnirsePartida = this.handleUnirsePartida.bind(this)
     }
 
-    handleBuscarPartida = async (e) => {
+    handleCrearPartida = async (e) => {
+        const { numPlayers, sincronizacion, privacidad } = this.state
 
-        if (this.state.publica === null || this.state.sinc === null) {
-            AlertInfo('Error iniciar partida', 'Seleccione el tipo de partida', true)
+        if (sincronizacion === null || privacidad === null) {
+            AlertInfo('Error crear partida', 'Seleccione el tipo de partida', true)
             return
         }
 
         e.target.disabled = true
-        this.setState({ buscandoPartida: true })
-        e.target.innerHTML = 'Buscando partida...'
+        e.target.innerHTML = 'Crear partida...'
 
-        const { publica, numPlayers, sinc } = this.state
         const res = await axios({
             method: 'post',
             url: SERVER_URL + NEW_GAME_URL,
             data: qs.stringify({ 
-                publica: publica,
-                username: getUsername(),
+                nombre: getUsername(),
+                publica: privacidad,
+                tipo: sincronizacion,
                 maxJugadores: numPlayers,
-                tipo: sinc
             })
         })
 
+        alert(res)
         this.props.history.push('/game')
     }
 
     handleUnirsePartida = async (e) => {
-        /*
-        if (this.state.code === '') {
-            AlertInfo('Error unirse partida', 'Introduzca codigo valido', true)
-            return
-        }
-        */
-        const { publica, sinc } = this.state
+        const { privacidad, code } = this.state
 
         e.target.disabled = true
         e.target.innerHTML = 'Uniendose a partida...'
-
-        this.socket = socketIOClient(ENDPOINT)
-        this.socket.emit("registro", 'javi')
 
         const res = await axios({
             method: 'post',
             url: SERVER_URL + JOIN_GAME_URL,
             data: qs.stringify({
-                publica: publica,
                 username: getUsername(),
+                tipoPartida: privacidad,
+                codigo: code,
             })
         })
 
@@ -100,25 +93,33 @@ export default class GameConfig extends React.Component {
                             </Input>
                         </FormGroup>
                         <FormGroup check>
-                            <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sinc: 'Sincrona' })}/>Sincrona</Label>
+                            <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sincronizacion: 'sincrona' })}/>Sincrona</Label>
                         </FormGroup>
                         <FormGroup check>
-                            <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sinc: 'Asincrona' })}/>Asincrona</Label>
-                        </FormGroup>
-                        <hr></hr>
-                        <FormGroup check>
-                            <Label><Input type='radio' name='public' onClick={(e) => this.setState({ publica: 'Publica' })}/>Publica</Label>
+                            <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sincronizacion: 'asincrona' })}/>Asincrona</Label>
                         </FormGroup>
                         <FormGroup check>
-                            <Label><Input type='radio' name='public' onClick={(e) => this.setState({ publica: 'Privada' })}/>Privada</Label>
+                            <Label><Input type='radio' name='public' onClick={(e) => this.setState({ privacidad: 'publica' })}/>Publica</Label>
                         </FormGroup>
-                        <Button className='btn btn-danger btn-lg' onClick={this.handleBuscarPartida}>Crear partida</Button>
+                        <FormGroup check>
+                            <Label><Input type='radio' name='public' onClick={(e) => this.setState({ privacidad: 'privada' })}/>Privada</Label>
+                        </FormGroup>
+                        <Button className='btn btn-danger btn-lg' onClick={this.handleCrearPartida}>Crear partida</Button>
                         <hr></hr>
                         <FormGroup>
-                            <Input type='text' placeholder='Tengo un codigo' onChange={(e) => this.setState({ code: e.target.value })}/>
+                            <Input type='select' onChange={(e) => this.setState({ numPlayers: e.target.value })}>
+                                <option value={2}>2</option>
+                                <option value={3}>3</option>
+                                <option value={4}>4 </option>
+                                <option value={5}>5</option>
+                            </Input>
                         </FormGroup>
-                        <Button className='btn btn-secondary btn-sm' onClick={this.handleUnirsePartida}>Buscar partida</Button>
-
+                        <Button className='btn btn-primary' onClick={this.handleUnirsePartida}>Buscar partida publica</Button>
+                        <hr></hr>
+                        <FormGroup>
+                            <Input type='text' placeholder='Codigo' onChange={(e) => this.setState({ code: e.target.value })}/>
+                        </FormGroup>
+                        <Button className='btn btn-primary' onClick={this.handleUnirsePartida}>Unirme a partida</Button>
                     </HomeContainer>
                 </MainContainer>
             </BackGroundImage>

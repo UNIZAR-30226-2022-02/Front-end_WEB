@@ -2,8 +2,6 @@ import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Container } from "semantic-ui-react";
 
-import AuthRoute from '../util/AuthRoute'
-
 import Header from '../pages/Header'
 import Login from '../pages/Login'
 import Home from '../pages/Home'

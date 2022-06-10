@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input } from "reactstrap";
 import styled from "styled-components";
-import Map from "./Constantes_Contries_Cntinents.../map/Map";
-import Player from "./Constantes_Contries_Cntinents.../Player";
-import TurnDecider from "./Constantes_Contries_Cntinents.../Turn_Decider";
-import TroopsGiver from "./Constantes_Contries_Cntinents.../Troops_Giver";
-import Deployer from "./Constantes_Contries_Cntinents.../Deployer";
+import Map from "./util/map/Map";
+import Player from "./util/Player";
+import TurnDecider from "./util/Turn_Decider";
+import TroopsGiver from "./util/Troops_Giver";
+import Deployer from "./util/Deployer";
 import { Jugada, JugadaCrearPartida, JugadaFinTurno, JugadaPonerTropas, 
     JugadaMoverTropas, JugadaUtilizarCartas, JugadaAtaqueSincrono, 
     JugadaDefensaSincrona, JugadaAtaqueAsincrono, JugadaPedirCarta, 
@@ -33,8 +33,8 @@ export default class Game extends Component {
             players: [],
             numPlayers: 0,
 
-            nPlayersEliminados: 0,
             playersEliminados: [],
+            nPlayersEliminados: 0,
 
             // Variables temporales
             selectedCountryId: '',
@@ -48,25 +48,68 @@ export default class Game extends Component {
             numOfDefenderTroops: 0,
             numOfTroopsToMove: 0,
 
-            attackState: false,
-            maneuverState: false,
-            validity: false,
+            turnState: '', // deploy, attack or maneuver
         };
 
         this.recibirJugada = this.recibirJugada.bind(this)
 
-        this.socket.on("nueva_jugada", this.recibirJugada)
+        // Cambiar estas lineas para probar remoto
+        this.crearPartida = this.crearPartida.bind(this)
+        // this.socket.on("nueva_jugada", this.recibirJugada)
     }
 
     componentDidMount() {
-        document.addEventListener("click", this.onClickListener);
         document.addEventListener("dblclick", this.onDoubleClickListener);
     }
 
     componentWillUnmount() {
-        document.removeEventListener("click", this.onClickListener);
         document.removeEventListener("dblclick", this.onDoubleClickListener);
     }
+
+    onDoubleClickListener = (e) => {
+        const { initialSetupPhase, turnsPhase, attackOrSkipTurnPhase } = this.state;
+
+        clearTimeout(this.timer);
+        this.prevent = true;
+        const id = e.target.id;
+        const isCountryValid = this.countryIds.includes(id);
+
+        // Allow initial deployment with double click
+        if (initialSetupPhase && isCountryValid) {
+            this.setState({ selectedCountryId: id });
+            this.map.setSelectedCountry(id);
+            this.deployInitialTroops();
+            this.forceUpdate();
+            return;
+        }
+
+        // Allow turn troops deployment
+        if (turnsPhase && isCountryValid) {
+            this.setState({ selectedCountryId: id }, () => {
+                this.map.setSelectedCountry(id);
+                this.deployTurnTroops();
+            });
+            this.forceUpdate();
+            return;
+        }
+
+        // Allow selecting another country, attacing and manevering
+        if (attackOrSkipTurnPhase && isCountryValid) {
+            this.setState({ countryToAttackOrManeuverTo: id }, () => {
+                const result = this.map.validateInitialMove(
+                    this.state.selectedCountryId,
+                    this.state.countryToAttackOrManeuverTo,
+                    this.turnDecider.getCurrentPlayerInfo(),
+                );
+                this.setState({
+                    attackState: result === "ATTACK",
+                    maneuverState: result === "MANEUVER",
+                    validity: result ? true : false,
+                });
+            });
+            this.forceUpdate();
+        }
+    };
 
     // Attack Territory Caller
     attackTerritory = () => {
@@ -113,71 +156,6 @@ export default class Game extends Component {
                 turnsPhase: true,
                 attackState: false,
                 maneuverState: false,
-            });
-            this.forceUpdate();
-        }
-    };
-
-    // Click Listeners
-    onClickListener = (e) => {
-        this.timer = setTimeout(() => {
-            if (!this.prevent) {
-                const id = e.target.id;
-                const isCountryValid = this.countryIds.includes(id);
-                if (isCountryValid) {
-                    this.setState({ selectedCountryId: id });
-                    this.map.setSelectedCountry(id);
-                    this.forceUpdate();
-                } else {
-                    this.setState({ selectedCountryId: "" });
-                    this.map.resetCountryState();
-                    this.forceUpdate();
-                }
-            }
-            this.prevent = false;
-        }, this.delay);
-    };
-
-    onDoubleClickListener = (e) => {
-        const { initialSetupPhase, turnsPhase, attackOrSkipTurnPhase } = this.state;
-
-        clearTimeout(this.timer);
-        this.prevent = true;
-        const id = e.target.id;
-        const isCountryValid = this.countryIds.includes(id);
-
-        // Allow initial deployment with double click
-        if (initialSetupPhase && isCountryValid) {
-            this.setState({ selectedCountryId: id });
-            this.map.setSelectedCountry(id);
-            this.deployInitialTroops();
-            this.forceUpdate();
-            return;
-        }
-
-        // Allow turn troops deployment
-        if (turnsPhase && isCountryValid) {
-            this.setState({ selectedCountryId: id }, () => {
-                this.map.setSelectedCountry(id);
-                this.deployTurnTroops();
-            });
-            this.forceUpdate();
-            return;
-        }
-
-        // Allow selecting another country, attacing and manevering
-        if (attackOrSkipTurnPhase && isCountryValid) {
-            this.setState({ countryToAttackOrManeuverTo: id }, () => {
-                const result = this.map.validateInitialMove(
-                    this.state.selectedCountryId,
-                    this.state.countryToAttackOrManeuverTo,
-                    this.turnDecider.getCurrentPlayerInfo(),
-                );
-                this.setState({
-                    attackState: result === "ATTACK",
-                    maneuverState: result === "MANEUVER",
-                    validity: result ? true : false,
-                });
             });
             this.forceUpdate();
         }
@@ -354,12 +332,12 @@ export default class Game extends Component {
     }
 
     ataqueAsincrono(jugada) {
+        /*
         countryOrigin = jugada.countryOrigin
         countryDest = jugada.countryDest
         dadosAtaque = jugada.dadosAtaque
         dadosDefensa = jugada.dadosDefensa
-
-        
+        */
     }
 
     finTurno() {
