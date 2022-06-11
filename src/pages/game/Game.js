@@ -16,6 +16,7 @@ import socketIOClient from "socket.io-client"; // Version 1.4.5
 import { AlertLoading } from "../../util/MyAlerts";
 
 const ENDPOINT = "http://serverrisk.herokuapp.com"
+const colour = ['#0000FF', '#FF0000', '#009900', '#ffff00', '#000000']
 
 export default class Game extends Component {
 
@@ -24,6 +25,7 @@ export default class Game extends Component {
 
         this.state = {
             // Info partida
+            codigo: this.props.location.state.codigo,
             idPartida: '',
             partidaSincrona: '',
             nVecesCartasUsadas: 0,
@@ -53,9 +55,8 @@ export default class Game extends Component {
 
         this.recibirJugada = this.recibirJugada.bind(this)
 
-        // Cambiar estas lineas para probar remoto
-        this.crearPartida = this.crearPartida.bind(this)
-        // this.socket.on("nueva_jugada", this.recibirJugada)
+        this.socket = socketIOClient(ENDPOINT)
+        this.socket.on("nueva_jugada", this.recibirJugada)
     }
 
     componentDidMount() {
@@ -244,10 +245,11 @@ export default class Game extends Component {
     };
 
     render() {
-        const { idPartida, players, attackerDiceRolls, defenderDiceRolls } = this.state;
+        const { codigo, idPartida, players, attackerDiceRolls, defenderDiceRolls } = this.state;
         return (
             <BoardContainer>
-                {idPartida === '' ? ( <h2>Id es ''</h2> ) 
+                {codigo === '' && idPartida === '' ? ( <h2>Esparando al resto de jugadores...</h2> )
+                : codigo !== '' && idPartida === '' ? ( <div><h2>Esparando al resto de jugadores...</h2> <br></br>   <h2>Id partida: {codigo}</h2> </div> )
                 : (
                 <MapContainer>
                     <InnerContainer>
@@ -287,7 +289,7 @@ export default class Game extends Component {
 
         var newPlayers = []
         for (var i = 0; i < jugada.listaJugadores.length; i++){
-            var newPlayer = new Player(jugada.listaJugadores[i], 10, '#FF0000', false, i)
+            var newPlayer = new Player(jugada.listaJugadores[i], 10, colour[i], false, i)
             newPlayers.push(newPlayer)
         }
         newPlayers[0].setIsPlayerTurn(true)

@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
-import { Circles } from 'react-loader-spinner'
 import axios from 'axios';
 import qs from 'qs'
 
-import { AlertInfo } from '../../util/MyAlerts'
-import { AlertLoading } from '../../util/MyAlerts'
+import { AlertInfo, AlertLoading } from '../../util/MyAlerts'
 import { SERVER_URL, NEW_GAME_URL, JOIN_GAME_URL } from '../../api/URLS'
 import { getUsername } from '../../context/UserProvider'
+
 import socketIOClient from "socket.io-client"; // Version 1.4.5
 
 import fondo_pantalla from '../../images/background_image.png';
@@ -33,6 +31,7 @@ export default class GameConfig extends React.Component {
     }
 
     handleCrearPartida = async (e) => {
+        e.preventDefault()
         const { numPlayers, sincronizacion, privacidad } = this.state
 
         if (sincronizacion === null || privacidad === null) {
@@ -46,19 +45,25 @@ export default class GameConfig extends React.Component {
         const res = await axios({
             method: 'post',
             url: SERVER_URL + NEW_GAME_URL,
-            data: qs.stringify({ 
-                nombre: getUsername(),
+            data: qs.stringify({
+                username: getUsername(),
                 publica: privacidad,
                 tipo: sincronizacion,
                 maxJugadores: numPlayers,
             })
         })
 
-        alert(res)
-        this.props.history.push('/game')
+        console.log(res.data)
+
+        if (res.data.respuesta === 'OK') {
+            this.props.history.push('/game', { codigo: res.data.codigo })
+        } else {
+            AlertInfo('Error crear partida', '', true)
+        }
     }
 
     handleUnirsePartida = async (e) => {
+        e.preventDefault()
         const { privacidad, code } = this.state
 
         e.target.disabled = true
@@ -74,7 +79,13 @@ export default class GameConfig extends React.Component {
             })
         })
 
-        this.props.history.push('/game')
+        console.log(res.data)
+
+        if (res.data.respuesta === 'OK') {
+            this.props.history.push('/game', { codigo: res.data.codigo })
+        } else {
+            AlertInfo('Error crear partida', '', true)
+        }
     }
 
     render() {
@@ -93,16 +104,16 @@ export default class GameConfig extends React.Component {
                             </Input>
                         </FormGroup>
                         <FormGroup check>
-                            <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sincronizacion: 'sincrona' })}/>Sincrona</Label>
+                            <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sincronizacion: 'Sincrona' })}/>Sincrona</Label>
                         </FormGroup>
                         <FormGroup check>
-                            <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sincronizacion: 'asincrona' })}/>Asincrona</Label>
+                            <Label><Input type='radio' name='sin' onClick={(e) => this.setState({ sincronizacion: 'Asincrona' })}/>Asincrona</Label>
                         </FormGroup>
                         <FormGroup check>
-                            <Label><Input type='radio' name='public' onClick={(e) => this.setState({ privacidad: 'publica' })}/>Publica</Label>
+                            <Label><Input type='radio' name='public' onClick={(e) => this.setState({ privacidad: 'Publica' })}/>Publica</Label>
                         </FormGroup>
                         <FormGroup check>
-                            <Label><Input type='radio' name='public' onClick={(e) => this.setState({ privacidad: 'privada' })}/>Privada</Label>
+                            <Label><Input type='radio' name='public' onClick={(e) => this.setState({ privacidad: 'Privada' })}/>Privada</Label>
                         </FormGroup>
                         <Button className='btn btn-danger btn-lg' onClick={this.handleCrearPartida}>Crear partida</Button>
                         <hr></hr>
