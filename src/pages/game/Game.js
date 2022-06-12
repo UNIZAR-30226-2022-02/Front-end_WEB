@@ -14,7 +14,7 @@ import { Jugada, JugadaCrearPartida, JugadaFinTurno, JugadaPonerTropas,
 import socketIOClient from "socket.io-client"; // Version 1.4.5
 
 import { AlertLoading } from "../../util/MyAlerts";
-import { getSocket } from '../../context/UserProvider'
+import { getSocket, getUsername } from '../../context/UserProvider'
 
 const ENDPOINT = "http://serverrisk.herokuapp.com"
 const colour = ['#0000FF', '#FF0000', '#009900', '#ffff00', '#000000']
@@ -55,6 +55,11 @@ export default class Game extends Component {
         };
 
         this.recibirJugada = this.recibirJugada.bind(this)
+
+        var jugada = this.props.location.state.jugada
+        if (jugada !== undefined) {
+            this.recibirJugada(jugada)
+        }
 
         this.socket = getSocket()
         this.socket.on("nueva_jugada", this.recibirJugada)
@@ -290,13 +295,13 @@ export default class Game extends Component {
 
         var newPlayers = []
         for (var i = 0; i < jugada.listaJugadores.length; i++){
-            var newPlayer = new Player(jugada.listaJugadores[i], 10, colour[i], false, i)
+            var newPlayer = new Player(getUsername(), 10, colour[i], false, i)
             newPlayers.push(newPlayer)
         }
         newPlayers[0].setIsPlayerTurn(true)
 
         this.setState({ players: newPlayers, partidaSincrona: jugada.partidaSincrona, 
-                        myId: jugada.userId })
+                        myId: getUsername() })
 
         this.deployer = new Deployer(true);
 
@@ -317,6 +322,7 @@ export default class Game extends Component {
 
         // Una vez cargados los datos, iniamos la partida (pantalla de visualizacion)
         this.setState({ idPartida: jugada.idPartida })
+        console.log(this.state.idPartida)
     }
 
     ponerTropas(jugada) {
@@ -357,7 +363,7 @@ export default class Game extends Component {
         // Solo proceso las jugadas del resto de jugadores
         // las mias las ejecuto en local
         if(jugada.userId != this.myId) {
-            console.log('Jugada recibida: ' + jugada)
+            console.log('Jugada recibida: ' + jugada.type)
             switch(jugada.type) {
                 case 'crearPartida':
                     this.crearPartida(jugada)

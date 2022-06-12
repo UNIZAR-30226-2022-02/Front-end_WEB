@@ -25,9 +25,17 @@ export default class GameConfig extends React.Component {
             code: '',
         }
 
+        this.socket = getSocket()
+        this.socket.on("nueva_jugada", this.recibirJugada)
+
         this.handleCrearPartida = this.handleCrearPartida.bind(this)
         this.handleUnirsePartidaPublica = this.handleUnirsePartidaPublica.bind(this)
         this.handleUnirsePartidaPrivada = this.handleUnirsePartidaPrivada.bind(this)
+    }
+
+    recibirJugada (jugada) {
+        console.log(jugada)
+        this.jugada = jugada
     }
 
     handleCrearPartida = async (e) => {
@@ -84,7 +92,7 @@ export default class GameConfig extends React.Component {
         console.log(res.data)
 
         if (res.data.respuesta === 'OK') {
-            this.props.history.push('/game', { codigo: '' })
+            this.props.history.push('/game', { codigo: '', jugada: this.jugada })
         } else {
             AlertInfo('Error crear partida', 'Intentelo de nuevo', true)
             e.target.disabled = false
@@ -110,7 +118,7 @@ export default class GameConfig extends React.Component {
         console.log(res.data)
 
         if (res.data.respuesta === 'OK') {
-            this.props.history.push('/game', { codigo: res.data.codigo })
+            this.props.history.push('/game', { codigo: res.data.codigo, jugada: this.jugada })
         } else {
             AlertInfo('Error crear partida', 'Intentelo de nuevo', true)
             e.target.disabled = false

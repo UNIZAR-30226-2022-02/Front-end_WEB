@@ -4,6 +4,7 @@ const ENDPOINT = "http://serverrisk.herokuapp.com"
 
 // Registro en el servidor
 const socket = socketIOClient(ENDPOINT)
+socket.emit("registro", {username: getUsername()})
 
 export function getUsername () {
     return localStorage.getItem('username')
@@ -16,8 +17,6 @@ export function getToken () {
 export function login (username, token) {
     localStorage.setItem('username', username)
     localStorage.setItem('token', token)
-
-    socket.emit("registro", {username: getUsername()})
 }
 
 export function logout () {
