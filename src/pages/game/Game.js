@@ -56,9 +56,8 @@ export default class Game extends Component {
 
         this.recibirJugada = this.recibirJugada.bind(this)
 
-        var socket = getSocket()
-        console.log ("Socket: ", socket)
-        socket.on("nueva_jugada", this.recibirJugada)
+        this.socket = getSocket()
+        this.socket.on("nueva_jugada", this.recibirJugada)
     }
 
     componentDidMount() {

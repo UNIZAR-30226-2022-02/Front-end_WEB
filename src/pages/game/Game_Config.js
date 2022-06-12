@@ -6,9 +6,12 @@ import qs from 'qs'
 
 import { AlertInfo, AlertLoading } from '../../util/MyAlerts'
 import { SERVER_URL, NEW_GAME_URL, JOIN_GAME_URL } from '../../api/URLS'
-import { getUsername, newSocket } from '../../context/UserProvider'
+import { getUsername, newSocket, getSocket } from '../../context/UserProvider'
+import socketIOClient from "socket.io-client"; // Version 1.4.5
 
 import fondo_pantalla from '../../images/background_image.png';
+
+const ENDPOINT = "http://serverrisk.herokuapp.com"
 
 export default class GameConfig extends React.Component {
 
@@ -21,8 +24,6 @@ export default class GameConfig extends React.Component {
             privacidad: null,
             code: '',
         }
-
-        newSocket()
 
         this.handleCrearPartida = this.handleCrearPartida.bind(this)
         this.handleUnirsePartidaPublica = this.handleUnirsePartidaPublica.bind(this)
@@ -54,7 +55,12 @@ export default class GameConfig extends React.Component {
         console.log(res.data)
 
         if (res.data.respuesta === 'OK') {
-            this.props.history.push('/game', { codigo: res.data.codigo })
+            if (privacidad === 'Publica') {
+                this.props.history.push('/game', { codigo: '' })
+            } else {
+                this.props.history.push('/game', { codigo: res.data.codigo })
+            }
+
         } else {
             AlertInfo('Error crear partida', 'Intentelo de nuevo', true)
             e.target.disabled = false
