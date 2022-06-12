@@ -6,13 +6,9 @@ import qs from 'qs'
 
 import { AlertInfo, AlertLoading } from '../../util/MyAlerts'
 import { SERVER_URL, NEW_GAME_URL, JOIN_GAME_URL } from '../../api/URLS'
-import { getUsername } from '../../context/UserProvider'
-
-import socketIOClient from "socket.io-client"; // Version 1.4.5
+import { getUsername, newSocket } from '../../context/UserProvider'
 
 import fondo_pantalla from '../../images/background_image.png';
-
-const ENDPOINT = "http://serverrisk.herokuapp.com"
 
 export default class GameConfig extends React.Component {
 
@@ -26,8 +22,11 @@ export default class GameConfig extends React.Component {
             code: '',
         }
 
+        newSocket()
+
         this.handleCrearPartida = this.handleCrearPartida.bind(this)
-        this.handleUnirsePartida = this.handleUnirsePartida.bind(this)
+        this.handleUnirsePartidaPublica = this.handleUnirsePartidaPublica.bind(this)
+        this.handleUnirsePartidaPrivada = this.handleUnirsePartidaPrivada.bind(this)
     }
 
     handleCrearPartida = async (e) => {
@@ -35,12 +34,11 @@ export default class GameConfig extends React.Component {
         const { numPlayers, sincronizacion, privacidad } = this.state
 
         if (sincronizacion === null || privacidad === null) {
-            AlertInfo('Error crear partida', 'Seleccione el tipo de partida', true)
+            AlertInfo('Error crear partida', 'Seleccione configuracion partida', true)
             return
         }
 
         e.target.disabled = true
-        e.target.innerHTML = 'Crear partida...'
 
         const res = await axios({
             method: 'post',
@@ -58,23 +56,47 @@ export default class GameConfig extends React.Component {
         if (res.data.respuesta === 'OK') {
             this.props.history.push('/game', { codigo: res.data.codigo })
         } else {
-            AlertInfo('Error crear partida', '', true)
+            AlertInfo('Error crear partida', 'Intentelo de nuevo', true)
+            e.target.disabled = false
         }
     }
 
-    handleUnirsePartida = async (e) => {
+    handleUnirsePartidaPublica = async (e) => {
         e.preventDefault()
-        const { privacidad, code } = this.state
 
         e.target.disabled = true
-        e.target.innerHTML = 'Uniendose a partida...'
 
         const res = await axios({
             method: 'post',
             url: SERVER_URL + JOIN_GAME_URL,
             data: qs.stringify({
                 username: getUsername(),
-                tipoPartida: privacidad,
+                tipoPartida: 'Publica',
+            })
+        })
+
+        console.log(res.data)
+
+        if (res.data.respuesta === 'OK') {
+            this.props.history.push('/game', { codigo: '' })
+        } else {
+            AlertInfo('Error crear partida', 'Intentelo de nuevo', true)
+            e.target.disabled = false
+        }
+    }
+
+    handleUnirsePartidaPrivada = async (e) => {
+        e.preventDefault()
+        const { code } = this.state
+        console.log (code)
+        e.target.disabled = true
+
+        const res = await axios({
+            method: 'post',
+            url: SERVER_URL + JOIN_GAME_URL,
+            data: qs.stringify({
+                username: getUsername(),
+                tipoPartida: 'Privada',
                 codigo: code,
             })
         })
@@ -84,7 +106,8 @@ export default class GameConfig extends React.Component {
         if (res.data.respuesta === 'OK') {
             this.props.history.push('/game', { codigo: res.data.codigo })
         } else {
-            AlertInfo('Error crear partida', '', true)
+            AlertInfo('Error crear partida', 'Intentelo de nuevo', true)
+            e.target.disabled = false
         }
     }
 
@@ -116,21 +139,12 @@ export default class GameConfig extends React.Component {
                             <Label><Input type='radio' name='public' onClick={(e) => this.setState({ privacidad: 'Privada' })}/>Privada</Label>
                         </FormGroup>
                         <Button className='btn btn-danger btn-lg' onClick={this.handleCrearPartida}>Crear partida</Button>
-                        <hr></hr>
-                        <FormGroup>
-                            <Input type='select' onChange={(e) => this.setState({ numPlayers: e.target.value })}>
-                                <option value={2}>2</option>
-                                <option value={3}>3</option>
-                                <option value={4}>4 </option>
-                                <option value={5}>5</option>
-                            </Input>
-                        </FormGroup>
-                        <Button className='btn btn-primary' onClick={this.handleUnirsePartida}>Buscar partida publica</Button>
+                        <Button className='btn btn-primary' style={{ marginTop:'20px' }} onClick={this.handleUnirsePartidaPublica}>Buscar partida publica</Button>
                         <hr></hr>
                         <FormGroup>
                             <Input type='text' placeholder='Codigo' onChange={(e) => this.setState({ code: e.target.value })}/>
                         </FormGroup>
-                        <Button className='btn btn-primary' onClick={this.handleUnirsePartida}>Unirme a partida</Button>
+                        <Button className='btn btn-primary' onClick={this.handleUnirsePartidaPrivada}>Unirme a partida</Button>
                     </HomeContainer>
                 </MainContainer>
             </BackGroundImage>

@@ -14,6 +14,7 @@ import { Jugada, JugadaCrearPartida, JugadaFinTurno, JugadaPonerTropas,
 import socketIOClient from "socket.io-client"; // Version 1.4.5
 
 import { AlertLoading } from "../../util/MyAlerts";
+import { getSocket } from '../../context/UserProvider'
 
 const ENDPOINT = "http://serverrisk.herokuapp.com"
 const colour = ['#0000FF', '#FF0000', '#009900', '#ffff00', '#000000']
@@ -55,8 +56,9 @@ export default class Game extends Component {
 
         this.recibirJugada = this.recibirJugada.bind(this)
 
-        this.socket = socketIOClient(ENDPOINT)
-        this.socket.on("nueva_jugada", this.recibirJugada)
+        var socket = getSocket()
+        console.log ("Socket: ", socket)
+        socket.on("nueva_jugada", this.recibirJugada)
     }
 
     componentDidMount() {
@@ -248,8 +250,8 @@ export default class Game extends Component {
         const { codigo, idPartida, players, attackerDiceRolls, defenderDiceRolls } = this.state;
         return (
             <BoardContainer>
-                {codigo === '' && idPartida === '' ? ( <h2>Esparando al resto de jugadores...</h2> )
-                : codigo !== '' && idPartida === '' ? ( <div><h2>Esparando al resto de jugadores...</h2> <br></br>   <h2>Id partida: {codigo}</h2> </div> )
+                {codigo === '' && idPartida === '' ? ( <div><h2>Esperando al resto de jugadores...</h2></div> )
+                : idPartida === '' ? ( <div><h2>Esperando al resto de jugadores...</h2> <br></br> <h2>Id partida: {codigo}</h2> </div> )
                 : (
                 <MapContainer>
                     <InnerContainer>
@@ -356,54 +358,44 @@ export default class Game extends Component {
         // Solo proceso las jugadas del resto de jugadores
         // las mias las ejecuto en local
         if(jugada.userId != this.myId) {
+            console.log('Jugada recibida: ' + jugada)
             switch(jugada.type) {
                 case 'crearPartida':
-                    console.log('Jugada recibida: ', jugada)
                     this.crearPartida(jugada)
                 break
 
                 case 'ponerTropas':
-                    console.log('Jugada recibida: ' + jugada)
                     this.ponerTropas(jugada)
                 break
 
                 case 'finTurno':
-                    console.log('Jugada recibida: ' + jugada)
                     this.finTurno()
                 break
 
                 case 'moverTropas':
-                    console.log('Jugada recibida: ' + jugada)
                     this.moverTropas(jugada)
                 break
 
                 case 'utilizarCartas':
-                    console.log('Jugada recibida: ' + jugada)
 
                 break
                 case 'ataqueSincrono':
-                    console.log('Jugada recibida: ' + jugada)
 
                 break
                 case 'defensaSincrona':
-                    console.log('Jugada recibida: ' + jugada)
 
                 break
                 case 'ataqueAsincrono':
-                    console.log('Jugada recibida: ' + jugada)
                     this.ataqueAsincrono(jugada)
 
                 break
                 case 'pedirCarta':
-                    console.log('Jugada recibida: ' + jugada)
 
                 break
                 case 'finPartida':
-                    console.log('Jugada recibida: ' + jugada)
 
                     break
                 default:
-                    console.log('Jugada recibida: ' + jugada)
 
                 break
             }
