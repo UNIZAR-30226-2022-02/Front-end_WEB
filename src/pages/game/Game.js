@@ -14,7 +14,7 @@ import { Jugada, JugadaCrearPartida, JugadaFinTurno, JugadaPonerTropas,
 import socketIOClient from "socket.io-client"; // Version 1.4.5
 
 import { AlertLoading } from "../../util/MyAlerts";
-import { getSocket, getUsername } from '../../context/UserProvider'
+import { getUsername, hayJugadas, leerJugada } from '../../context/UserProvider'
 
 const ENDPOINT = "http://serverrisk.herokuapp.com"
 const colour = ['#0000FF', '#FF0000', '#009900', '#ffff00', '#000000']
@@ -241,6 +241,12 @@ export default class Game extends Component {
         const { idPartida, codigo } = this.state
         console.log ("Id partida render: ", idPartida)
         console.log ("Codigo partida render: ", codigo)
+
+        // Obtener lista jugadas y procesarlas
+        while (hayJugadas()) {
+            console.log(hayJugadas())
+            this.procesarJugada(leerJugada())
+        }
 
         return (
             <BoardContainer>

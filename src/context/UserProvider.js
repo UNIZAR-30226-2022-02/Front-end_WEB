@@ -14,12 +14,27 @@ function recibirJugada(jugada) {
     localStorage.setItem('jugadas', JSON.stringify(lista))
 }
 
+export function hayJugadas() {
+    var lista = JSON.parse(localStorage.getItem('jugada'))
+
+    console.log(lista.lenght)
+
+    if (lista.lenght === 0) {
+        return false
+    } else {
+        return true
+    }
+}
+
 export function leerJugada() {
-    var lista = JSON.parse(localStorage.getItem('jugada', jugada))
+    var lista = JSON.parse(localStorage.getItem('jugada'))
+    console.log(lista)
 
     // shift lee y elimina el primer elemento
-    ret = this.colaJugadas.shift()
+    var ret = lista.shift()
     localStorage.setItem('jugadas', JSON.stringify(lista))
+
+    return ret
 }
 
 export function getUsername () {
@@ -28,7 +43,7 @@ export function getUsername () {
 
 export function login (username) {
     localStorage.setItem('username', username)
-    localStorage.setItem('jugadas', JSON.stringify([]))
+    localStorage.setItem('jugada', JSON.stringify([]))
 }
 
 export function logout () {
