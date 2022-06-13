@@ -15,7 +15,6 @@ export default class Deployer {
                 if (!map.doPlayersHaveTroops()) {
                     const currentPlayer = playerTurnDecider.getPlayerWithTurn();
                     troopsGiver.giveTroopsToPlayer(currentPlayer);
-                    callback({ initialSetupPhase: false, turnsPhase: true });
                     return true;
                 }
             }
@@ -27,7 +26,6 @@ export default class Deployer {
                     callback({ showCards: true });
                     return;
                 }
-                callback({ turnsPhase: false, attackOrSkipTurnPhase: true, countryToAttackOrManeuverTo: "" });
             }
         }
     }
