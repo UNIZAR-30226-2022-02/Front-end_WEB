@@ -7,7 +7,7 @@ export default class Deployer {
         this.isInitialDeployment = newIsInitialDeployment;
     }
 
-    deployTroops(map, playerTurnDecider, selectedCountryId, numTropas, troopsGiver, callback) {
+    deployTroops(map, playerTurnDecider, selectedCountryId, numTropas, troopsGiver) {
 
         if (this.isInitialDeployment === true) {
             if (map.deployTroop(selectedCountryId, playerTurnDecider.getPlayerWithTurn(), numTropas, true)) {
@@ -20,13 +20,6 @@ export default class Deployer {
             }
         } else {
             map.deployTroop(selectedCountryId, playerTurnDecider.getPlayerWithTurn(), numTropas, true);
-            if (playerTurnDecider.getCurrentPlayerInfo().getRemainingTroops() === 0) {
-                callback({ cardsTrade: false });
-                if (playerTurnDecider.getCurrentPlayerInfo().getCards().length > 5) {
-                    callback({ showCards: true });
-                    return;
-                }
-            }
         }
     }
 }

@@ -13,6 +13,7 @@ import {procesarJugada} from '../../pages/game/Game'
 
 const ENDPOINT = "http://serverrisk.herokuapp.com"
 export const socket = socketIOClient(ENDPOINT)
+
 export default class GameConfig extends React.Component {
 
     constructor (props) {
@@ -49,11 +50,11 @@ export default class GameConfig extends React.Component {
         }
 
         e.target.disabled = true
-        
+
         socket.emit("registro", {username: getUsername()})
         socket.on ("nueva_jugada", procesarJugada)
         socket.on ("arrancar_jugada", this.arrancar)
-        
+
         await this.sleep(1000)
 
         const res = await axios({
@@ -76,10 +77,8 @@ export default class GameConfig extends React.Component {
                 this.props.history.push('/game', {idPartida: res.data.idPartida})
                // c=res.data.codigo
             }
-        } 
-
+        }
     }
-
 
     handleUnirsePartidaPublica = async (e) => {
         e.preventDefault()
