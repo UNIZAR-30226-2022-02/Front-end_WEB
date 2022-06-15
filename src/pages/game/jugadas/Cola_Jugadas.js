@@ -6,11 +6,18 @@ export default class Cola_Jugadas {
     constructor () {
         this.colaJugadas = []
     }
-
+    /*
     recibirJugada (jugada) {
-        console.log(this.colaJugadas)
+        console.log("Meto jugada a la cola",this.colaJugadas)
         this.colaJugadas.push(jugada)
     }
+    */
+
+    recibirJugada = (jugada) => {
+        console.log("Meto jugada a la cola",this.colaJugadas)
+        this.colaJugadas.push(jugada)
+    };
+
 
     leerJugada () {
         // shift lee y elimina el primer elemento
@@ -18,6 +25,6 @@ export default class Cola_Jugadas {
     }
 
     hayJugadas() {
-        return this.colaJugadas.length !== 0
+        return this.colaJugadas.length > 0
     }
 }

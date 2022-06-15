@@ -6,13 +6,13 @@ import qs from 'qs'
 
 import { AlertInfo, AlertLoading } from '../../util/MyAlerts'
 import { SERVER_URL, NEW_GAME_URL, JOIN_GAME_URL } from '../../api/URLS'
-import { getUsername, newSocket, getSocket } from '../../context/UserProvider'
+import { getUsername, newSocket, getSocket,recibirJugada } from '../../context/UserProvider'
 import socketIOClient from "socket.io-client"; // Version 1.4.5
-
 import fondo_pantalla from '../../images/background_image.png';
+import {procesarJugada} from '../../pages/game/Game'
 
 const ENDPOINT = "http://serverrisk.herokuapp.com"
-
+export const socket = socketIOClient(ENDPOINT)
 export default class GameConfig extends React.Component {
 
     constructor (props) {
@@ -30,6 +30,15 @@ export default class GameConfig extends React.Component {
         this.handleUnirsePartidaPrivada = this.handleUnirsePartidaPrivada.bind(this)
     }
 
+    arrancar = async (e) => {
+        console.log("arrancamos")
+        this.props.history.push('/game')
+    }
+
+    async sleep  (ms) {
+        return new Promise(resolve => setTimeout(resolve, ms))
+    }
+
     handleCrearPartida = async (e) => {
         e.preventDefault()
         const { numPlayers, sincronizacion, privacidad } = this.state
@@ -40,6 +49,12 @@ export default class GameConfig extends React.Component {
         }
 
         e.target.disabled = true
+        
+        socket.emit("registro", {username: getUsername()})
+        socket.on ("nueva_jugada", procesarJugada)
+        socket.on ("arrancar_jugada", this.arrancar)
+        
+        await this.sleep(1000)
 
         const res = await axios({
             method: 'post',
@@ -54,23 +69,27 @@ export default class GameConfig extends React.Component {
 
         console.log(res.data)
 
-        if (res.data.respuesta === 'OK') {
+        if (res.data.respuesta === 'O') {
             if (privacidad === 'Publica') {
                 this.props.history.push('/game', { codigo: '' })
             } else {
-                this.props.history.push('/game', { codigo: res.data.codigo })
+                this.props.history.push('/game', {idPartida: res.data.idPartida})
+               // c=res.data.codigo
             }
+        } 
 
-        } else {
-            AlertInfo('Error crear partida', 'Intentelo de nuevo', true)
-            e.target.disabled = false
-        }
     }
+
 
     handleUnirsePartidaPublica = async (e) => {
         e.preventDefault()
 
         e.target.disabled = true
+
+        socket.emit("registro", {username: getUsername()})
+        socket.on ("nueva_jugada", procesarJugada)
+
+        await this.sleep(1000)    
 
         const res = await axios({
             method: 'post',
@@ -84,9 +103,9 @@ export default class GameConfig extends React.Component {
         console.log(res.data)
 
         if (res.data.respuesta === 'OK') {
-            this.props.history.push('/game', { codigo: '' })
+            this.props.history.push('/game')
         } else {
-            AlertInfo('Error crear partida', 'Intentelo de nuevo', true)
+            AlertInfo('Error unirte partida publica', 'Intentelo de nuevo', true)
             e.target.disabled = false
         }
     }
@@ -96,6 +115,10 @@ export default class GameConfig extends React.Component {
         const { code } = this.state
         console.log (code)
         e.target.disabled = true
+
+        socket.emit("registro", {username: getUsername()})
+        socket.on ("nueva_jugada", procesarJugada)
+        await this.sleep(1000)
 
         const res = await axios({
             method: 'post',
@@ -110,7 +133,7 @@ export default class GameConfig extends React.Component {
         console.log(res.data)
 
         if (res.data.respuesta === 'OK') {
-            this.props.history.push('/game', { codigo: res.data.codigo })
+            this.props.history.push('/game')
         } else {
             AlertInfo('Error crear partida', 'Intentelo de nuevo', true)
             e.target.disabled = false
@@ -157,6 +180,8 @@ export default class GameConfig extends React.Component {
         )
     }
 }
+
+
 
 const BackGroundImage = styled.div`
     background-image: url(${fondo_pantalla});
