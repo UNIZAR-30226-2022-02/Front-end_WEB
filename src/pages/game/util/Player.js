@@ -82,10 +82,9 @@ class Player {
         return diceRolls.sort((a, b) => b - a);
     }
 
-
     getView() {
         const PlayerName = React.createElement(Name, {
-            children: this.name,
+            children: this.id,
         });
         const PlayerTroops = React.createElement(Reserved, {
             children: `Reserve: ${this.remainingTroops}`,

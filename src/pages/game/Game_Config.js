@@ -70,13 +70,15 @@ export default class GameConfig extends React.Component {
 
         console.log(res.data)
 
-        if (res.data.respuesta === 'O') {
-            if (privacidad === 'Publica') {
-                this.props.history.push('/game', { codigo: '' })
+        if (res.data.respuesta === 'OK') {
+            if (privacidad === 'Privada') {
+                e.target.innerHTML = "Codigo: " + res.data.codigo
             } else {
-                this.props.history.push('/game', {idPartida: res.data.idPartida})
-               // c=res.data.codigo
+                e.target.innerHTML = "Esperando..."
             }
+        } else {
+            AlertInfo('Error crear partida publica', 'Intentelo de nuevo', true)
+            e.target.disabled = false
         }
     }
 
@@ -112,11 +114,11 @@ export default class GameConfig extends React.Component {
     handleUnirsePartidaPrivada = async (e) => {
         e.preventDefault()
         const { code } = this.state
-        console.log (code)
         e.target.disabled = true
 
         socket.emit("registro", {username: getUsername()})
         socket.on ("nueva_jugada", procesarJugada)
+
         await this.sleep(1000)
 
         const res = await axios({
@@ -134,7 +136,7 @@ export default class GameConfig extends React.Component {
         if (res.data.respuesta === 'OK') {
             this.props.history.push('/game')
         } else {
-            AlertInfo('Error crear partida', 'Intentelo de nuevo', true)
+            AlertInfo('Error unirse partida privada', 'Intentelo de nuevo', true)
             e.target.disabled = false
         }
     }
