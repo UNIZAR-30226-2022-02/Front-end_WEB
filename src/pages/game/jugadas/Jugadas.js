@@ -9,26 +9,26 @@ class Jugada
 
 class JugadaFinTurno extends Jugada
 {
-    constructor (userId = '', gameId = '') {
-        super('finTurno', userId, gameId)
+    constructor (userId = '', idPartida = '') {
+        super('finTurno', userId, idPartida)
     }
 }
 
 class JugadaPonerTropas extends Jugada
 {
-    constructor(userId = '', gameId = '', country = '', numTropas = 0) {
-        super('ponerTropas', userId, gameId)
-        this.country = country
+    constructor(userId = '', idPartida = '', idTerritorio = '', numTropas = 0) {
+        super('ponerTropas', userId, idPartida)
+        this.idTerritorio = idTerritorio
         this.numTropas = numTropas
     }
 }
 
 class JugadaMoverTropas extends Jugada
 {
-    constructor(userId = '', gameId = '', countryOrigin = '', countryDest = '', numTropas = 0) {
-        super('moverTropas', userId, gameId)
-        this.countryOrigin = countryOrigin
-        this.countryDest = countryDest
+    constructor(userId = '', idPartida = '', idTerritorioOrigen = '', idTerritorioDestino = '', numTropas = 0) {
+        super('moverTropas', userId, idPartida)
+        this.idTerritorioOrigen = idTerritorioOrigen
+        this.idTerritorioDestino = idTerritorioDestino
         this.numTropas = numTropas
     }
 }
@@ -36,56 +36,56 @@ class JugadaMoverTropas extends Jugada
 //Asigno tropas dependiendo del numero de cartas usadas por el jugador
 class JugadaUtilizarCartas extends Jugada
 {
-    constructor(userId = '', gameId = '', cartas = []) {
-        super('utilizar_cartas', userId, gameId)
+    constructor(userId = '', idPartida = '', cartas = []) {
+        super('utilizar_cartas', userId, idPartida)
         this.cartas = cartas     
     }
 }
 
 class JugadaAtaqueSincrono extends Jugada
 {
-    constructor (userId = '', gameId = '', countryOrigin = '', countryDest = '', dadosAtaque = []) {
-        super('ataqueSincrono', userId, gameId)
-        this.countryOrigin = countryOrigin
-        this.countryDest = countryDest
-        this.dadosAtaque = dadosAtaque
+    constructor (userId = '', idPartida = '', territorioAtacante = '', territorioAtacado = '', resultadoDadosAtaque = []) {
+        super('ataqueSincrono', userId, idPartida)
+        this.territorioAtacante = territorioAtacante
+        this.territorioAtacado = territorioAtacado
+        this.resultadoDadosAtaque = resultadoDadosAtaque
     }
 }
 
 class JugadaDefensaSincrona extends Jugada
 {
-    constructor (userId = '', gameId = '', countryOrigin = '', countryDest = '', dadosDefensa = []) {
-        super('defensa_sincrona', userId, gameId)
-        this.countryOrigin = countryOrigin
-        this.countryDest = countryDest
-        this.dadosDefensa = dadosDefensa
+    constructor (userId = '', idPartida = '', territorioAtacante = '', territorioAtacado = '', resultadoDadosDefensa = []) {
+        super('defensa_sincrona', userId, idPartida)
+        this.territorioAtacante = territorioAtacante
+        this.territorioAtacado = territorioAtacado
+        this.resultadoDadosDefensa = resultadoDadosDefensa
     }
 }
 
 class JugadaAtaqueAsincrono extends Jugada
 {    
-    constructor (userId = '', gameId = '', countryOrigin = '', countryDest = '', dadosAtaque= [], dadosDefensa = []) {
-        super('ataqueAsincrono', userId, gameId)
-        this.countryOrigin = countryOrigin
-        this.countryDest = countryDest
-        this.dadosAtaque = dadosAtaque
-        this.dadosDefensa = dadosDefensa
+    constructor (userId = '', idPartida = '', territorioAtacante = '', territorioAtacado = '', resultadoDadosAtaque= [], resultadoDadosDefensa = []) {
+        super('ataqueAsincrono', userId, idPartida)
+        this.territorioAtacante = territorioAtacante
+        this.territorioAtacado = territorioAtacado
+        this.resultadoDadosAtaque = resultadoDadosAtaque
+        this.resultadoDadosDefensa = resultadoDadosDefensa
     }
 }
 
 //Si el jugador  ha conquistado  le doy una carta
 class JugadaPedirCarta extends Jugada
 {
-    constructor (userId = '', gameId = '', cartaRecibida = 0) {
-        super('pedir_carta', userId, gameId)
+    constructor (userId = '', idPartida = '', cartaRecibida = 0) {
+        super('pedir_carta', userId, idPartida)
         this.cartaRecibida = cartaRecibida
     }
 }
 
 class JugadaFinPartida extends Jugada
 {
-    constructor (userId = '', gameId = '', players = []) {
-        super('finPartida', userId, gameId)
+    constructor (userId = '', idPartida = '', players = []) {
+        super('finPartida', userId, idPartida)
         this.players = players
     }
 }

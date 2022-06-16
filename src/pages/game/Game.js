@@ -16,6 +16,7 @@ import { useHistory } from 'react-router-dom';
 import { AlertLoading } from "../../util/MyAlerts";
 import { getUsername, hayJugadas, leerJugada } from '../../context/UserProvider'
 import {socket} from '../../pages/game/Game_Config'
+import MapPaths from "./util/map/MapPaths";
 
 const ENDPOINT = "http://serverrisk.herokuapp.com"
 const colour = ['#0000FF', '#FF0000', '#009900', '#ffff00', '#000000']
@@ -55,7 +56,7 @@ export default class Game extends Component {
 
     componentDidMount() {
         document.addEventListener("dblclick", this.onDoubleClickListener);
-        window.setInterval(this.actualizarMapa, 3000)
+        window.setInterval(this.actualizarMapa, 1500)
     }
 
     componentWillUnmount() {
@@ -100,14 +101,16 @@ export default class Game extends Component {
 
             // Allow selecting another country, attacing and manevering
             if (juego.attackOrSkipTurnPhase && isCountryValid) {
+                console.log("Pais origen:", juego.selectedCountryId)
+                console.log("Pais destino:",juego.countryToAttackOrManeuverTo)
                 if (juego.selectedCountryId === '') {
                     juego.selectedCountryId = id
-                } else {
+                } else if (juego.selectedCountryId !== '') {
                     juego.countryToAttackOrManeuverTo = id
                     const result = juego.map.validateInitialMove(
-                    juego.selectedCountryId,
-                    juego.countryToAttackOrManeuverTo,
-                    juego.turnDecider.getCurrentPlayerInfo(),
+                        juego.selectedCountryId,
+                        juego.countryToAttackOrManeuverTo,
+                        juego.turnDecider.getCurrentPlayerInfo(),
                     );
                     juego.attackState = result === "ATTACK"
                     juego.maneuverState = result === "MANEUVER"
@@ -165,11 +168,14 @@ export default class Game extends Component {
         // envio la jugada al resto
         var newJugada = new JugadaPonerTropas(juego.myId, juego.idPartida, juego.selectedCountryId, 1);
         juego.enviarjugada(newJugada);
+        var jFinTurno = new JugadaFinTurno(juego.myId, juego.idPartida);
+        juego.enviarjugada(jFinTurno);
     };
 
     deployTurnTroops = () => {
         juego.deployer.deployTroops(juego.map, juego.turnDecider, juego.selectedCountryId, 1, juego.troopsGiver)
         if (juego.turnDecider.getCurrentPlayerInfo().getRemainingTroops() === 0) {
+            console.log("ATAQUEEEEEE")
             juego.turnsPhase = false
             juego.attackOrSkipTurnPhase = true
             juego.countryToAttackOrManeuverTo = ''
@@ -188,7 +194,6 @@ export default class Game extends Component {
             juego.turnsPhase = true
             juego.attackState = false
             juego.maneuverState = false
-            this.forceUpdate();
         }
     };
 
@@ -197,12 +202,12 @@ export default class Game extends Component {
 
         const remainingPlayerTroops = juego.turnDecider.getCurrentPlayerInfo().getRemainingTroops();
 
-        if (!JugadaMoverTropas.initialSetupPhase && remainingPlayerTroops === 0) {
+        if (!juego.initialSetupPhase && remainingPlayerTroops === 0) {
             return <EndButton onClick={() => {
 
                 // Primero envio jugada y luego cambio turno. Si se hace al reves, se trata la jugada fin de turno,
                 // ya que habra cambiado de id y luego llegara la jugada
-                var nuevaJugada = new JugadaFinTurno(juego.userId, juego.idPartida);
+                var nuevaJugada = new JugadaFinTurno(juego.myId, juego.idPartida);
                 this.enviarjugada(nuevaJugada);
 
                 // Esperamos a que llegue jugada fin turno (Fin turno remoto)
@@ -280,7 +285,6 @@ export default class Game extends Component {
     };
 
     render() {
-
         return (
             <BoardContainer>
                 <MapContainer>
@@ -314,11 +318,12 @@ export default class Game extends Component {
     /* JUGADAS */
     /* ******* */
     crearPartida(jugada) {
+        console.log("Crear partida:", jugada)
         AlertLoading('Partida encontrada. Empezando partida...', 1000)
 
         var newPlayers = []
         for (var i = 0; i < jugada.listaJugadores.length; i++){
-            var newPlayer = new Player(jugada.listaJugadores[i], 30, colour[i], false, i)
+            var newPlayer = new Player(jugada.listaJugadores[i], 20, colour[i], false, i)
             newPlayers.push(newPlayer)
         }
         newPlayers[0].setIsPlayerTurn(true)
@@ -348,33 +353,24 @@ export default class Game extends Component {
     ponerTropas = (jugada) => {
 
         if (juego.initialSetupPhase) {
-            if (juego.deployer.deployTroops(juego.map, juego.turnDecider, jugada.country, jugada.numTropas, juego.troopsGiver)) {
-                juego.initialSetupPhase = false
-                juego.turnsPhase = true
-                juego.deployer.setStrategy(false);
-            }
+            juego.deployer.deployTroops(juego.map, juego.turnDecider, jugada.idTerritorio, jugada.numTropas, juego.troopsGiver)
         } else if (juego.turnsPhase) {
-            juego.deployer.deployTroops(juego.map, juego.turnDecider, jugada.country, jugada.numTropas, juego.troopsGiver)
-            if (juego.turnDecider.getCurrentPlayerInfo().getRemainingTroops() === 0) {
-                juego.turnsPhase = false
-                juego.attackOrSkipTurnPhase = true
-                juego.countryToAttackOrManeuverTo = ''
-            }
+            juego.deployer.deployTroops(juego.map, juego.turnDecider, jugada.idTerritorio, jugada.numTropas, juego.troopsGiver)
         }
     }
 
     moverTropas(jugada) {
-        var countryOrigin = jugada.countryOrigin
-        var countryDest = jugada.countryDest
+        var countryOrigin = jugada.idTerritorioOrigen
+        var countryDest = jugada.idTerritorioDestino
         var numTropas = jugada.numTropas
         juego.map.attackTerritory(countryOrigin, countryDest, numTropas)
     }
 
     ataqueAsincrono(jugada) {
-        var countryOrigin = jugada.countryOrigin
-        var countryDest = jugada.countryDest
-        var dadosAtaque = jugada.dadosAtaque
-        var dadosDefensa = jugada.dadosDefensa
+        var countryOrigin = jugada.territorioAtacante
+        var countryDest = jugada.territorioAtacado
+        var dadosAtaque = jugada.resultadoDadosAtaque
+        var dadosDefensa = jugada.resultadoDadosDefensa
 
         const result = juego.map.attackTerritory(countryDest, countryOrigin, dadosAtaque.length, dadosDefensa.length,
                 dadosAtaque, dadosDefensa)
@@ -401,13 +397,20 @@ export default class Game extends Component {
     }
 
     finTurno() {
-        juego.endTurnForPlayer(true)
-        juego.selectedCountryId = ''
-        juego.map.resetCountryState();
+        if (juego.initialSetupPhase && !juego.map.doPlayersHaveTroops()) {
+            juego.initialSetupPhase = false
+            juego.turnsPhase = true
+            juego.deployer.setStrategy(false)
+        } else {
+            juego.endTurnForPlayer(true)
+            juego.selectedCountryId = ''
+            juego.map.resetCountryState();
+        }
     }
 
     enviarjugada(jugada) {
         socket.emit("nueva_jugada", jugada);
+        console.log("Jugada enviada:", jugada)
     }
 }
 
@@ -418,30 +421,26 @@ export function procesarJugada(jugada) {
     // Solo proceso las jugadas del resto de jugadores
     // las mias las ejecuto en local
     if(jugada.userId != juego.myId) {
+        //console.log("Jugada recibida:", jugada)
         switch(jugada.type) {
             case 'crearPartida':
                 juego.setidPartida(jugada.idPartida)
                 juego.crearPartida(jugada)
-                console.log("He tratado la jugada de crear partida:", jugada)
             break
             case 'ponerTropas':
                 juego.ponerTropas(jugada)
             break
             case 'finTurno':
                 juego.finTurno()
-                console.log("He tratado la jugada de fin de turno")
             break
             case 'moverTropas':
                 juego.moverTropas(jugada)
-                console.log("He tratado la jugada de mover tropas")
             break
             case 'ataqueAsincrono':
                 juego.ataqueAsincrono(jugada)
-                console.log("He tratado la jugada de atacar asincrono tropas")
             break
             case 'ataqueSincrono':
                 juego.ataqueSincrono(jugada)
-                console.log("He tratado la jugada de atacar tropas")
             break
             case 'defensaSincrona':
 

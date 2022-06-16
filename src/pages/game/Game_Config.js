@@ -20,7 +20,7 @@ export default class GameConfig extends React.Component {
         super(props)
 
         this.state = {
-            numPlayers: 2,
+            numPlayers: 3,
             sincronizacion: null,
             privacidad: null,
             code: '',
@@ -32,7 +32,7 @@ export default class GameConfig extends React.Component {
     }
 
     arrancar = async (e) => {
-        console.log("arrancamos")
+        console.log('Arrancar')
         this.props.history.push('/game')
     }
 
@@ -54,8 +54,6 @@ export default class GameConfig extends React.Component {
         socket.emit("registro", {username: getUsername()})
         socket.on ("nueva_jugada", procesarJugada)
         socket.on ("arrancar_jugada", this.arrancar)
-
-        await this.sleep(1000)
 
         const res = await axios({
             method: 'post',
@@ -89,8 +87,7 @@ export default class GameConfig extends React.Component {
 
         socket.emit("registro", {username: getUsername()})
         socket.on ("nueva_jugada", procesarJugada)
-
-        await this.sleep(1000)    
+        socket.on ("arrancar_jugada", this.arrancar)
 
         const res = await axios({
             method: 'post',
@@ -103,11 +100,11 @@ export default class GameConfig extends React.Component {
 
         console.log(res.data)
 
-        if (res.data.respuesta === 'OK') {
-            this.props.history.push('/game')
-        } else {
+        if (res.data.respuesta !== 'OK') {
             AlertInfo('Error unirte partida publica', 'Intentelo de nuevo', true)
             e.target.disabled = false
+        } else {
+            e.target.innerHTML = "Uniendote..."
         }
     }
 
@@ -118,8 +115,7 @@ export default class GameConfig extends React.Component {
 
         socket.emit("registro", {username: getUsername()})
         socket.on ("nueva_jugada", procesarJugada)
-
-        await this.sleep(1000)
+        socket.on ("arrancar_jugada", this.arrancar)
 
         const res = await axios({
             method: 'post',
@@ -133,11 +129,11 @@ export default class GameConfig extends React.Component {
 
         console.log(res.data)
 
-        if (res.data.respuesta === 'OK') {
-            this.props.history.push('/game')
-        } else {
-            AlertInfo('Error unirse partida privada', 'Intentelo de nuevo', true)
+        if (res.data.respuesta !== 'OK') {
+            AlertInfo('Error unirte partida publica', 'Intentelo de nuevo', true)
             e.target.disabled = false
+        } else {
+            e.target.innerHTML = "Uniendote..."
         }
     }
 
@@ -150,10 +146,10 @@ export default class GameConfig extends React.Component {
                         <h6 style={{ marginTop:'12%' }}>Número de jugadores</h6>
                         <FormGroup>
                             <Input type='select' onChange={(e) => this.setState({ numPlayers: e.target.value })}>
-                                <option value={2}>2</option>
                                 <option value={3}>3</option>
                                 <option value={4}>4 </option>
                                 <option value={5}>5</option>
+                                <option value={6}>6</option>
                             </Input>
                         </FormGroup>
                         <FormGroup check>
@@ -181,8 +177,6 @@ export default class GameConfig extends React.Component {
         )
     }
 }
-
-
 
 const BackGroundImage = styled.div`
     background-image: url(${fondo_pantalla});
