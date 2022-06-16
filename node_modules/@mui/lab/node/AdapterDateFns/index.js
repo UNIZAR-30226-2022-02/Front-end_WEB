@@ -1,15 +1,13 @@
 "use strict";
 
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 Object.defineProperty(exports, "default", {
   enumerable: true,
   get: function () {
-    return _dateFns.default;
+    return _AdapterDateFns.AdapterDateFns;
   }
 });
 
-var _dateFns = _interopRequireDefault(require("@date-io/date-fns"));
+var _AdapterDateFns = require("@mui/x-date-pickers/AdapterDateFns");

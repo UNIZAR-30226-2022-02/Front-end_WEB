@@ -1,3 +1,1 @@
-export { default } from './YearPicker';
-export { default as yearPickerClasses } from './yearPickerClasses';
-export * from './yearPickerClasses';
+export { YearPicker as default, yearPickerClasses, getYearPickerUtilityClass } from '@mui/x-date-pickers/YearPicker';

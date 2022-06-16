@@ -1,5 +1,2 @@
-export { default } from './YearPicker';
-export declare type YearPickerClassKey = import('./YearPicker').YearPickerClassKey;
-export declare type YearPickerProps<TDate> = import('./YearPicker').YearPickerProps<TDate>;
-export { default as yearPickerClasses } from './yearPickerClasses';
-export * from './yearPickerClasses';
+export { YearPicker as default, yearPickerClasses, getYearPickerUtilityClass, } from '@mui/x-date-pickers/YearPicker';
+export type { YearPickerProps, YearPickerClasses, YearPickerClassKey, } from '@mui/x-date-pickers/YearPicker';

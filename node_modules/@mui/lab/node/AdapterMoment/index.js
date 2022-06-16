@@ -1,15 +1,13 @@
 "use strict";
 
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 Object.defineProperty(exports, "default", {
   enumerable: true,
   get: function () {
-    return _moment.default;
+    return _AdapterMoment.AdapterMoment;
   }
 });
 
-var _moment = _interopRequireDefault(require("@date-io/moment"));
+var _AdapterMoment = require("@mui/x-date-pickers/AdapterMoment");

@@ -107,7 +107,7 @@ class Map {
         // Check if player has no reserve 
         for (let i = 0; i < this.players.length; i++) {
             if (this.players[i].getRemainingTroops() !== 0) {
-                alert(`${this.players[i].getName()} has troops that are to be deployed`);
+                alert(`${this.players[i].getId()} has troops that are to be deployed`);
                 return "";
             }
         }
@@ -195,7 +195,8 @@ class Map {
         return this.getAttakingAndDefendingCountry(attackingCountryId, defendingCountryId);
     }
 
-    attackTerritory(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith, numOfTroopsToDefendWith) {
+    attackTerritory(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith, numOfTroopsToDefendWith = 0, 
+        attackerDiceRolls_ = null, defenderDiceRolls_ = null) {
         const result = this.countryIdsToNames(attackingCountryId, defendingCountryId);
         let attackingCountry, defendingCountry = null;
         if (result) {
@@ -208,6 +209,10 @@ class Map {
             return this.maneuverTroops(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith);
         }
 
+        if (defendingCountry.getNumberOfTroops() < 2) {
+            numOfTroopsToDefendWith = 1
+        }
+
         if (!this.isAttackStateValid(attackingCountry, defendingCountry, numOfTroopsToAttackWith, numOfTroopsToDefendWith)) {
             return false;
         }
@@ -215,8 +220,19 @@ class Map {
         const [attackingPlayer, defendingPlayer] = this.getAttackingAndDefendingPlayer(attackingCountry, defendingCountry);
 
         // Roll dice for attacker and defender. These will be sorted from highest to lowest.
-        let attackerDiceRolls = attackingPlayer.rollDiceBasedOnTroops(numOfTroopsToAttackWith);
-        let defenderDiceRolls = defendingPlayer.rollDiceBasedOnTroops(numOfTroopsToDefendWith);
+        let attackerDiceRolls
+        if (attackerDiceRolls_ === null) {
+            attackerDiceRolls = attackingPlayer.rollDiceBasedOnTroops(numOfTroopsToAttackWith);
+        } else {
+            attackerDiceRolls = attackerDiceRolls_
+        }
+
+        let defenderDiceRolls
+        if (defenderDiceRolls_ === null) {
+            defenderDiceRolls = attackingPlayer.rollDiceBasedOnTroops(numOfTroopsToAttackWith);
+        } else {
+            defenderDiceRolls = defenderDiceRolls_
+        }
 
         // Compare dice rolls
         let attackerToopsAfterComparison = new Array(numOfTroopsToAttackWith);

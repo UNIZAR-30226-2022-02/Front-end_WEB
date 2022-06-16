@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 class Player {
-    constructor(name, remainingTroops, color, isPlayerTurn, turnNumber, diceRoll = null, noOfCards = 0, numOfCardTrades = 0) {
-        this.name = name;
+    constructor(id, remainingTroops, color, isPlayerTurn, turnNumber, diceRoll = null, noOfCards = 0, numOfCardTrades = 0) {
+        this.id = id;
         this.remainingTroops = remainingTroops;
         this.color = color;
         this.isPlayerTurn = isPlayerTurn;
@@ -16,9 +16,6 @@ class Player {
 
     getId() {
         return this.id;
-    }
-    getName() {
-        return this.name;
     }
 
     getTurnNumber() {
