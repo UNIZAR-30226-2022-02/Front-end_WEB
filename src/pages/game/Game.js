@@ -68,10 +68,19 @@ export default class Game extends Component {
     }
 
     onDoubleClickListener = (e) => {
+        const id = e.target.id;
+        const isCountryValid = juego.countryIds.includes(id);
+
+        if (!isCountryValid) {
+            juego.selectedCountryId = ''
+            juego.countryToAttackOrManeuverTo = ''
+            juego.map.setSelectedCountry(id);
+            this.forceUpdate()
+            return
+        }
+
         if (juego.myId === juego.turnDecider.getPlayerWithTurn().getId()) {
-            // Ver si es su turno
-            const id = e.target.id;
-            const isCountryValid = juego.countryIds.includes(id);
+
             // Allow initial deployment with double click
             if (juego.initialSetupPhase && isCountryValid) {
                 juego.selectedCountryId = id
@@ -92,16 +101,26 @@ export default class Game extends Component {
 
             // Allow selecting another country, attacing and manevering
             if (juego.attackOrSkipTurnPhase && isCountryValid) {
-                juego.countryToAttackOrManeuverTo = id
-                const result = juego.map.validateInitialMove(
+                if (juego.selectedCountryId === '') {
+                    juego.selectedCountryId = id
+                } else {
+                    juego.countryToAttackOrManeuverTo = id
+                    const result = juego.map.validateInitialMove(
                     juego.selectedCountryId,
                     juego.countryToAttackOrManeuverTo,
                     juego.turnDecider.getCurrentPlayerInfo(),
-                );
-                juego.attackState = result === "ATTACK"
-                juego.maneuverState = result === "MANEUVER"
+                    );
+                    juego.attackState = result === "ATTACK"
+                    juego.maneuverState = result === "MANEUVER"
+                }
                 this.forceUpdate();
             }
+        } else {
+            juego.selectedCountryId = ''
+            juego.countryToAttackOrManeuverTo = ''
+            juego.map.setSelectedCountry(id);
+            this.forceUpdate()
+            return
         }
     };
 
@@ -177,13 +196,20 @@ export default class Game extends Component {
 
         if (!JugadaMoverTropas.initialSetupPhase && remainingPlayerTroops === 0) {
             return <EndButton onClick={() => {
+
+                // Primero envio jugada y luego cambio turno. Si se hace al reves, se trata la jugada fin de turno,
+                // ya que habra cambiado de id y luego llegara la jugada
+                var nuevaJugada = new JugadaFinTurno(juego.userId, juego.idPartida);
+                this.enviarjugada(nuevaJugada);
+
+                // Esperamos a que llegue jugada fin turno (Fin turno remoto)
+                new Promise((resolve) => setTimeout(resolve, 1000));
+
+                // Fin turno local
                 this.endTurnForPlayer(true)
                 juego.selectedCountryId = ''
                 juego.map.resetCountryState();
 
-                //envio el fin de turno al resto
-                var nuevaJugada = new JugadaFinTurno(juego.userId, juego.idPartida);
-                this.enviarjugada(nuevaJugada);
             }}>End Turn</EndButton>;
         }
         return null;
@@ -193,7 +219,7 @@ export default class Game extends Component {
         juego.map.attackTerritory(juego.selectedCountryId, juego.countryToAttackOrManeuverTo, juego.numOfAttackerTroops, juego.numOfDefenderTroops)
         // envio la jugada al resto
         var newJugada = new JugadaMoverTropas(juego.myId, juego.idPartida, juego.selectedCountryId, juego.countryToAttackOrManeuverTo,
-            numOfAttackerTroops);
+            juego.numOfAttackerTroops);
         juego.enviarjugada(newJugada);
     }
 
@@ -207,7 +233,7 @@ export default class Game extends Component {
                             this.validateInput(e)
                         }
                     />
-                    <ActionButton onClick={() => {this.maneuverTerritory}}
+                    <ActionButton onClick={() => {this.maneuverTerritory()}}
                     >Maneuver</ActionButton>
                 </>
             );

@@ -197,6 +197,8 @@ class Map {
 
     attackTerritory(attackingCountryId, defendingCountryId, numOfTroopsToAttackWith, numOfTroopsToDefendWith = 0, 
         attackerDiceRolls_ = null, defenderDiceRolls_ = null) {
+        console.log("Ataque:", attackingCountryId, defendingCountryId, numOfTroopsToAttackWith, numOfTroopsToDefendWith,
+            attackerDiceRolls_, defenderDiceRolls_)
         const result = this.countryIdsToNames(attackingCountryId, defendingCountryId);
         let attackingCountry, defendingCountry = null;
         if (result) {
@@ -229,7 +231,7 @@ class Map {
 
         let defenderDiceRolls
         if (defenderDiceRolls_ === null) {
-            defenderDiceRolls = attackingPlayer.rollDiceBasedOnTroops(numOfTroopsToAttackWith);
+            defenderDiceRolls = attackingPlayer.rollDiceBasedOnTroops(numOfTroopsToDefendWith);
         } else {
             defenderDiceRolls = defenderDiceRolls_
         }
