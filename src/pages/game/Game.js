@@ -16,7 +16,6 @@ import { useHistory } from 'react-router-dom';
 import { AlertLoading } from "../../util/MyAlerts";
 import { getUsername, hayJugadas, leerJugada } from '../../context/UserProvider'
 import {socket} from '../../pages/game/Game_Config'
-import PlayerTurnDecider from "./util/Turn_Decider";
 
 const ENDPOINT = "http://serverrisk.herokuapp.com"
 const colour = ['#0000FF', '#FF0000', '#009900', '#ffff00', '#000000']
@@ -127,27 +126,31 @@ export default class Game extends Component {
     // Attack Territory Caller
     attackTerritory = () => {
 
-        const result = juego.map.attackTerritory(juego.countryToAttackOrManeuverTo, juego.selectedCountryId, juego.numOfAttackerTroops, 2)
+        if (juego.partidaSincrona === false) {
+            const result = juego.map.attackTerritory(juego.countryToAttackOrManeuverTo, juego.selectedCountryId, juego.numOfAttackerTroops, 2)
 
-        if (typeof result === "object") {
+            if (typeof result === "object") {
 
-            // envio la jugada al resto
-            var newJugada = new JugadaAtaqueAsincrono(juego.myId, juego.idPartida, juego.selectedCountryId, juego.countryToAttackOrManeuverTo,
-                result.attackerDiceRolls, result.defenderDiceRolls);
-            juego.enviarjugada(newJugada);
+                // envio la jugada al resto
+                var newJugada = new JugadaAtaqueAsincrono(juego.myId, juego.idPartida, juego.selectedCountryId, juego.countryToAttackOrManeuverTo,
+                    result.attackerDiceRolls, result.defenderDiceRolls);
+                juego.enviarjugada(newJugada);
 
-            if (result.won && result.message === "TERRITORY_OCCUPIED") {
-                juego.attackerDiceRolls = result.attackerDiceRolls
-                juego.defenderDiceRolls = result.defenderDiceRolls
-                alert(juego.turnDecider.getCurrentPlayerInfo().getId() + " won.");
-            } else if (!result.won && result.message === "ATTACK_LOST") {
-                juego.attackerDiceRolls = result.attackerDiceRolls
-                juego.defenderDiceRolls = result.defenderDiceRolls
-                alert(juego.turnDecider.getCurrentPlayerInfo().getId() + " lost.");
-            } else {
-                juego.attackerDiceRolls = result.attackerDiceRolls
-                juego.defenderDiceRolls = result.defenderDiceRolls
+                if (result.won && result.message === "TERRITORY_OCCUPIED") {
+                    juego.attackerDiceRolls = result.attackerDiceRolls
+                    juego.defenderDiceRolls = result.defenderDiceRolls
+                    alert(juego.turnDecider.getCurrentPlayerInfo().getId() + " won.");
+                } else if (!result.won && result.message === "ATTACK_LOST") {
+                    juego.attackerDiceRolls = result.attackerDiceRolls
+                    juego.defenderDiceRolls = result.defenderDiceRolls
+                    alert(juego.turnDecider.getCurrentPlayerInfo().getId() + " lost.");
+                } else {
+                    juego.attackerDiceRolls = result.attackerDiceRolls
+                    juego.defenderDiceRolls = result.defenderDiceRolls
+                }
             }
+        } else {
+
         }
     }
 
@@ -393,6 +396,10 @@ export default class Game extends Component {
         }
     }
 
+    ataqueSincrono(jugada) {
+
+    }
+
     finTurno() {
         juego.endTurnForPlayer(true)
         juego.selectedCountryId = ''
@@ -416,24 +423,23 @@ export function procesarJugada(jugada) {
                 juego.setidPartida(jugada.idPartida)
                 juego.crearPartida(jugada)
                 console.log("He tratado la jugada de crear partida:", jugada)
-
             break
-            case 'poner_tropas':
+            case 'ponerTropas':
                 juego.ponerTropas(jugada)
             break
-            case 'fin_turno':
+            case 'finTurno':
                 juego.finTurno()
                 console.log("He tratado la jugada de fin de turno")
             break
-            case 'mover_tropas':
+            case 'moverTropas':
                 juego.moverTropas(jugada)
                 console.log("He tratado la jugada de mover tropas")
             break
-            case 'ataque_asincrono':
+            case 'ataqueAsincrono':
                 juego.ataqueAsincrono(jugada)
                 console.log("He tratado la jugada de atacar asincrono tropas")
             break
-            case 'ataque_sincrono':
+            case 'ataqueSincrono':
                 juego.ataqueSincrono(jugada)
                 console.log("He tratado la jugada de atacar tropas")
             break

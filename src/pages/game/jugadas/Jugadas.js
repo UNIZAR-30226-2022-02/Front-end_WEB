@@ -7,28 +7,17 @@ class Jugada
     }
 }
 
-//En el login preguntas si tienes alguna partida ya
-//Estas cargando hasta que te llega una jugada
-class JugadaCrearPartida extends Jugada
-{
-    constructor(userId = '', gameId = '', players = [], partidaSincrona = false) {
-        super('crear_partida', userId, gameId)
-        this.players = players
-        this.partidaSincrona = partidaSincrona
-    }
-}
-
 class JugadaFinTurno extends Jugada
 {
     constructor (userId = '', gameId = '') {
-        super('fin_turno', userId, gameId)
+        super('finTurno', userId, gameId)
     }
 }
 
 class JugadaPonerTropas extends Jugada
 {
     constructor(userId = '', gameId = '', country = '', numTropas = 0) {
-        super('poner_tropas', userId, gameId)
+        super('ponerTropas', userId, gameId)
         this.country = country
         this.numTropas = numTropas
     }
@@ -37,7 +26,7 @@ class JugadaPonerTropas extends Jugada
 class JugadaMoverTropas extends Jugada
 {
     constructor(userId = '', gameId = '', countryOrigin = '', countryDest = '', numTropas = 0) {
-        super('mover_tropas', userId, gameId)
+        super('moverTropas', userId, gameId)
         this.countryOrigin = countryOrigin
         this.countryDest = countryDest
         this.numTropas = numTropas
@@ -56,7 +45,7 @@ class JugadaUtilizarCartas extends Jugada
 class JugadaAtaqueSincrono extends Jugada
 {
     constructor (userId = '', gameId = '', countryOrigin = '', countryDest = '', dadosAtaque = []) {
-        super('ataque_sincrono', userId, gameId)
+        super('ataqueSincrono', userId, gameId)
         this.countryOrigin = countryOrigin
         this.countryDest = countryDest
         this.dadosAtaque = dadosAtaque
@@ -76,7 +65,7 @@ class JugadaDefensaSincrona extends Jugada
 class JugadaAtaqueAsincrono extends Jugada
 {    
     constructor (userId = '', gameId = '', countryOrigin = '', countryDest = '', dadosAtaque= [], dadosDefensa = []) {
-        super('ataque_asincrono', userId, gameId)
+        super('ataqueAsincrono', userId, gameId)
         this.countryOrigin = countryOrigin
         this.countryDest = countryDest
         this.dadosAtaque = dadosAtaque
@@ -96,19 +85,12 @@ class JugadaPedirCarta extends Jugada
 class JugadaFinPartida extends Jugada
 {
     constructor (userId = '', gameId = '', players = []) {
-        super('fin_partida', userId, gameId)
+        super('finPartida', userId, gameId)
         this.players = players
     }
 }
 
-class FinTurno extends Jugada
-{
-    constructor (userId = '', gameId = '') {
-        super('fin_turno', userId, gameId)
-    }
-}
-
-export { Jugada, JugadaCrearPartida, JugadaFinTurno, JugadaPonerTropas, 
+export { Jugada, JugadaFinTurno, JugadaPonerTropas, 
         JugadaMoverTropas, JugadaUtilizarCartas, JugadaAtaqueSincrono, 
         JugadaDefensaSincrona, JugadaAtaqueAsincrono, JugadaPedirCarta, 
-        JugadaFinPartida, FinTurno }
+        JugadaFinPartida }
