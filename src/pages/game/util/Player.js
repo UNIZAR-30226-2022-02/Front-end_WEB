@@ -77,7 +77,8 @@ class Player {
         }
         const numOfRolls = diceRolls.length;
         for (let i = 0; i < numOfRolls; i++) {
-            diceRolls[i] = Math.floor(Math.random() * 7);
+            diceRolls[i] = Math.floor((Math.random() * (6 - 1 + 1)) + 1);
+            
         }
         return diceRolls.sort((a, b) => b - a);
     }

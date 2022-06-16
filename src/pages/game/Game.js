@@ -128,12 +128,12 @@ export default class Game extends Component {
 
     // Attack Territory Caller
     attackTerritory = () => {
-
-        if (juego.partidaSincrona === false) {
+        console.log("voy a atacar una partida",juego.partidaSincrona)
+        if (juego.partidaSincrona === 0) {
+            console.log("Voy a atacar porque he entrado a la funcion")
             const result = juego.map.attackTerritory(juego.countryToAttackOrManeuverTo, juego.selectedCountryId, juego.numOfAttackerTroops, 2)
-
             if (typeof result === "object") {
-
+                console.log("voy a enviar una jugada de atacar")
                 // envio la jugada al resto
                 var newJugada = new JugadaAtaqueAsincrono(juego.myId, juego.idPartida, juego.selectedCountryId, juego.countryToAttackOrManeuverTo,
                     result.attackerDiceRolls, result.defenderDiceRolls);
@@ -175,7 +175,6 @@ export default class Game extends Component {
     deployTurnTroops = () => {
         juego.deployer.deployTroops(juego.map, juego.turnDecider, juego.selectedCountryId, 1, juego.troopsGiver)
         if (juego.turnDecider.getCurrentPlayerInfo().getRemainingTroops() === 0) {
-            console.log("ATAQUEEEEEE")
             juego.turnsPhase = false
             juego.attackOrSkipTurnPhase = true
             juego.countryToAttackOrManeuverTo = ''
@@ -253,6 +252,7 @@ export default class Game extends Component {
         const remainingPlayerTroops = juego.turnDecider.getCurrentPlayerInfo().getRemainingTroops();
         if (!juego.initialSetupPhase && remainingPlayerTroops === 0) {
             return <ActionButton onClick={() => {
+                console.log("has pulsado el boton de ataque")
                 this.attackTerritory()
             }}>Attack</ActionButton>
         }
@@ -371,6 +371,8 @@ export default class Game extends Component {
         var countryDest = jugada.territorioAtacado
         var dadosAtaque = jugada.resultadoDadosAtaque
         var dadosDefensa = jugada.resultadoDadosDefensa
+        console.log("dados del atacante",jugada.resultadoDadosAtaque)
+        console.log("dados del defensa",jugada.resultadoDadosAtaque)
 
         const result = juego.map.attackTerritory(countryDest, countryOrigin, dadosAtaque.length, dadosDefensa.length,
                 dadosAtaque, dadosDefensa)
